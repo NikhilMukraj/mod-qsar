@@ -2,3 +2,4 @@
 /settings.json
 /*.toml
 /*.so
+/__pycache__
