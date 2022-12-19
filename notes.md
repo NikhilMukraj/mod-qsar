@@ -17,6 +17,12 @@ scrape to get string
 
 find smiles checker to ensure quality data
 
+## genetic algo
+
+represent tokens as binary, to mutate singular token flip random bit
+if binary representation has a max value less than a power of two, add x amount to overflow back to zero if greater than that max
+use enumeration of smiles strings sometimes to introduce more population/mutations/variability
+
 ## useful links
 
 [https://chembl.gitbook.io/chembl-interface-documentation/web-services/chembl-data-web-services]
