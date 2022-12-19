@@ -25,6 +25,7 @@ use enumeration of smiles strings sometimes to introduce more population/mutatio
 
 ## useful links
 
+[https://emoryraphael.medium.com/basic-sentiment-analysis-with-julia-using-lstm-e12d4754ee6b]
 [https://chembl.gitbook.io/chembl-interface-documentation/web-services/chembl-data-web-services]
 [https://www.kaggle.com/code/isaienkov/mechanisms-of-action-moa-prediction-eda]
 [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6770028/]
