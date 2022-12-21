@@ -17,6 +17,8 @@ scrape to get string
 
 find smiles checker to ensure quality data
 
+- [ ] git submodule smiles enumeration script
+
 ## genetic algo
 
 represent tokens as binary, to mutate singular token flip random bit
