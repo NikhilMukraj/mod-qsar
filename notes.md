@@ -17,13 +17,25 @@ scrape to get string
 
 find smiles checker to ensure quality data
 
-- [ ] git submodule smiles enumeration script
-
 ## genetic algo
 
 represent tokens as binary, to mutate singular token flip random bit
 if binary representation has a max value less than a power of two, add x amount to overflow back to zero if greater than that max
 use enumeration of smiles strings sometimes to introduce more population/mutations/variability
+
+## todo
+
+- [ ] git submodule smiles enumeration script
+- [X] preprocess smiles strings
+- [ ] build and train rnn model
+- [ ] add augmentation
+- [ ] make figures from training
+- [ ] modify existing genetic algo to have variable length chromosomes (variable n_bit length, set amount is equal to a token, decode into smiles string, if not a power of 2 add x amount to overflow back to 0)
+- [ ] logarithmic scaling for reward based on activity prediction
+- [ ] implement without checking for similarity yet, just initialize with random valid strings, penalize for being invalid
+- [ ] add check for tanimoto similarity if smiles string is valid
+- [ ] implementation of levenshtein distance in c to compare similarity of strings
+- [ ] make figures
 
 ## useful links
 
