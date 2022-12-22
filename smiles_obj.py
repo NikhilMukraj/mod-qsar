@@ -39,6 +39,8 @@ class SmilesObj:
         for i in self.tokens:
             bit_string += str(bin(self.tokenizer_dict[i] + self.buffer)[2:]).zfill(self.bit_length)
 
+        self.bit_string = bit_string
+
         return bit_string
 
     def decode(self, encoded_string):
