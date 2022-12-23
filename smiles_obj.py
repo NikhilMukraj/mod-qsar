@@ -33,20 +33,32 @@ class SmilesObj:
 
         self.bit_string = None
 
-    def encode(self):
+    def encode(self, tokens=None):
+        if tokens is None:
+            tokens = self.tokens
+
         bit_string = ''
 
-        for i in self.tokens:
+        for i in tokens:
             bit_string += str(bin(self.tokenizer_dict[i] + self.buffer)[2:]).zfill(self.bit_length)
 
         self.bit_string = bit_string
 
         return bit_string
 
-    def decode(self, encoded_string):
+    def decode(self, encoded_string=None):
+        if encoded_string is None:
+            encoded_string = self.bit_string
+
         tokens = []
 
         for i in range(0, len(encoded_string) - self.bit_length + 1, self.bit_length):
             tokens.append(self.reverse_tokenizer[int(encoded_string[i:i+self.bit_length], 2) - self.buffer])
 
         return tokens
+
+        # make sure to check if mutation makes value fall below buffer
+        # if below underflow back to top
+
+    def checkBitString(self, input_string=None):
+        pass
