@@ -1,6 +1,9 @@
 /other data
 /settings.json
+/t
 /*.toml
 /*.so
 /*.bson
+/*.txt
+/testing*
 /__pycache__
