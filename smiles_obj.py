@@ -3,7 +3,7 @@ from tokenization import return_tokens
 import os
 
 
-class SmilesObj:
+class SMILES:
     def __init__(self, string, vocab=None, tokenizer_dict=None, reverse_tokenizer=None):
         self.string = string
         if vocab is None:
@@ -39,6 +39,8 @@ class SmilesObj:
 
         bit_string = ''
 
+        # maybe check if bit string is valid or needs underflow editing
+
         for i in tokens:
             bit_string += str(bin(self.tokenizer_dict[i] + self.buffer)[2:]).zfill(self.bit_length)
 
@@ -60,5 +62,17 @@ class SmilesObj:
         # make sure to check if mutation makes value fall below buffer
         # if below underflow back to top
 
-    def checkBitString(self, input_string=None):
-        pass
+    def underflowBitString(self, input_string=None):
+        if input_string is None:
+            input_string = self.bit_string
+
+        strings = []
+
+        for i in range(0, len(input_string) - self.bit_length + 1, self.bit_length):
+            part = int(input_string[i:i+self.bit_length], 2)
+            if part < self.buffer:
+                part = self.max_bit_value - part
+            
+            strings.append(str(bin(part))[2:].zfill(self.bit_length))
+
+        self.bit_string = ''.join(str(i) for i in strings)

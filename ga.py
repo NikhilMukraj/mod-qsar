@@ -77,6 +77,9 @@ def genetic_algorithm(objective, decode, n_bits, bounds, n_iter, n_pop, r_cross,
 			for c in crossover(p1, p2, r_cross):
 				# mutation
 				mutation(c, r_mut)
+
+				# implement underflow check here
+
 				# store for next generation
 				children.append(c)
 		# replace population
