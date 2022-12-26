@@ -11,6 +11,7 @@ class SMILES:
         else:
             self.vocab = vocab
 
+        # optimize this memory chokehold
         self.max_value = len(self.vocab) - 1 # !! important !! needs to be considered before onehot encoding
         self.bit_length = len(bin(self.max_value)[2:])
         self.max_bit_value = int('1' * self.bit_length, 2)
