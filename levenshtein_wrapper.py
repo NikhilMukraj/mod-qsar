@@ -14,12 +14,7 @@ except OSError:
 levenshtein = cfunc.levenshtein
 
 def ldist(str1, str2):
-    str1 = (ctypes.c_int * len(string1))(*str1)
-    str2 = (ctypes.c_int * len(string2))(*str2)
+    str1 = (ctypes.c_int * len(str1))(*str1)
+    str2 = (ctypes.c_int * len(str2))(*str2)
 
     return levenshtein(str1, len(str1), str2, len(str2))
-
-string1 = [4, 5, 1, 2, 3]
-string2 = [1, 2, 3]
-
-print(ldist(string1, string2))
