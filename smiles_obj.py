@@ -1,11 +1,19 @@
 import pandas as pd
+import numpy as np
 from tokenization import return_tokens
 import os
 
 
 class SMILES:
-    def __init__(self, string, vocab=None, tokenizer_dict=None, reverse_tokenizer=None):
+    def __init__(self, string=None, vocab=None, tokenizer_dict=None, reverse_tokenizer=None):
         self.string = string
+
+        if self.string is not None:
+            self.tokens, invalidity = return_tokens(string)
+
+            if invalidity:
+                raise Exception("String contains tokens not within vocabulary")
+
         if vocab is None:
             self.vocab = pd.read_csv(f'{os.getcwd()}\\vocab.csv').iloc[:, 0].to_list()
         else:
@@ -16,11 +24,6 @@ class SMILES:
         self.bit_length = len(bin(self.max_value)[2:])
         self.max_bit_value = int('1' * self.bit_length, 2)
         self.buffer = self.max_bit_value - self.max_value
-
-        self.tokens, invalidity = return_tokens(string)
-
-        if invalidity:
-            raise Exception("String contains tokens not within vocabulary")
 
         if tokenizer_dict is None:
             self.tokenizer_dict = {i : n for n, i in enumerate(self.vocab)}
@@ -33,6 +36,12 @@ class SMILES:
             self.reverse_tokenizer = reverse_tokenizer
 
         self.bit_string = None
+
+    def randomTokens(self, n):
+        self.tokens = [np.random.choice(list(self.tokenizer_dict))
+                       for i in range(np.random.randint(3, n))]
+
+        return self.tokens
 
     def encode(self, tokens=None):
         if tokens is None:
