@@ -1,8 +1,12 @@
+*
+!*/
+!*.*
 /other data
 /settings.json
 /t
 /*.toml
 /*.so
+/*.o
 /*.bson
 /*.txt
 /testing*
