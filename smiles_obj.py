@@ -38,8 +38,7 @@ class SMILES:
         self.bit_string = None
 
     def randomTokens(self, n):
-        self.tokens = [np.random.choice(list(self.tokenizer_dict))
-                       for i in range(np.random.randint(3, n))]
+        self.tokens = np.random.choice(list(self.tokenizer_dict), size=np.random.randint(3, n)).tolist()
 
         return self.tokens
 
