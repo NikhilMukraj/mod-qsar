@@ -19,7 +19,6 @@ class SMILES:
         else:
             self.vocab = vocab
 
-        # optimize this memory chokehold
         self.max_value = len(self.vocab) - 1 # !! important !! needs to be considered before onehot encoding
         self.bit_length = len(bin(self.max_value)[2:])
         self.max_bit_value = int('1' * self.bit_length, 2)
@@ -48,8 +47,6 @@ class SMILES:
 
         bit_string = ''
 
-        # maybe check if bit string is valid or needs underflow editing
-
         for i in tokens:
             bit_string += str(bin(self.tokenizer_dict[i] + self.buffer)[2:]).zfill(self.bit_length)
 
@@ -68,10 +65,10 @@ class SMILES:
 
         return tokens
 
+    def underflowBitString(self, input_string=None):
         # make sure to check if mutation makes value fall below buffer
         # if below underflow back to top
-
-    def underflowBitString(self, input_string=None):
+        
         if input_string is None:
             input_string = self.bit_string
 
