@@ -2,7 +2,33 @@ import pandas as pd
 import numpy as np
 from tokenization import return_tokens
 import os
+from rdkit import Chem
+from rdkit.Chem import Draw
+import matplotlib.pyplot as plt
+import py3Dmol
 
+
+def renderMol(string, name='Molecule', plot3d=False, save=False):
+    if not plot3d:
+        mol = Chem.MolFromSmiles(string)
+
+        fig = Draw.MolToMPL(mol)
+        plt.title(name)
+        plt.axis('off')
+        if not save:
+            plt.show()
+        else:
+            plt.savefig(f'{os.getcwd()}\\{name}.png')
+    elif plot3d and save:
+        raise NotImplementedError()      
+    else:
+        mblock = Chem.MolToMolBlock(mol)
+
+        view = py3Dmol.view(width=200, height=200)
+        view.addModel(mblock, 'mol')
+        view.setStyle('stick')
+        view.zoomTo()
+        view.show()
 
 class SMILES:
     def __init__(self, string=None, vocab=None, tokenizer_dict=None, reverse_tokenizer=None):
