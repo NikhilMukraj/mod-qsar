@@ -1,5 +1,6 @@
 import numpy as np
 import timeit
+from smiles_obj import SMILES
 import os
 
 def selection(pop, scores, k=3):
@@ -41,7 +42,9 @@ def genetic_algorithm(objective, decode, n_bits, bounds, n_iter, n_pop, r_cross,
 	# avgs
 	avg = []
 	# initial population of random bitstring
-	pop = [np.random.randint(0, 2, n_bits * np.random.randint(1, bounds)).tolist() for _ in range(n_pop)]
+	pop = [SMILES() for _ in range(n_pop)] # optimize memory usage here
+	for i in SMILES():
+		i.randomTokens(90)
 	# keep track of best solution
 	best, best_eval = 0, objective(decode(pop[0]))
 	# enumerate generations
