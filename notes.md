@@ -27,7 +27,7 @@ use enumeration of smiles strings sometimes to introduce more population/mutatio
 
 - [ ] git submodule smiles enumeration script
 - [X] preprocess smiles strings
-- [ ] build and train rnn model
+- [ ] build and train rnn model, on juliahub use dataset() to load csv and then convert to matrix with Matrix(df)
 - [ ] add augmentation
 - [ ] make figures from training
 - [ ] modify existing genetic algo to have variable length chromosomes (variable n_bit length, set amount is equal to a token, decode into smiles string, if not a power of 2 add x amount to overflow back to 0)
