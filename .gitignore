@@ -9,5 +9,6 @@
 /*.o
 /*.bson
 /*.txt
+/*.jld
 /testing*
 /__pycache__
