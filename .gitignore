@@ -11,4 +11,5 @@
 /*.txt
 /*.jld
 /testing*
+/.vs
 /__pycache__
