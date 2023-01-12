@@ -6,6 +6,7 @@
 /t
 /*.toml
 /*.so
+/*.dll
 /*.o
 /*.bson
 /*.txt
