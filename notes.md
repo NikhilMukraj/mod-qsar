@@ -15,6 +15,8 @@ use CID to return smiles
 [https://pubchem.ncbi.nlm.nih.gov/compound/43795#section=Canonical-SMILES&fullscreen=true]
 scrape to get string
 
+[https://cuda.juliagpu.org/stable/usage/memory/]
+
 find smiles checker to ensure quality data
 
 ## genetic algo
