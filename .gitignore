@@ -11,6 +11,7 @@
 /*.bson
 /*.txt
 /*.jld
+/*.npy
 /testing*
 /.vs
 /__pycache__
