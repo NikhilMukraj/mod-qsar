@@ -7,6 +7,8 @@ import os
 # cmd> gcc -shared -o ldist.dll levenshtein.o
 # check with numpy arrays and modify to work with windows too
 
+# needs docs
+
 try:
     leven_func = ctypes.CDLL(f'{os.getcwd()}//ldist.so')
 except OSError:
