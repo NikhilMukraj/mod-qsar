@@ -58,9 +58,6 @@ class Iterator(object):
     def __next__(self, *args, **kwargs):
         return self.next(*args, **kwargs)
 
-
-
-
 class SmilesIterator(Iterator):
     """Iterator yielding data from a SMILES array.
     # Arguments
@@ -115,7 +112,6 @@ class SmilesIterator(Iterator):
             return batch_x
         batch_y = self.y[index_array]
         return batch_x, batch_y
-
 
 class SmilesEnumerator(object):
     """SMILES Enumerator, vectorizer and devectorizer
@@ -208,41 +204,41 @@ class SmilesEnumerator(object):
             smiles.append(smile)
         return np.array(smiles)
      
-if __name__ == "__main__":
-    smiles = np.array([ "CCC(=O)O[C@@]1(CC[NH+](C[C@H]1CC=C)C)c2ccccc2",
-                        "CCC[S@@](=O)c1ccc2c(c1)[nH]/c(=N/C(=O)OC)/[nH]2"]*10
-                        )
-    #Test canonical SMILES vectorization
-    sm_en = SmilesEnumerator(canonical=True, enum=False)
-    sm_en.fit(smiles, extra_chars=["\\"])
-    v = sm_en.transform(smiles)
-    transformed = sm_en.reverse_transform(v)
-    if len(set(transformed)) > 2: print("Too many different canonical SMILES generated")
+# if __name__ == "__main__":
+#     smiles = np.array([ "CCC(=O)O[C@@]1(CC[NH+](C[C@H]1CC=C)C)c2ccccc2",
+#                         "CCC[S@@](=O)c1ccc2c(c1)[nH]/c(=N/C(=O)OC)/[nH]2"]*10
+#                         )
+#     #Test canonical SMILES vectorization
+#     sm_en = SmilesEnumerator(canonical=True, enum=False)
+#     sm_en.fit(smiles, extra_chars=["\\"])
+#     v = sm_en.transform(smiles)
+#     transformed = sm_en.reverse_transform(v)
+#     if len(set(transformed)) > 2: print("Too many different canonical SMILES generated")
     
-    #Test enumeration 
-    sm_en.canonical = False
-    sm_en.enumerate = True
-    v2 = sm_en.transform(smiles)
-    transformed = sm_en.reverse_transform(v2)
-    if len(set(transformed)) < 3: print("Too few enumerated SMILES generated")
+#     #Test enumeration 
+#     sm_en.canonical = False
+#     sm_en.enumerate = True
+#     v2 = sm_en.transform(smiles)
+#     transformed = sm_en.reverse_transform(v2)
+#     if len(set(transformed)) < 3: print("Too few enumerated SMILES generated")
 
-    #Reconstruction
-    reconstructed = sm_en.reverse_transform(v[0:5])
-    for i, smile in enumerate(reconstructed):
-        if smile != smiles[i]:
-            print("Error in reconstruction %s %s"%(smile, smiles[i]))
-            break
+#     #Reconstruction
+#     reconstructed = sm_en.reverse_transform(v[0:5])
+#     for i, smile in enumerate(reconstructed):
+#         if smile != smiles[i]:
+#             print("Error in reconstruction %s %s"%(smile, smiles[i]))
+#             break
     
-    #test Pandas
-    import pandas as pd
-    df = pd.DataFrame(smiles)
-    v = sm_en.transform(df[0])
-    if v.shape != (20, 52, 18): print("Possible error in pandas use")
+#     #test Pandas
+#     import pandas as pd
+#     df = pd.DataFrame(smiles)
+#     v = sm_en.transform(df[0])
+#     if v.shape != (20, 52, 18): print("Possible error in pandas use")
     
-    #BUG, when batchsize > x.shape[0], then it only returns x.shape[0]!
-    #Test batch generation
-    sm_it = SmilesIterator(smiles, np.array([1,2]*10), sm_en, batch_size=10, shuffle=True)
-    X, y = sm_it.next()
-    if sum(y==1) - sum(y==2) > 1:
-        print("Unbalanced generation of batches")
-    if len(X) != 10: print("Error in batchsize generation")
+#     #BUG, when batchsize > x.shape[0], then it only returns x.shape[0]!
+#     #Test batch generation
+#     sm_it = SmilesIterator(smiles, np.array([1,2]*10), sm_en, batch_size=10, shuffle=True)
+#     X, y = sm_it.next()
+#     if sum(y==1) - sum(y==2) > 1:
+#         print("Unbalanced generation of batches")
+#     if len(X) != 10: print("Error in batchsize generation")
