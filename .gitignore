@@ -17,6 +17,7 @@
 /inverse_qsar/generated_drugs/*.csv
 /inverse_qsar/generated_drugs/__pycache__
 /inverse_qsar/__pycache__
+/inverse_qsar/.ipynb_checkpoints
 /other data
 /predictor/*.h5
 /predictor/__pycache__
