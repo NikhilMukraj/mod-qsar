@@ -1,7 +1,26 @@
 *
 !*/
 !*.*
+/.ipynb_checkpoints
+/gathering data
+/preprocessor/*.csv
+/preprocessor/*.jld
+/preprocessor/*.so
+/preprocessor/*.npy
+/c_wrapper/build
+/c_wrapper/c_wrapper.egg-info
+/c_wrapper/c_wrapper/src/*.so
+/smiles_tools/build
+/smiles_tools/smiles_tools.egg-info
+/smiles_tools/smiles_tools/__pycache__
+/inverse_qsar/*.h5
+/inverse_qsar/generated_drugs/*.csv
+/inverse_qsar/generated_drugs/__pycache__
+/inverse_qsar/__pycache__
 /other data
+/predictor/*.h5
+/predictor/__pycache__
+/predictor/.ipynb_checkpoints
 /settings.json
 /t
 /*.toml
@@ -15,3 +34,4 @@
 /testing*
 /.vs
 /__pycache__
+/aws
