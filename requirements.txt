@@ -4,3 +4,4 @@ matplotlib
 rdkit
 SmilesPE
 tensorflow
+tqdm
