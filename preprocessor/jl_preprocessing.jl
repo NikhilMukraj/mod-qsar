@@ -47,12 +47,8 @@ df = getdf(joinpath(@__DIR__, "$(ARGS[begin])_filtered_dataset.csv"))
 py"""
 from smiles_tools import return_tokens
 from smiles_tools import SmilesEnumerator
+from SmilesPE.pretokenizer import atomwise_tokenizer
 """
-
-vocab = dfToStringMatrix(getdf(joinpath(@__DIR__, "vocab.csv")))
-
-tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
-reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
 
 py"""
 def augment_smiles(string, n):
@@ -65,6 +61,7 @@ def augment_smiles(string, n):
 """
 
 augment_smiles(str, n) = py"augment_smiles"(str, n)
+atomwise_tokenizer(str) = py"atomwise_tokenizer"(str)
 return_tokens(str) = py"return_tokens"(str)
 
 n = parse(Int, ARGS[2])
@@ -77,6 +74,10 @@ max_length = let max_len
     max_len
 end
 
+override = parse(Bool, ARGS[4])
+
+println("Generating augmentations...")
+
 smiles = let temp_df
     temp_df = dfToStringMatrix(df)
     for i in 1:length(temp_df[:, begin])
@@ -87,30 +88,73 @@ smiles = let temp_df
     temp_df
 end
 
+println("Generated augmented dataframe, now processing tokens...")
+
 activity = reduce(hcat, [i == "Active" ? [1, 0] : [0, 1] for i in smiles[:, end]])'
 
-function standardizeCase(str)
-    str = titlecase(str)
-    str = replace(str, "h" => "H")
-end
+# function standardizeCase(str)
+#     str = titlecase(str)
+#     str = replace(str, "h" => "H")
+# end
 
 strings = []
 activity = []
 
-for i in 1:length(smiles[:, begin])
-    try
-        processed_tokens = [tokenizer[standardizeCase(j)] for j in return_tokens(smiles[:, begin][i])[begin]]
-        if typeof(max_length) != Bool && length(processed_tokens) <= max_length
-            push!(strings, processed_tokens)
-            push!(activity, smiles[:, end][i] == "Active" ? [1, 0] : [0, 1])
+# check for pre-existing tokens here
+
+vocab_path = joinpath(@__DIR__, "vocab.csv")
+if isfile(vocab_path)
+    vocab = dfToStringMatrix(getdf(vocab_path))
+
+    tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
+    reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
+
+    for i in 1:length(smiles[:, begin])
+        try
+            returned_tokens, valid_tokens = return_tokens(smiles[:, begin][i], tokenizer)
+            if !valid_tokens && override
+                println("Overriding token")
+                continue
+            elseif !valid_tokens && !override
+                throw("Not a valid token")
+            end
+
+            processed_tokens = [tokenizer[j] for j in returned_tokens[begin]]
+            if typeof(max_length) != Bool && length(processed_tokens) <= max_length
+                push!(strings, processed_tokens)
+                push!(activity, smiles[:, end][i] == "Active" ? [1, 0] : [0, 1])
+            end
+            # https://discourse.julialang.org/t/using-push/30935/2
+        catch
         end
-        # https://discourse.julialang.org/t/using-push/30935/2
-    catch
+
+        if i % 100 == 0
+            println("$i | strings: $(length(strings)), activity: $(length(activity))")
+        end
+    end
+else
+    for i in 1:length(smiles[:, begin])
+        tokens = [j for j in atomwise_tokenizer(smiles[:, begin][i])]
+        push!(strings, tokens)
+        push!(activity, smiles[:, end][i] == "Active" ? [1, 0] : [0, 1])
+
+        if i % 100 == 0
+            println("$i | strings: $(length(strings)), activity: $(length(activity))")
+        end
     end
 
-    if i % 100 == 0
-        println("$i | strings: $(length(strings)), activity: $(length(activity))")
-    end
+    # create vocab df and convert to tokens
+    vocab = Set(reduce(vcat, strings))
+
+    py"""
+    import os
+
+    vocab_df = pd.DataFrame(list($(tokens)), columns=["tokens"])
+    vocab_df.to_csv(f'{os.getcwd()}//vocab.csv')
+    """
+
+    tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
+    reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
 end
 
 # strings = [[tokenizer[standardizeCase(j)] for j in return_tokens(i)[begin]] for i in smiles[:, begin]]
