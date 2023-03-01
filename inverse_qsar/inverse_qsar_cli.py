@@ -72,15 +72,7 @@ def get_lipinski(string):
 
     return lipi
 
-# potentially can leave this with a bunch of setup args (tokenizer, seq_shape, model_array)
-def ensemble_predict(tokens):
-    initial_seq = np.array([tokenizer[i]+1 for i in tokens])
-    full_seq = np.hstack([np.zeros(max_len-len(initial_seq)), initial_seq])
-    full_seq = seqOneHot(np.array(full_seq, dtype=np.int32), seq_shape).reshape(1, *seq_shape)
-    
-    return np.hstack([i.predict(full_seq, verbose=0) for i in models_array])
-
-vocab = pd.read_csv('../preprocessor/vocab.csv')['tokens'].to_list()
+vocab = pd.read_csv('../vocab.csv')['tokens'].to_list()
 tokenizer = {i : n for n, i in enumerate(vocab)}
 
 potential_models = [i for i in contents["scoring_function"] if '.h5' in i]
@@ -93,8 +85,16 @@ if len(potential_models) > 0:
 else:
     model_pred = False
 
-drug_likeness_dict = {'lipinski': get_lipinski, 'qed': get_qed}
-drug_likeness_to_use = [drug_likeness_dict[i] for i in contents['scoring_function'] if '.h5' not in i]
+# potentially can leave this with a bunch of setup args (tokenizer, seq_shape, model_array)
+def ensemble_predict(tokens):
+    initial_seq = np.array([tokenizer[i]+1 for i in tokens])
+    full_seq = np.hstack([np.zeros(max_len-len(initial_seq)), initial_seq])
+    full_seq = seqOneHot(np.array(full_seq, dtype=np.int32), seq_shape).reshape(1, *seq_shape)
+    
+    return np.hstack([i.predict(full_seq, verbose=0) for i in models_array])
+
+drug_likeness_parser = {'lipinski': get_lipinski, 'qed': get_qed}
+drug_likeness_metric = [drug_likeness_parser[i] for i in contents['scoring_function'] if '.h5' not in i]
 
 target = contents['target']
 target = tuple(target)
@@ -106,7 +106,7 @@ def no_model_scoring(string, target):
     if isNotValidToken:
         return -100
     else:
-        likeness_score = np.array(np.hstack([func(string) for func in drug_likeness_to_use]))
+        likeness_score = np.array(np.hstack([metric(string) for metric in drug_likeness_metric]))
         return -1 * get_score(likeness_score, np.array(target))
 
 @lru_cache(maxsize=256)
@@ -117,7 +117,7 @@ def model_scoring(string, target):
     if isNotValidToken:
         return -100
     else:
-        likeness_score = np.array(np.hstack([func(string) for func in drug_likeness_to_use]))
+        likeness_score = np.array(np.hstack([metric(string) for metric in drug_likeness_metric]))
         pred = ensemble_predict(tokens)[0]
         return -1 * get_score(np.hstack([pred, likeness_score]), np.array(target))
 
