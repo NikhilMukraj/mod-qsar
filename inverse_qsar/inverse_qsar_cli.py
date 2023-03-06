@@ -72,6 +72,10 @@ def get_lipinski(string):
 
     return lipi
 
+raise NotImplementedError("need to implement ghose filter")
+def get_ghose(string):
+    pass
+
 vocab = pd.read_csv('../vocab.csv')['tokens'].to_list()
 tokenizer = {i : n for n, i in enumerate(vocab)}
 
