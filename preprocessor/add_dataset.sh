@@ -1,3 +1,7 @@
+# get name of file
+# get tag to add to generated files
+# get if debug
+
 for i in "$@"
 do
     if [[ $i == "-h" || $i == "-help" ]]
@@ -6,52 +10,52 @@ do
         -h : help command
         -f : filename containing raw bioassay .csv from pubchem
         -t : tag to add onto new preprocessed data files
-        -n : must be a positive integer, optional defaults to 5, number of times to add augmented strings
+        -n : must be a positive integer, optional, number of times to add augmented strings
+        -m : max length of strings
+        -o : true or false, optional, if new tokens are found they are removed from the dataset
         -d : true or false, optional, defaults to false, adds debug output
         "
         exit 0
     fi
 done
 
-while getopts f:t:d:n: flag
+while getopts f:t:d:n:m:o: flag
 do
     case "${flag}" in
-        f) filenames+=("${OPTARG}");;
-        t) tags+=("${OPTARG}");;
+        f) filename=${OPTARG};;
+        t) tag=${OPTARG};;
         d) debug=${OPTARG};;
         n) num=${OPTARG};;
+        m) max_len=${OPTARG};;
+        o) override=${OPTARG};;
     esac
 done
 
 RED='\033[0;31m'
 GREEN='\033[1;32m'
-CYAN='\033[1;36m'
 NC='\033[0m'
 
-if [[ -z $filenames || -z $tags ]]
+if [[ ! -f "vocab.csv" ]]
+then
+    printf "${RED}No existing vocab file${NC}\n"
+    exit 1
+fi
+
+if [[ -z $filename || -z $tag ]]
 then
     printf "${RED}Must have both an -f and -t argument${NC}\n"
     exit 1
 fi
 
-if [[ "${#filenames[@]}" != "${#tags[@]}" ]]
+if [[ ! -f $filename ]]
 then
-    printf "${RED}Must have same amount of -f and -t arguments${NC}\n"
+    printf "${RED}${filename} is not found${NC}\n"
     exit 1
 fi
 
-for i in "${filenames[@]}"
-do
-    if [[ ! -f $i ]]
-    then
-        printf "${RED}${i} is not found${NC}\n"
-        exit 1
-    fi
-done
-
 if [[ -z $num ]]
 then 
-    num=5
+    num=10
 fi
 
 check_if_pos_int() {
@@ -63,6 +67,13 @@ check_if_pos_int() {
 }
 
 check_if_pos_int $num
+
+if [[ -z $max_len ]]
+then 
+    max_len="False"
+else
+    check_if_pos_int $max_len
+fi
 
 convert_to_bool() {
     result=$1
@@ -79,30 +90,23 @@ convert_to_bool() {
 }
 
 debug="${debug,,}"
+override="${override,,}"
+
 convert_to_bool $debug
 debug=$result
+convert_to_bool $override
+override=$result
 
 if [[ ! -f "pkgs.so" ]]
 then 
-    printf "Julia sysimage not found, compiling PyCall sysimage...\n"
+    echo "Julia sysimage not found, compiling PyCall sysimage..."
     julia -e 'using PackageCompiler; create_sysimage([:JLD, :PyCall], sysimage_path="pkgs.so")'
 fi
 
-for i in $(seq 0 $((${#filenames[@]}-1)))
-do
-    printf "Creating ${CYAN}${tags[$i]}${NC} dataset\n"
-    python3 initial_filter.py "${filenames[$i]}" "${tags[$i]}" $debug || exit 1
-done
-
-printf "${GREEN}Finished filtering initial dataframes${NC}\n"
-
-julia --sysimage pkgs.so generate_vocab.jl $num $debug ${tags[@]} || exit 1
-
+python3 initial_filter.py $filename $tag $override $debug || exit 1
+printf "${GREEN}Finished filtering initial dataset${NC}\n"
+julia --sysimage pkgs.so add_dataset.jl $tag $num $max_len $debug || exit 1
 printf "${GREEN}Finished augmentations${NC}\n"
-
-for i in ${tags[@]}
-do
-    python3 final_preprocessing.py $i $debug || exit 1
-done
+python3 final_preprocessing.py $tag $debug || exit 1
 
 printf "${GREEN}Finished preprocessing strings${NC}\n"
