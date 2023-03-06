@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
+import sys
 # from tokenization import return_tokens
 # from julia import Main
 # import h5py
@@ -14,31 +15,24 @@ import os
 
 print(config.list_physical_devices('GPU'))
 
-# https://stackoverflow.com/questions/41402409/tensorflow-doesnt-seem-to-see-my-gpu
 # sudo cp /usr/lib/python3/dist-packages/tensorflow/libcudnn* /usr/lib/x86_64-linux-gnu/
-
-# f = h5py.File(f'{os.getcwd()}//augmented_data.jld', 'r')
-# X = np.array(f['X'])
-# X = np.transpose(X)
-# Y = np.array(f['Y'])
-# Y = np.transpose(Y)
 
 ''' give more stopping options '''
 
 X = np.load(f'{os.getcwd()}//{sys.argv[1]}')
 Y = np.load(f'{os.getcwd()}//{sys.argv[2]}')
 
-n = 60_000
+# n = 60_000
 
-indicies = pd.DataFrame(range(len(X)), columns=['i'])
-indicies = indicies['i'].sample(n=n).to_numpy()
+# indicies = pd.DataFrame(range(len(X)), columns=['i'])
+# indicies = indicies['i'].sample(n=n).to_numpy()
 
-sampled_X = np.zeros((n, X.shape[1], X.shape[2]))
-sampled_Y = np.zeros((n, Y.shape[1]))
+# sampled_X = np.zeros((n, X.shape[1], X.shape[2]))
+# sampled_Y = np.zeros((n, Y.shape[1]))
 
-for n, i in enumerate(indicies):
-    sampled_X[n] = X[i]
-    sampled_Y[n] = Y[i]
+# for n, i in enumerate(indicies):
+#     sampled_X[n] = X[i]
+#     sampled_Y[n] = Y[i]
 
 trainX, testX, trainY, testY = train_test_split(X, Y, test_size=.1)
 trainX.shape, testX.shape, trainY.shape, testY.shape
