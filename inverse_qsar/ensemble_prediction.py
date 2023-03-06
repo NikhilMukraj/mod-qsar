@@ -56,12 +56,32 @@ def get_lipinski(string):
         lipi += .25
     if h_bond_acceptors <= 10:
         lipi += .25
-    if molecular_weight <= 500:
+    if 200 <= molecular_weight <= 500:
         lipi += .25
     if logp <= 5:
         lipi += .25
 
     return lipi
+
+def get_ghose(string):
+    molecule = Chem.MolFromSmiles(string)
+    ghose = 0
+
+    molecular_weight = Descriptors.ExactMolWt(molecule)
+    logp = Descriptors.MolLogP(molecule)
+    number_of_atoms = Chem.rdchem.Mol.GetNumAtoms(molecule)
+    molar_refractivity = Chem.Crippen.MolMR(molecule)
+
+    if 160 <= molecular_weight <= 480:
+        ghose += .25
+    if -.4 <= logp <= 5.6:
+        ghose += .25
+    if 20 <= number_of_atoms <= 70:
+        ghose += .25
+    if 40 <= molar_refractivity <= 130:
+        ghose += .25
+
+    return ghose
 
 # potentially can leave this with a bunch of setup args (tokenizer, seq_shape, model_array)
 def ensemble_predict(tokens):
