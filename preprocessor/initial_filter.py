@@ -21,6 +21,9 @@ df = df[~df['PUBCHEM_EXT_DATASOURCE_SMILES'].isnull()]
 # tokens = [i for sublist in all_tokens for i in sublist]
 # tokens = list(set(tokens))
 # tokens.sort()
+
+# print(tokens, len(tokens))
+
 # check if any new tokens
 
 # if 'vocab.csv' not in os.listdir():
