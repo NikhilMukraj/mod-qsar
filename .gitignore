@@ -1,6 +1,7 @@
 *
 !*/
 !*.*
+/unused
 /.ipynb_checkpoints
 /gathering data
 /preprocessor/*.csv
