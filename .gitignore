@@ -22,6 +22,7 @@
 /inverse_qsar/.ipynb_checkpoints
 /other data
 /predictor/*.h5
+/predictor/*.so
 /predictor/__pycache__
 /predictor/.ipynb_checkpoints
 /settings.json
