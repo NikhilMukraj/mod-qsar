@@ -1,5 +1,6 @@
 using PyCall
 using JLD
+using ProgressBars
 include("df_parser.jl")
 
 py"""
@@ -40,7 +41,7 @@ println("Generating augmentations...")
 
 smiles = let temp_df
     temp_df = df_parser.dfToStringMatrix(df)
-    for i in 1:length(temp_df[:, begin])
+    tqdm(for i in 1:length(temp_df[:, begin]))
         for augmented in augment_smiles(temp_df[:, begin][i], n)
             temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
         end
@@ -64,7 +65,7 @@ vocab = df_parser.dfToStringMatrix(df_parser.getdf(vocab_path))
 tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
 reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
 
-for i in 1:length(smiles[:, begin])
+for i in tqdm(1:length(smiles[:, begin]))
     returned_tokens, validToken = return_tokens(smiles[:, begin][i], tokenizer)
     if validToken && override
         println("$i | Overriding token")
@@ -79,9 +80,9 @@ for i in 1:length(smiles[:, begin])
         push!(activity, smiles[:, end][i] == "Active" ? [1, 0] : [0, 1])
     end
 
-    if i % 100 == 0
-        println("$i | strings: $(length(strings)), activity: $(length(activity))")
-    end
+    # if i % 100 == 0
+    #     println("$i | strings: $(length(strings)), activity: $(length(activity))")
+    # end
 end
 
 # strings = [[tokenizer[standardizeCase(j)] for j in return_tokens(i)[begin]] for i in smiles[:, begin]]

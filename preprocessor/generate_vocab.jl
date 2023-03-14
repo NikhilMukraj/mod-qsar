@@ -1,11 +1,13 @@
 using PyCall
 using JLD
+using ProgressBars
 include("df_parser.jl")
 
 py"""
 from smiles_tools import return_tokens
 from smiles_tools import SmilesEnumerator
 from SmilesPE.pretokenizer import atomwise_tokenizer
+import pandas as pd
 import os
 
 def augment_smiles(string, n):
@@ -31,7 +33,8 @@ println("Generating augmentations...")
 smiles = let smiles
     smiles = df_parser.dfToStringMatrix.(dfs)
     for df_num in 1:length(smiles)
-        for i in 1:length(smiles[df_num][:, begin])
+        println("Augmentation set number: $df_num")
+        for i in tqdm(1:length(smiles[df_num][:, begin]))
             for augmented in augment_smiles(smiles[df_num][:, begin][i], n)
                 smiles[df_num] = vcat(smiles[df_num], String[augmented smiles[df_num][:, end][i]])
             end
@@ -46,15 +49,15 @@ strings = [[] for df_num in 1:length(smiles)]
 activity = [[] for df_num in 1:length(smiles)]
 vocabs = []
 
-for df_num in 1:length(smiles)
+for df_num in tqdm(1:length(smiles))
     for i in 1:length(smiles[df_num][:, begin])
         tokens = [j for j in atomwise_tokenizer(smiles[df_num][:, begin][i])]
         push!(strings[df_num], tokens)
         push!(activity[df_num], smiles[df_num][:, end][i] == "Active" ? [1, 0] : [0, 1])
 
-        if i % 100 == 0
-            println("$df_num | $i | strings: $(length(strings[df_num])), activity: $(length(activity[df_num]))")
-        end
+        # if i % 100 == 0
+        #     println("$df_num | $i | strings: $(length(strings[df_num])), activity: $(length(activity[df_num]))")
+        # end
     end
 
     # create vocab df and convert to tokens
