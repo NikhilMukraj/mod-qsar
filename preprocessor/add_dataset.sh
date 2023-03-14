@@ -100,7 +100,7 @@ override=$result
 if [[ ! -f "pkgs.so" ]]
 then 
     echo "Julia sysimage not found, compiling PyCall sysimage..."
-    julia -e 'using PackageCompiler; create_sysimage([:JLD, :PyCall], sysimage_path="pkgs.so")' || exit 1
+    julia -e 'using PackageCompiler; create_sysimage([:ProgressBars, :JLD, :PyCall], sysimage_path="pkgs.so")' || exit 1
 fi
 
 python3 initial_filter.py "$filename" $tag $override $debug || exit 1
