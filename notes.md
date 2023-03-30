@@ -29,9 +29,9 @@ use enumeration of smiles strings sometimes to introduce more population/mutatio
 
 - [ ] git submodule smiles enumeration script
 - [X] preprocess smiles strings
-- [ ] build and train rnn model, on juliahub use dataset() to load csv and then convert to matrix with Matrix(df)
-- [ ] add augmentation
-- [ ] make figures from training
+- [x] build and train rnn model, on juliahub use dataset() to load csv and then convert to matrix with Matrix(df)
+- [x] add augmentation
+- [x] make figures from training
 - [ ] modify existing genetic algo to have variable length chromosomes (variable n_bit length, set amount is equal to a token, decode into smiles string, if not a power of 2 add x amount to overflow back to 0)
 - [ ] logarithmic scaling for reward based on activity prediction
 - [ ] implement without checking for similarity yet, just initialize with random valid strings, penalize for being invalid
