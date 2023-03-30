@@ -1,17 +1,18 @@
 {
-    "population_size" : 5,
-    "mating_pool_size" : 5,
+    "population_size" : 20,
+    "mating_pool_size" : 20,
     "generations" : 20,
     "mutation_rate" : 0.05,
     "seed" : null,
-    "average_size" : 39.15,
-    "size_stdev" : 3.50,
+    "average_size" : 375.0,
+    "size_stdev" : 100.0,
     "string_type" : "SMILES",
-    "scoring_function" : ["dopa_rnn_model.h5", "sero_rnn_model.h5", "custom_lipinski", "pains"],
+    "scoring_function" : ["dopa_rnn_model.h5", "sero_rnn_model.h5", "custom_lipinski", "pains", "limit_rings"],
+    "threads": 2,
     "augment": [true, 5],
     "max_len": 196,
     "max_score" : 1.0,
     "prune_population" : true,
-    "target" : [1, 0, 1, 0, 1, 1],
-    "file_name" : "string_ga//ZINC_first_1000.smi"
+    "target" : [1, 0, 1, 0, 1, 1, 1],
+    "file_name" : "cl_f.smi"
 }
