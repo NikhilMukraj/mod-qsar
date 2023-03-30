@@ -34,10 +34,11 @@ necessary_args = {
     'generations': [int], 
     'mutation_rate': [float], 
     'seed': [int, type(None)], 
-    'average_size': [float], 
-    'size_stdev': [float], 
+    'average_size': [int, float], 
+    'size_stdev': [int, float], 
     'string_type': [str], 
     'scoring_function': [list], 
+    'threads': [int],
     'augment': [list], 
     'max_len': [int], 
     'max_score': [float], 
@@ -45,6 +46,8 @@ necessary_args = {
     'target': [list], 
     'file_name': [str],
 }
+
+# todo: implement additional scoring args alongside target
 
 for i in contents.keys():
     if i not in necessary_args.keys():
@@ -65,13 +68,20 @@ if type(contents['augment'][0]) != bool:
     print(f'{RED}Type mismatch in argument, expected type {bool} at "augment" argument at first index but got {type(contents["augment"][0])}{NC}')
     sys.exit(1)
 
-if type(contents['augment'][1]) != int:
+if contents['augment'][0] and len(contents['augment']) != 2:
+    print(f'{RED}Expected second item specifying number of augmentations{NC}')
+    sys.exit(1)
+
+if len(contents['augment']) == 2 and type(contents['augment'][1]) != int:
     print(f'{RED}Type mismatch in argument, expected type {int} at "augment" argument at second but got {type(contents["augment"][1])}{NC}')
     sys.exit(1)
 
 if any(type(i) != str for i in contents['scoring_function']):
     print(f'{RED}Type mistmatch in argument, expected type {str} in "scoring_function"{NC}')
     sys.exit(1)
+
+if contents['threads'] < 1: 
+    print(f'{RED}Amount of threads must be 1 or more{NC}')
 
 def get_qed(molecule):
     qed = 0
@@ -119,7 +129,7 @@ def get_lipinski(molecule):
 
 def get_custom_lipinski(molecule):
     if string_ga.current_generation['gen'] > contents['generations'] / 2 and Descriptors.ExactMolWt(molecule) <= 200:
-        return .1
+        return 0
     else: 
         return get_lipinski(molecule)
 
@@ -142,6 +152,15 @@ def get_ghose(molecule):
 
     return ghose
 
+def limit_rings(molecule):
+    ring_lens = [len(ring) for ring in molecule.GetRingInfo().AtomRings() 
+                if molecule.GetAtomWithIdx(ring[0]).GetSymbol() == 'C']
+    for i in ring_lens:
+        if i > 6:
+            return 0
+    
+    return 1
+
 params = FilterCatalogParams()
 params.AddCatalog(FilterCatalogParams.FilterCatalogs.PAINS)
 catalog = FilterCatalog(params)
@@ -156,6 +175,7 @@ drug_likeness_parser = {
     'qed': get_qed, 
     'ghose': get_ghose,
     'pains': get_pains,
+    'limit_rings': limit_rings,
 }
 drug_likeness_metric = [drug_likeness_parser[i] for i in contents['scoring_function'] if '.h5' not in i]
 
@@ -211,8 +231,7 @@ def get_augs(string, n):
 
 @lru_cache(maxsize=256)
 def no_model_scoring(string, target):
-    raw_return = return_tokens(string, vocab)
-    isNotValidToken = raw_return[1]
+    _, isNotValidToken = return_tokens(string, vocab)
 
     if isNotValidToken:
         return -100
@@ -225,10 +244,8 @@ def no_model_scoring(string, target):
 def model_scoring(string, scoring_args):
     target, aug, num_of_augments = scoring_args
 
-    raw_return = return_tokens(string, vocab)
-    isNotValidToken = raw_return[1]
-    tokens = raw_return[0]
-    if isNotValidToken:
+    tokens, isNotValidToken = return_tokens(string, vocab)
+    if isNotValidToken or len(tokens) > max_len:
         return -100
 
     molecule = Chem.MolFromSmiles(string)
@@ -277,10 +294,12 @@ print('Starting GA...')
                                        scoring_function, contents['generations'],
                                        contents['mating_pool_size'], contents['mutation_rate'], 
                                        scoring_args, contents['max_score'],
-                                       contents['prune_population'], contents['seed']])
+                                       contents['prune_population'], contents['seed'], contents['threads']])
 
-final_result_df = pd.DataFrame(set(high_scores))
-final_result_df.columns = ['score', 'string']
+def sanitize_string(string):
+    return Chem.MolToSmiles(Chem.MolFromSmiles(string, sanitize=True))
+
+final_result_df = pd.DataFrame(zip(scores, [sanitize_string(i) for i in population]), columns=['score', 'string'])
 final_result_df.sort_values(by='score', ascending=False)
 final_result_df.to_csv(sys.argv[2], index=False)
 
