@@ -1,3 +1,8 @@
-# do setup.py installs using pip install . in proper directories
-# run compilation script
-# compile so libraries for julia
+pip install -r requirements.txt
+julia install_pkgs.jl
+
+cd smiles_tools
+pip install .
+
+cd ../c_wrapper
+pip install .
