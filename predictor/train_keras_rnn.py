@@ -63,8 +63,8 @@ test_preds = model.predict(testX)
 
 hist_df = pd.DataFrame(history.history)
 
-hist_df.to_csv(f'{os.getcwd()}//model_history.csv', index=False)
-model.save(f'{os.getcwd()}//rnn_model.h5')
+hist_df.to_csv(f'{os.getcwd()}//{sys.argv[4]}_model_history.csv', index=False)
+model.save(f'{os.getcwd()}//{sys.argv[4]}_rnn_model.h5')
 
-pd.DataFrame(train_preds).to_csv(f'{os.getcwd()}//train_preds.csv', index=False)
-pd.DataFrame(test_preds).to_csv(f'{os.getcwd()}//test_preds.csv', index=False)
+# pd.DataFrame(train_preds).to_csv(f'{os.getcwd()}//train_preds.csv', index=False)
+# pd.DataFrame(test_preds).to_csv(f'{os.getcwd()}//test_preds.csv', index=False)
