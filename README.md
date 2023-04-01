@@ -2,7 +2,7 @@
 
 ## Overview
 
-Built using [SmilesEnumerator], [StringGA], Python and Julia.
+Built using [SmilesEnumerator](https://github.com/EBjerrum/SMILES-enumeration), [StringGA](https://github.com/jensengroup/String-GA), Python and Julia.
 The pipeline works by first taking in a series of PubChem `.csv` files that contain a SMILES string associated with a biotarget. T
 The pipeline then filteres that dataset such that an equal amount of active and inactive compounds are found within the dataset.
 The pipeline starting augmenting the dataset by enumerating over SMILES strings and generating a vocabulary of tokens used in those .csv files.
@@ -79,6 +79,7 @@ Generate chemicals
   - `size_stdev` : Average standard deviation of chemical
   - `string_type` : Type of string formatting (recommended to use SMILES)
   - `scoring_function` : Type of scoring function to use
+  - `strict` : Whether to completely eliminate molecules based on a weight threshold
   - `augment` : Whether to augment data for model scoring function and how many times to augment
   - `max_len` : Maximum token length of molecules
   - `max_score` : Score to stop at
@@ -86,6 +87,7 @@ Generate chemicals
   - `target`: Target value for scoring functions to optimize
   - `file_name` : Pre-existing file of molecules to draw initial population from
 - Second argument : A .csv to dump the molecules into  
+- Third argument : Optional .csv file to dump fitness scores after training
 
 ## Scoring Functions
 
@@ -97,4 +99,4 @@ Generate chemicals
 
 ## Todo
 
-- Update string_GA folder so it is visible on GitHub
+- Add Flux model integration
