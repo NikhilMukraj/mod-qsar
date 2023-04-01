@@ -77,6 +77,10 @@ if len(contents['augment']) == 2 and type(contents['augment'][1]) != int:
     print(f'{RED}Type mismatch in argument, expected type {int} at "augment" argument at second but got {type(contents["augment"][1])}{NC}')
     sys.exit(1)
 
+if contents['augment'][1] < 1:
+    print(f'{RED}Expected integer greater than 0 but got {contents["augment"][1]}{NC}')
+    sys.exit(1)
+
 if any(type(i) != str for i in contents['scoring_function']):
     print(f'{RED}Type mistmatch in argument, expected type {str} in "scoring_function"{NC}')
     sys.exit(1)
