@@ -19,8 +19,8 @@ print(config.list_physical_devices('GPU'))
 
 ''' give more stopping options '''
 
-X = np.load(f'{os.getcwd()}//{sys.argv[1]}')
-Y = np.load(f'{os.getcwd()}//{sys.argv[2]}')
+X = np.load(sys.argv[1])
+Y = np.load(sys.argv[2])
 
 # n = 60_000
 
@@ -63,8 +63,8 @@ test_preds = model.predict(testX)
 
 hist_df = pd.DataFrame(history.history)
 
-hist_df.to_csv(f'{os.getcwd()}//{sys.argv[4]}_model_history.csv', index=False)
-model.save(f'{os.getcwd()}//{sys.argv[4]}_rnn_model.h5')
+hist_df.to_csv(f'{sys.argv[4]}_model_history.csv', index=False)
+model.save(f'{sys.argv[4]}_rnn_model.h5')
 
 # pd.DataFrame(train_preds).to_csv(f'{os.getcwd()}//train_preds.csv', index=False)
 # pd.DataFrame(test_preds).to_csv(f'{os.getcwd()}//test_preds.csv', index=False)
