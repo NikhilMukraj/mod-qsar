@@ -38,6 +38,7 @@ necessary_args = {
     'size_stdev': [int, float], 
     'string_type': [str], 
     'scoring_function': [list], 
+    'strict': [bool],
     'threads': [int],
     'augment': [list], 
     'max_len': [int], 
@@ -82,6 +83,8 @@ if any(type(i) != str for i in contents['scoring_function']):
 
 if contents['threads'] < 1: 
     print(f'{RED}Amount of threads must be 1 or more{NC}')
+
+strict = contents['strict']
 
 def get_qed(molecule):
     qed = 0
@@ -128,7 +131,11 @@ def get_lipinski(molecule):
     return lipi   
 
 def get_custom_lipinski(molecule):
-    if string_ga.current_generation['gen'] > contents['generations'] / 2 and Descriptors.ExactMolWt(molecule) <= 200:
+    # generationThreshold = string_ga.current_generation['gen'] > contents['generations'] / 2
+    weightThreshold = 200 >= Descriptors.ExactMolWt(molecule)
+    saThreshold = string_ga.calculateScore(molecule) > 4
+
+    if weightThreshold or saThreshold:
         return 0
     else: 
         return get_lipinski(molecule)
@@ -257,7 +264,11 @@ def model_scoring(string, scoring_args):
     else:
         augs = get_augs(string, num_of_augments)        
         pred = np.hstack([i.predict(augs, verbose=0) for i in models_array]).sum(axis=0) / len(augs)
-        return  -1 * get_score(np.hstack([pred, likeness_score]), np.array(target))
+
+        if strict and not (200 <= Descriptors.ExactMolWt(molecule) <= 500):
+            return -20  
+        else:
+            return -1 * get_score(np.hstack([pred, likeness_score]), np.array(target)) 
 
 scoring_args = contents['target']
 
@@ -290,7 +301,7 @@ string_ga.co.string_type = contents['string_type']
 
 print('Starting GA...')
 
-(scores, population, high_scores, generation) = string_ga.GA([contents['population_size'], contents['file_name'], 
+(scores, population, high_scores, score_hist) = string_ga.GA([contents['population_size'], contents['file_name'], 
                                        scoring_function, contents['generations'],
                                        contents['mating_pool_size'], contents['mutation_rate'], 
                                        scoring_args, contents['max_score'],
@@ -302,5 +313,9 @@ def sanitize_string(string):
 final_result_df = pd.DataFrame(zip(scores, [sanitize_string(i) for i in population]), columns=['score', 'string'])
 final_result_df.sort_values(by='score', ascending=False)
 final_result_df.to_csv(sys.argv[2], index=False)
+
+if len(sys.argv) == 4:
+    score_df = pd.DataFrame(score_hist)
+    score_df.to_csv(sys.argv[3], index=False)
 
 print(f'{GREEN}Wrote molecules to file{NC}')

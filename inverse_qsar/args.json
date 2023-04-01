@@ -1,6 +1,6 @@
 {
-    "population_size" : 20,
-    "mating_pool_size" : 20,
+    "population_size" : 100,
+    "mating_pool_size" : 100,
     "generations" : 20,
     "mutation_rate" : 0.05,
     "seed" : null,
@@ -8,6 +8,7 @@
     "size_stdev" : 100.0,
     "string_type" : "SMILES",
     "scoring_function" : ["dopa_rnn_model.h5", "sero_rnn_model.h5", "custom_lipinski", "pains", "limit_rings"],
+    "strict": true,
     "threads": 2,
     "augment": [true, 5],
     "max_len": 196,

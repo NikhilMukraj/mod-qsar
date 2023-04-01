@@ -6,7 +6,9 @@ import pubchempy
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 import pubchempy
+from concurrent.futures import ThreadPoolExecutor
 import sys
 import os
 
@@ -29,7 +31,8 @@ df.reset_index(drop=True, inplace=True)
 
 sanitized = [Chem.MolToSmiles(Chem.MolFromSmiles(i, sanitize=True)) for i in df['string']]
 
-for n, i in enumerate(df['string']):
+print('Writing images...')
+for n, i in tqdm(enumerate(df['string'])):
     mol_to_img(Chem.MolToSmiles(Chem.MolFromSmiles(i, sanitize=True)), n)
 
 def get_name(name):
@@ -38,10 +41,17 @@ def get_name(name):
     except Exception:
         return None
 
-compounds = [(get_name(i), i) for i in sanitized]
+print('Getting compounds...')
+with ThreadPoolExecutor(max_workers=20) as executor:
+    # compounds = [(get_name(i), i) for i in tqdm(sanitized)]
+    compounds = executor.map(lambda i: (get_name(i), i), sanitized)
+
 compounds = [i[0][0].iupac_name for i in compounds if i[0] and i[0][0].iupac_name]
 
 if compounds:
+    print('Writing names...')
     compounds_df = pd.DataFrame(np.array([[i[0] for i in compounds], [i[1] for i in compounds]]).tranpose(), 
                         columns=['names', 'strings'])
     compounds_df.to_csv(sys.argv[2])
+else:
+    print('No compounds found')
