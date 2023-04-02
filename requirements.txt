@@ -3,5 +3,7 @@ pandas
 matplotlib
 rdkit
 SmilesPE
+selfies
+deepsmiles
 tensorflow
 tqdm
