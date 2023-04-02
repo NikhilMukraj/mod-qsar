@@ -14,11 +14,15 @@ After the augmentation hyperparameter is optimized, a genetic algorithm is used 
 
 ## How To
 
+(This project is recommended to run within a virtual environment)
+
 Download dependencies using:
 
 ```bash
 ./initialize.sh
 ```
+
+(Note that the first run may take a little while since it needs to compile the necessary files but all subsequent runs should be faster)
 
 Preprocess datasets using:
 
@@ -66,7 +70,7 @@ Train QSAR model using
 Generate chemicals
 
 ```bash
-./inverse_qsar/inverse_qsar_cli.py args.json drugs_file.csv
+./inverse_qsar/inverse_qsar_cli.py args.json chemicals_file.csv fitness_scores.csv
 ```
 
 - First argument : A JSON file containing all arguments to be used while generating
@@ -99,4 +103,5 @@ Generate chemicals
 
 ## Todo
 
+- Automatically grab maximum length hyperparameter
 - Add Flux model integration

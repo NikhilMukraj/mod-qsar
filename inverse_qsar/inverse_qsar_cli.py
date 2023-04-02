@@ -137,7 +137,7 @@ def get_lipinski(molecule):
 def get_custom_lipinski(molecule):
     # generationThreshold = string_ga.current_generation['gen'] > contents['generations'] / 2
     weightThreshold = 200 >= Descriptors.ExactMolWt(molecule)
-    saThreshold = string_ga.calculateScore(molecule) > 4
+    saThreshold = string_ga.calculateScore(molecule) > 3
 
     if weightThreshold or saThreshold:
         return 0
