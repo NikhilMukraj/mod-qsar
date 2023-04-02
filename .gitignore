@@ -16,6 +16,7 @@
 /smiles_tools/smiles_tools/__pycache__
 /inverse_qsar/*.h5
 /inverse_qsar/generated_drugs/*.csv
+/inverse_qsar/generated_drugs/*.txt
 /inverse_qsar/generated_drugs/__pycache__
 /inverse_qsar/generated_drugs/images
 /inverse_qsar/__pycache__
