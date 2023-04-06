@@ -103,5 +103,6 @@ Generate chemicals
 
 ## Todo
 
+- Change preprocessing step to append to `.npy` file as loop progresses
 - Automatically grab maximum length hyperparameter
 - Add Flux model integration
