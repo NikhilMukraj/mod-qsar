@@ -1,9 +1,10 @@
 numpy
 pandas
 matplotlib
+tensorflow
+tqdm
 rdkit
 SmilesPE
 selfies
 deepsmiles
-tensorflow
-tqdm
+pubchempy
