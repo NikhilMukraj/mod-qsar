@@ -16,6 +16,9 @@ import os
 files = pd.read_csv(sys.argv[1]).iloc[:, 0]
 path = os.path.dirname(os.path.abspath(__file__))
 
+if not os.path.exists(f'{path}/generated_drugs/images'):
+    os.makedirs(f'{path}/generated_drugs/images')
+
 def mol_to_img(string, name):
     mol = Chem.MolFromSmiles(string)
     d2d = Draw.MolDraw2DCairo(1000, 1000)
@@ -41,17 +44,18 @@ def get_name(name):
     except Exception:
         return None
 
-print('Getting compounds...')
-with ThreadPoolExecutor(max_workers=20) as executor:
-    # compounds = [(get_name(i), i) for i in tqdm(sanitized)]
-    compounds = executor.map(lambda i: (get_name(i), i), sanitized)
+if len(sys.argv) > 2:
+    print('Getting compounds...')
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        # compounds = [(get_name(i), i) for i in tqdm(sanitized)]
+        compounds = executor.map(lambda i: (get_name(i), i), sanitized)
 
-compounds = [i[0][0].iupac_name for i in compounds if i[0] and i[0][0].iupac_name]
+    compounds = [i[0][0].iupac_name for i in compounds if i[0] and i[0][0].iupac_name]
 
-if compounds:
-    print('Writing names...')
-    compounds_df = pd.DataFrame(np.array([[i[0] for i in compounds], [i[1] for i in compounds]]).tranpose(), 
-                        columns=['names', 'strings'])
-    compounds_df.to_csv(sys.argv[2])
-else:
-    print('No compounds found')
+    if compounds:
+        print('Writing names...')
+        compounds_df = pd.DataFrame(np.array([[i[0] for i in compounds], [i[1] for i in compounds]]).tranpose(), 
+                            columns=['names', 'strings'])
+        compounds_df.to_csv(sys.argv[2])
+    else:
+        print('No compounds found')
