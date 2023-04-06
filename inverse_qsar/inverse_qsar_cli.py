@@ -240,6 +240,12 @@ def get_augs(string, n):
 
     return np.array(full_seqs)
 
+def strictWeightReq(molecule):
+    return not (200 <= Descriptors.ExactMolWt(molecule) <= 500)
+
+def strictPredReq(pred, target, length):
+    return [round(i) for i in pred[:length * 2]] == target[:length * 2]
+
 @lru_cache(maxsize=256)
 def no_model_scoring(string, target):
     _, isNotValidToken = return_tokens(string, vocab)
@@ -269,7 +275,7 @@ def model_scoring(string, scoring_args):
         augs = get_augs(string, num_of_augments)        
         pred = np.hstack([i.predict(augs, verbose=0) for i in models_array]).sum(axis=0) / len(augs)
 
-        if strict and not (200 <= Descriptors.ExactMolWt(molecule) <= 500):
+        if strict and strictWeightReq(molecule):
             return -20  
         else:
             return -1 * get_score(np.hstack([pred, likeness_score]), np.array(target)) 
