@@ -105,7 +105,7 @@ fi
 
 python3 initial_filter.py "$filename" $tag $override $debug || exit 1
 printf "${GREEN}Finished filtering initial dataset${NC}\n"
-julia --sysimage pkgs.so add_dataset.jl $tag $num $max_len $debug || exit 1
+julia --sysimage pkgs.so add_dataset.jl $tag $num $max_len $override $debug || exit 1
 printf "${GREEN}Finished augmentations${NC}\n"
 python3 final_preprocessing.py $tag $debug || exit 1
 
