@@ -41,7 +41,7 @@ println("Generating augmentations...")
 
 smiles = let temp_df
     temp_df = df_parser.dfToStringMatrix(df)
-    tqdm(for i in 1:length(temp_df[:, begin]))
+    for i in tqdm(1:length(temp_df[:, begin]))
         for augmented in augment_smiles(temp_df[:, begin][i], n)
             temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
         end
@@ -68,7 +68,7 @@ reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
 for i in tqdm(1:length(smiles[:, begin]))
     returned_tokens, validToken = return_tokens(smiles[:, begin][i], tokenizer)
     if validToken && override
-        println("$i | Overriding token")
+        # println("$i | Overriding token")
         continue
     elseif validToken && !override
         throw("Not a valid token")
