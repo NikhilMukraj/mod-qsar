@@ -34,6 +34,14 @@ Preprocess datasets using:
 - `-t` : String specifying a tag to add to the preprocessed dataset
 - `-n` : Positive integer representing amount of augmentations to add
 
+To use a non PubChem dataset, use a `.csv` file in the following format:
+
+| PUBCHEM_EXT_DATASOURCE_SMILES    | PUBCHEM_ACTIVITY_OUTCOME |
+|----------------------------------|--------------------------|
+| CC1=NN(C2=NC(=O)N(C(=O)C2=N1)C)C | Active                   |
+| CC1=C2C(=NN1)C(=S)NC(=O)N2       | Inactive                 |
+| ...                              | ...                      |
+
 Add another dataset using a previously generated `vocab.csv`:
 
 ```bash
@@ -105,4 +113,5 @@ Generate chemicals
 
 - Change preprocessing step to append to `.npy` file as loop progresses
 - Automatically grab maximum length hyperparameter
+- Range option for `optimize_n.sh`
 - Add Flux model integration
