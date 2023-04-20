@@ -1,0 +1,23 @@
+{
+    "serotonin_antagonist.csv" : {
+        "target_chembl_id" : "CHEMBL224",
+        "activity_type" : "IC50",
+        "tag" : "sero",
+        "min" : 0,
+        "max" : 100
+    },
+    "d2_antagonist.csv" : {
+        "target_chembl_id" : "CHEMBL217",
+        "activity_type" : "IC50",
+        "tag": "d2",
+        "min" : 0,
+        "max" : 100
+    },
+    "d3_antagonist.csv" : {
+        "target_chembl_id" : "CHEMBL234",
+        "activity_type" : "IC50",
+        "tag" : "d3",
+        "min" : 0,
+        "max" : 100
+    }
+}

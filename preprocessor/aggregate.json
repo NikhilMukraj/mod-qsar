@@ -1,0 +1,6 @@
+{
+    "dopamine_antagonist.csv" : {
+        "tag" : "dopa",
+        "filenames": ["d2_antagonist.csv", "d3_antagonist.csv"]
+    }
+}
