@@ -20,11 +20,11 @@ df = df[~df['PUBCHEM_EXT_DATASOURCE_SMILES'].isnull()]
 activeDF = df.loc[df['PUBCHEM_ACTIVITY_OUTCOME'] == 'Active', :]
 inactiveDF = df.loc[df['PUBCHEM_ACTIVITY_OUTCOME'] == 'Inactive', :]
 
-if len(activeDF) < len(inactiveDF):
+if len(activeDF) <= len(inactiveDF):
     filtered = pd.concat([activeDF.loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME'], 
                           inactiveDF.sample(n=len(activeDF)).loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME']])
 else:
-    filtered = pd.concat([activeDF.loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME'], 
+    filtered = pd.concat([activeDF.sample(n=len(inactiveDF)).loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME'], 
                           inactiveDF.loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME']])
 
 filtered.to_csv(f'{os.getcwd()}//{sys.argv[2]}_filtered_dataset.csv', index=False)
