@@ -14,10 +14,7 @@ import os
 
 
 files = pd.read_csv(sys.argv[1]).iloc[:, 0]
-path = os.path.dirname(os.path.abspath(__file__))
-
-if not os.path.exists(f'{path}/generated_drugs/images'):
-    os.makedirs(f'{path}/generated_drugs/images')
+image_dir = sys.argv[2]
 
 def mol_to_img(string, name):
     mol = Chem.MolFromSmiles(string)
@@ -26,7 +23,7 @@ def mol_to_img(string, name):
     d2d.FinishDrawing()
     png_data = d2d.GetDrawingText()
 
-    with open(f'{path}/generated_drugs/images/{name}_{int(calculateScore(mol))}.png', 'wb') as png_file:
+    with open(f'{image_dir}/{name}_{int(calculateScore(mol))}.png', 'wb') as png_file:
         png_file.write(png_data)
 
 df = pd.concat([pd.read_csv(i) for i in files])
@@ -44,7 +41,7 @@ def get_name(name):
     except Exception:
         return None
 
-if len(sys.argv) > 2:
+if len(sys.argv) > 3:
     print('Getting compounds...')
     with ThreadPoolExecutor(max_workers=20) as executor:
         # compounds = [(get_name(i), i) for i in tqdm(sanitized)]
@@ -56,6 +53,6 @@ if len(sys.argv) > 2:
         print('Writing names...')
         compounds_df = pd.DataFrame(np.array([[i[0] for i in compounds], [i[1] for i in compounds]]).tranpose(), 
                             columns=['names', 'strings'])
-        compounds_df.to_csv(sys.argv[2])
+        compounds_df.to_csv(sys.argv[3])
     else:
         print('No compounds found')
