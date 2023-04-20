@@ -11,9 +11,10 @@
     "strict": true,
     "threads": 2,
     "augment": [true, 5],
-    "max_len": 196,
+    "max_len": null,
     "max_score" : 1.0,
     "prune_population" : true,
     "target" : [1, 0, 1, 0, 1, 1, 1],
+    "weight" : [1, 1, 1, 1, 1, 1, 1],
     "file_name" : "cl_f.smi"
 }

@@ -41,22 +41,23 @@ necessary_args = {
     'strict': [bool],
     'threads': [int],
     'augment': [list], 
-    'max_len': [int], 
+    'max_len': [int, type(None)], 
     'max_score': [float], 
     'prune_population': [bool], 
     'target': [list], 
+    'weight': [list],
     'file_name': [str],
 }
 
 # todo: implement additional scoring args alongside target
 
 for i in contents.keys():
-    if i not in necessary_args.keys():
+    if i not in necessary_args:
         print(f'{RED}Unknown argument: {i}{NC}')
         sys.exit(1)
 
 for i in necessary_args.keys():
-    if i not in contents.keys():
+    if i not in contents:
         print(f'{RED}Missing argument: {i}{NC}')
         sys.exit(1)
 
@@ -77,7 +78,7 @@ if len(contents['augment']) == 2 and type(contents['augment'][1]) != int:
     print(f'{RED}Type mismatch in argument, expected type {int} at "augment" argument at second but got {type(contents["augment"][1])}{NC}')
     sys.exit(1)
 
-if contents['augment'][1] < 1:
+if contents['augment'][0] and contents['augment'][1] < 1:
     print(f'{RED}Expected integer greater than 0 but got {contents["augment"][1]}{NC}')
     sys.exit(1)
 
@@ -198,7 +199,13 @@ if len(potential_models) > 0:
     models_array = [models.load_model(i) for i in potential_models]
     print('Compiling models...')
     [model.compile() for model in models_array]
-    max_len = contents['max_len']
+    if contents['max_len']:
+        max_len = contents['max_len']
+    elif len(set([model.layers[0].output_shape[1] for model in models_array])) != 1:
+        print(f'{RED}All models must have same input shape{NC}')
+        sys.exit(1)
+    else:
+        max_len = models_array[0].layers[0].output_shape[1]
     seq_shape = np.array([max_len, np.max([i+1 for i in tokenizer.values()])+1], dtype=np.int32)
     model_pred = True
 else:
@@ -255,7 +262,7 @@ def no_model_scoring(string, target):
     else:
         molecule = Chem.MolFromSmiles(string)
         likeness_score = np.array(np.hstack([metric(molecule) for metric in drug_likeness_metric]))
-        return -1 * get_score(likeness_score, np.array(target))
+        return -1 * get_score(weight * likeness_score, np.array(target))
 
 @lru_cache(maxsize=256)
 def model_scoring(string, scoring_args):
@@ -270,7 +277,7 @@ def model_scoring(string, scoring_args):
     
     if not aug:
         pred = ensemble_predict(tokens)[0]
-        return -1 * get_score(np.hstack([pred, likeness_score]), np.array(target))
+        return -1 * get_score(weight * np.hstack([pred, likeness_score]), np.array(target))
     else:
         augs = get_augs(string, num_of_augments)        
         pred = np.hstack([i.predict(augs, verbose=0) for i in models_array]).sum(axis=0) / len(augs)
@@ -278,7 +285,7 @@ def model_scoring(string, scoring_args):
         if strict and strictWeightReq(molecule):
             return -20  
         else:
-            return -1 * get_score(np.hstack([pred, likeness_score]), np.array(target)) 
+            return -1 * get_score(weight * np.hstack([pred, likeness_score]), np.array(target)) 
 
 scoring_args = contents['target']
 
@@ -288,6 +295,15 @@ if len(scoring_args) != len(potential_models) * 2 + len(drug_likeness_metric):
 if [i for i in scoring_args if not 0 <= i <= 1]:
     print(f"{RED}Target must be between 0 and 1{NC}")
     sys.exit(1)
+
+if len(contents['weight']) != len(scoring_args):
+    print(f'{RED}Weight arugment does not match target{NC}')
+    sys.exit(1)
+if any([type(i) not in [int, float] for i in contents['weight']]):
+    print(f'{RED}Weight arugment contains non-numeric, expected numeric value{NC}')
+    sys.exit(1)
+    
+weight = np.array(contents['weight'])
 
 if model_pred:
     scoring_args = [scoring_args]
