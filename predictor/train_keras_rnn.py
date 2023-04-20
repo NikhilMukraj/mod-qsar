@@ -7,32 +7,14 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
 import sys
-# from tokenization import return_tokens
-# from julia import Main
-# import h5py
-# import hdf5plugin
 
 
 print(config.list_physical_devices('GPU'))
 
 # sudo cp /usr/lib/python3/dist-packages/tensorflow/libcudnn* /usr/lib/x86_64-linux-gnu/
 
-''' give more stopping options '''
-
 X = np.load(sys.argv[1])
 Y = np.load(sys.argv[2])
-
-# n = 60_000
-
-# indicies = pd.DataFrame(range(len(X)), columns=['i'])
-# indicies = indicies['i'].sample(n=n).to_numpy()
-
-# sampled_X = np.zeros((n, X.shape[1], X.shape[2]))
-# sampled_Y = np.zeros((n, Y.shape[1]))
-
-# for n, i in enumerate(indicies):
-#     sampled_X[n] = X[i]
-#     sampled_Y[n] = Y[i]
 
 trainX, testX, trainY, testY = train_test_split(X, Y, test_size=.1)
 trainX.shape, testX.shape, trainY.shape, testY.shape
@@ -58,8 +40,8 @@ model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy
 
 history = model.fit(trainX, trainY, batch_size=32, epochs=int(sys.argv[3]), validation_data=(testX, testY), verbose=1)
 
-train_preds = model.predict(trainX)
-test_preds = model.predict(testX)
+# train_preds = model.predict(trainX)
+# test_preds = model.predict(testX)
 
 hist_df = pd.DataFrame(history.history)
 
