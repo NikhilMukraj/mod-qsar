@@ -22,6 +22,7 @@
 /inverse_qsar/__pycache__
 /inverse_qsar/.ipynb_checkpoints
 /inverse_qsar/files.csv
+/inverse_qsar/ssri_args.json
 /other data
 /predictor/*.h5
 /predictor/*.so
