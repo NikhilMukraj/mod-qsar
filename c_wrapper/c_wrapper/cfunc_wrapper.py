@@ -1,5 +1,6 @@
 import numpy as np
 import ctypes
+import subprocess
 import os
 
 
@@ -19,7 +20,7 @@ import os
 this_dir, this_filename = os.path.split(__file__)
 
 if len([i for i in os.listdir(f'{this_dir}//src') if '.so' in i]) == 0:
-    os.system('./funcs_compiler.sh')
+    subprocess.run(['./funcs_compiler.sh'])
 
 try:
     leven_func = ctypes.CDLL(f'{this_dir}//src//ldist.so')
