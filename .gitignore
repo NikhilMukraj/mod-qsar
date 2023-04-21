@@ -8,6 +8,7 @@
 /preprocessor/*.jld
 /preprocessor/*.so
 /preprocessor/*.npy
+/preprocessor/__pycache__
 /c_wrapper/build
 /c_wrapper/c_wrapper.egg-info
 /c_wrapper/c_wrapper/src/*.so
