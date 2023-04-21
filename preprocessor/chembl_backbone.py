@@ -23,7 +23,7 @@ optional_args = {
 }
 
 
-def get_activities(target, activity_type, name=None):
+def get_activities(target, activity_type, activity, name=None):
     if name:
         print(f'Getting bioactivty for {name}')
 
@@ -126,14 +126,14 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
             print(f'{RED}Aggregate cannot have duplicate "tag" arguments{NC}')
             sys.exit(1)    
 
-    target = new_client.target
+    # target = new_client.target
     activity = new_client.activity
 
     targets = [i['target_chembl_id'] for i in args.values()]
     names = [i for i in args.keys()]
     activity_types = [i['activity_type'] for i in args.values()]
 
-    activities = {(name, target) : get_activities(target, activity_type, name=name) 
+    activities = {(name, target) : get_activities(target, activity_type, activity, name=name) 
                 for name, target, activity_type in zip(names, targets, activity_types)}
 
     # units = set(chain.from_iterable([[i['standard_units'] for i in activity_set if i['standard_units']] for activity_set in activities.values()]))
