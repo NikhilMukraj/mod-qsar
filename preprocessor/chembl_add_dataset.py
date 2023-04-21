@@ -90,7 +90,7 @@ for filename in files_to_use:
     if aggregate_args and filename in aggregate_args:
         args_dict[filename] = aggregate_args[filename]['tag']
 
-args_list = ['bash', './add_dataset.sh']
+args_list = ['./add_dataset.sh']
 for i in args_dict.keys():
     args_list += ['-f', i]
 for i in args_dict.values():
