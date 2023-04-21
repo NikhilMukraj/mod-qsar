@@ -1,6 +1,5 @@
-# get name of file
-# get tag to add to generated files
-# get if debug
+#!/bin/bash
+
 
 for i in "$@"
 do

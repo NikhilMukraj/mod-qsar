@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 pip install -r requirements.txt
 julia install_pkgs.jl
 

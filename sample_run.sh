@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 cd preprocessor
 
 curl -L -O dopamine.csv "https://pubchem.ncbi.nlm.nih.gov/assay/pcget.cgi?task=resultdefs&aid=652054&start=1&limit=10000000&download=true&downloadfilename=AID_652054_pcget_bioassay_resultdefs&infmt=json&outfmt=csv"

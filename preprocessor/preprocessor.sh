@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 for i in "$@"
 do
     if [[ $i == "-h" || $i == "-help" ]]
