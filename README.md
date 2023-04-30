@@ -232,4 +232,5 @@ python3 ./inverse_qsar_cli/postprocessor.py ./generated_drugs/images files.csv n
 
 - Change preprocessing step to append to `.npy` file as loop progresses
 - Range option for `optimize_n.sh`
+- Add hyperparameter optimization
 - Add Flux model integration
