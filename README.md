@@ -5,6 +5,7 @@ A modular inverse QSAR pipeline
 ## Overview
 
 Built using [SmilesEnumerator](https://github.com/EBjerrum/SMILES-enumeration), [StringGA](https://github.com/jensengroup/String-GA), Python and Julia.
+Built and tested on WSL using Ubuntu 22.04.1 LTS.
 The pipeline works by first taking in a series of PubChem or CHEMBL `.csv` files that contain a SMILES string associated with a biotarget.
 The pipeline then filteres that dataset such that an equal amount of active and inactive compounds are found within the dataset.
 The pipeline starting augmenting the dataset by enumerating over SMILES strings and generating a vocabulary of tokens used in those `.csv` files.
