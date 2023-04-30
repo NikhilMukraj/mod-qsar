@@ -96,7 +96,7 @@ for i in args_dict.keys():
 for i in args_dict.values():
     args_list += ['-t', i]
 
-if len([i for i in args_list if i == '-f']):
+if len([i for i in args_list if i == '-f']) > 1:
     print(f'{RED}Currently can only add one CHEMBL dataset at a time{NC}')
     sys.exit(1)
 
