@@ -1,4 +1,6 @@
-# Inverse QSAR Pipeline
+# Mod-QSAR
+
+A modular inverse QSAR pipeline
 
 ## Overview
 
