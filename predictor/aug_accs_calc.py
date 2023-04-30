@@ -2,6 +2,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 from tensorflow.keras.models import load_model
 import tensorflow as tf
+from sklearn.metrics import accuracy_score
 from smiles_tools import return_tokens
 from smiles_tools import SmilesEnumerator
 from c_wrapper import seqOneHot

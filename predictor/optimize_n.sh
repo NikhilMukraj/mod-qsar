@@ -51,7 +51,7 @@ then
     exit 1
 fi
 
-check_if_pos_int_and() {
+check_if_pos_int() {
     if [[ ! $1 =~ ^[0-9]+$ ]]
     then
         printf "${RED}${1} is not a positive integer${NC}\n"
@@ -63,9 +63,9 @@ if [[ -z $sample ]]
 then
     check_if_pos_int $sample
 
-    if [[ ! $1 =~ ^[0-9]+$ ]]
+    if [[ ! $1 == 0 ]]
     then
-        printf "${RED}${1} is 0${NC}\n"
+        printf "${RED}${sample} is 0${NC}\n"
         exit 1
     fi
 else
