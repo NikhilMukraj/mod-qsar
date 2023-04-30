@@ -3,10 +3,7 @@
 
 cd preprocessor
 
-curl -L -O dopamine.csv "https://pubchem.ncbi.nlm.nih.gov/assay/pcget.cgi?task=resultdefs&aid=652054&start=1&limit=10000000&download=true&downloadfilename=AID_652054_pcget_bioassay_resultdefs&infmt=json&outfmt=csv"
-curl -L -O serotonin.csv "https://pubchem.ncbi.nlm.nih.gov/assay/pcget.cgi?query=download&record_type=datatable&aid=624169&version=1.1&response_type=save"
-
-./preprocessor.sh -f dopamine.csv -f serotonin.csv -t dopa -t sero -n 10
+python3 chembl_dataset_generator.py dataset_args.json -a aggregate.json -f true -n 10
 
 cd ../predictor
 
@@ -21,7 +18,7 @@ then
 fi
 
 tmp=$(mktemp)
-fileout=`./optimize_n.sh | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g'`
+fileout=`./optimize_n.sh -x ../preprocessor/sero_encoded_seqs.npy -y ../preprocessor/sero_activity.npy -m sero_rnn_model.h5 -s 100 | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g'`
 num="${fileout##*$'\n'}"
 
 cd ../inverse_qsar
