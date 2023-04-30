@@ -86,6 +86,19 @@ if any(type(i) != str for i in contents['scoring_function']):
     print(f'{RED}Type mistmatch in argument, expected type {str} in "scoring_function"{NC}')
     sys.exit(1)
 
+def remove_next_dups(lst):
+    i = 0
+    while i < len(lst) - 1:
+        if lst[i] == lst[i+1]:
+            lst.pop(i+1)
+        else:
+            i += 1
+    return lst
+
+if len(dups := remove_next_dups(['.h5' in i for i in contents['scoring_function']])) > 2 or (len(dups) <= 2 and dups[0] == 0 and dups[-1] == 1):
+    print(f'{RED}"scoring_function" argument must specify models before all other scoring functions{NC}')
+    sys.exit(1)
+
 if contents['threads'] < 1: 
     print(f'{RED}Amount of threads must be 1 or more{NC}')
 
@@ -289,7 +302,7 @@ def model_scoring(string, scoring_args):
 
 scoring_args = contents['target']
 
-if len(scoring_args) != len(potential_models) * 2 + len(drug_likeness_metric):
+if len(scoring_args) != sum(model.layers[-1].output_shape[1] for model in models_array) + len(drug_likeness_metric):
     print(f'{RED}Target arugment does not match scoring functions{NC}')
     sys.exit(1)
 if [i for i in scoring_args if not 0 <= i <= 1]:
