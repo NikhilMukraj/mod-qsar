@@ -8,6 +8,7 @@
 /preprocessor/*.jld
 /preprocessor/*.so
 /preprocessor/*.npy
+/preprocessor/sero_args.json
 /preprocessor/__pycache__
 /c_wrapper/build
 /c_wrapper/c_wrapper.egg-info
