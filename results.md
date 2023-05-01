@@ -28,7 +28,7 @@ The accuracy of this method does have a leveling off point since the prediction 
 
 ## Inverse QSAR
 
-Alongisde the drug targets, certain structural requirements were also optimized for. These included fulfilling all criteria of Lipinski's Rule of 5 as well as maintaining a synthetic accessibility below 3 and not having rings of carbon larger than 6 carbons. The fitness function assigned a very low score to any molecules that included tokens outside of the RNN's vocabulary and any molecules that laid outside of a specific molecular weight requirement. After training the genetic algorithm for 20 generations with a population of 100, all molecules produced fulfilled at least one of the drug targets with the majority of those molecules fulfilling both. Some example molecules are shown below.
+Alongisde the drug targets, certain structural requirements were also optimized for. These included fulfilling all criteria of Lipinski's Rule of 5, not flagging a PAINS filter, maintaining a synthetic accessibility below 3, and not having rings of carbon larger than 6 carbons. The fitness function assigned a very low score to any molecules that included tokens outside of the RNN's vocabulary and any molecules that laid outside of a specific molecular weight requirement. After training the genetic algorithm for 20 generations with a population of 100, all molecules produced fulfilled at least one of the drug targets with the majority of those molecules fulfilling both. Some example molecules are shown below.
 
 ![Example molecule](./results/1.png)
 ![Example molecule](./results/2.png)
