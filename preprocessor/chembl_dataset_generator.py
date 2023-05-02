@@ -77,7 +77,7 @@ for filename in files_to_use:
     if aggregate_args and filename in aggregate_args:
         args_dict[filename] = aggregate_args[filename]['tag']
 
-args_list = ['./preprocessor.sh']
+args_list = ['bash', './preprocessor.sh']
 for i in args_dict.keys():
     args_list += ['-f', i]
 for i in args_dict.values():
