@@ -10,6 +10,7 @@ do
         -x : .npy file containing features
         -y : .npy file containing labels
         -m : .h5 keras model
+        -v : optional, vocabulary file, assumes ../preprocessor/vocab.csv if not provided
         -s : optional, 1 in -s to sample from -x and -y, must be greater than 0
         "
         exit 0
@@ -23,6 +24,7 @@ do
         y) y=${OPTARG};;
         m) model=${OPTARG};;
         s) sample=${OPTARG};;
+        v) vocab=${OPTARG};;
     esac
 done
 
@@ -59,7 +61,7 @@ check_if_pos_int() {
     fi
 }
 
-if [[ -z $sample ]]
+if [[ ! -z $sample ]]
 then
     check_if_pos_int $sample
 
@@ -72,12 +74,20 @@ else
     sample="False"
 fi
 
+if [[ -z $vocab ]]
+then
+    vocab="../preprocessor/vocab.csv"
+elif [[ ! -z $vocab && ! -f $vocab ]]
+    printf "${RED}$vocab not found${NC}"
+    exit 1
+fi
+
 if [[ ! -f "pkgs.so" ]]
 then 
     printf "Julia sysimage not found, compiling Flux sysimage...\n"
     julia -e 'using PackageCompiler; create_sysimage([:Flux], sysimage_path="pkgs.so")' || exit 1
 fi
 
-python3 aug_accs_calc.py "$model" "$x" "$y" $sample || exit 1
+python3 aug_accs_calc.py "$model" "$x" "$y" $sample $vocab || exit 1
 printf "{GREEN}Finished calculating accuracy{NC}\n"
 julia --sysimage pkgs.so optimize_n.jl || exit 1

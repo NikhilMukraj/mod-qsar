@@ -25,7 +25,7 @@ if sys.argv[4].isdigit():
     X = np.array([X[i] for i in indicies])
     Y = np.array([Y[i] for i in indicies])
 
-vocab = pd.read_csv(f'..//preprocessor//vocab.csv')['tokens'].to_list()
+vocab = pd.read_csv(sys.argv[5])['tokens'].to_list()
 tokenizer = {i : n for n, i in enumerate(vocab)}
 reverse_tokenizer = {value: key for key, value in tokenizer.items()}
 convert_back = lambda x: ''.join(reverse_tokenizer.get(np.argmax(i)-1, '') for i in x)
