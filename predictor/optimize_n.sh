@@ -17,7 +17,7 @@ do
     fi
 done
 
-while getopts x:y:m:s: flag
+while getopts x:y:m:v:s: flag
 do
     case "${flag}" in
         x) x=${OPTARG};;
