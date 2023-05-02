@@ -27,6 +27,6 @@ else:
     filtered = pd.concat([activeDF.sample(n=len(inactiveDF)).loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME'], 
                           inactiveDF.loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME']])
 
-filtered.to_csv(f'{os.getcwd()}//{sys.argv[2]}_filtered_dataset.csv', index=False)
+filtered.to_csv(f'{sys.argv[2]}_filtered_dataset.csv', index=False)
 
 print('Filtered dataset created')
