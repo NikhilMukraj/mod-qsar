@@ -47,9 +47,8 @@ necessary_args = {
     'target': [list], 
     'weight': [list],
     'file_name': [str],
+    'vocab': [str],
 }
-
-# todo: implement additional scoring args alongside target
 
 for i in contents.keys():
     if i not in necessary_args:
@@ -101,6 +100,15 @@ if len(dups := remove_next_dups(['.h5' in i for i in contents['scoring_function'
 
 if contents['threads'] < 1: 
     print(f'{RED}Amount of threads must be 1 or more{NC}')
+    sys.exit(1)
+
+if not os.path.isfile(contents['file_name']):
+    print(f'{RED}\"{contents["file_name"]}\" in "file_name" argument is not a valid file{NC}')
+    sys.exit(1)
+
+if not os.path.isfile(contents['vocab']):
+    print(f'{RED}\"{contents["vocab"]}\" in "vocab" argument is not a valid file{NC}')
+    sys.exit(1)
 
 strict = contents['strict']
 
@@ -204,7 +212,7 @@ drug_likeness_parser = {
 }
 drug_likeness_metric = [drug_likeness_parser[i] for i in contents['scoring_function'] if '.h5' not in i]
 
-vocab = pd.read_csv('../preprocessor/vocab.csv')['tokens'].to_list()
+vocab = pd.read_csv(contents['vocab'])['tokens'].to_list()
 tokenizer = {i : n for n, i in enumerate(vocab)}
 
 potential_models = [i for i in contents['scoring_function'] if '.h5' in i]

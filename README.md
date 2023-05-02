@@ -175,6 +175,7 @@ python3 ./inverse_qsar/inverse_qsar_cli.py args.json chemicals_file.csv fitness_
   - `target`: Target value for scoring functions to optimize
   - `weight`: Weight to apply to each output of scoring function
   - `file_name` : Pre-existing file of molecules to draw initial population from
+  - `vocab` : Pre-existing file containing the vocabulary mapping
 - Second argument : A `.csv` to dump the molecules into  
 - Third argument : Optional `.csv` file to dump fitness scores after training
 
@@ -199,7 +200,8 @@ Example `args.json`:
     "prune_population" : true,
     "target" : [1, 0, 1, 0, 1, 1, 1],
     "weight" : [1, 1, 1, 1, 1, 1, 1],
-    "file_name" : "cl_f.smi"
+    "file_name" : "cl_f.smi",
+    "vocab" : "../preprocessor/vocab.csv"
 }
 ```
 
