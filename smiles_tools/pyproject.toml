@@ -1,6 +1,7 @@
 [project]
 name = "smiles_tools"
 version = "0.1.1"
+description = "Some simple tools for SMILES strings"
 
 dependencies = [
     "numpy ~= 1.24.1",

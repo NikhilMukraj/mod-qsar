@@ -1,6 +1,7 @@
 [project]
 name = "c_wrapper"
 version = "0.1.0"
+description = "Some helper functions written in C"
 
 dependencies = [
     "numpy ~= 1.24.1",
