@@ -11,7 +11,8 @@ do
         -t : tag to add onto new preprocessed data files
         -n : must be a positive integer, optional, number of times to add augmented strings
         -m : max length of strings
-        -o : true or false, optional, if new tokens are found they are removed from the dataset
+        -o : true or false, if new tokens are found they are removed from the dataset
+        -v : filename of vocabulary file, optional, defaults to vocab.csv
         -d : true or false, optional, defaults to false, adds debug output
         "
         exit 0

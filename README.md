@@ -48,7 +48,7 @@ To use a non PubChem dataset, use a `.csv` file in the following format:
 Add another dataset using a previously generated `vocab.csv`:
 
 ```bash
-./preprocesor/add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true
+./preprocesor/add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv
 ```
 
 - `-f` : PubChem bioassay `.csv` file, multiple can be specified
@@ -56,6 +56,7 @@ Add another dataset using a previously generated `vocab.csv`:
 - `-n` : Positive integer representing amount of augmentations to add
 - `-m` : Maximum length of tokens, any samples found that are longer are removed from the dataset
 - `-o` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
+- `-v` : (Optional) filename representing vocabulary file to use (defaults to `vocab.csv`)
 
 Curate datasets using CHEMBL:
 
