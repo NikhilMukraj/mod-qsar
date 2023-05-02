@@ -146,12 +146,13 @@ python3 ./predictor/train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
 (Optional) Optimize accuracy post training with additional augmentations:
 
 ```bash
-./predictor/optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -s 10
+./predictor/optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10
 ```
 
 - `-x` : `.npy` file containing tokenized X features
 - `-y` : `.npy` file containing labels
 - `-m` : Path of model to optimize
+- `-v` : (Optional) filename of vocabulary to use (defaults to `../preprocessor/vocab.csv`)
 - `-s` : (Optional) positive integer greater than 0, program will sample 1 in `-s` entries in `-x` and `-y` to evaluate
 
 Generate chemicals:
