@@ -13,6 +13,7 @@
 /c_wrapper/build
 /c_wrapper/c_wrapper.egg-info
 /c_wrapper/c_wrapper/src/*.so
+/c_wrapper/c_wrapper/__pycache__
 /smiles_tools/build
 /smiles_tools/smiles_tools.egg-info
 /smiles_tools/smiles_tools/__pycache__
