@@ -26,7 +26,7 @@ return_tokens(str, vocab) = py"return_tokens"(str, vocab)
 n = parse(Int, ARGS[1])
 debug = parse(Bool, lowercase(ARGS[2]))
 
-dfs = [df_parser.getdf(joinpath(@__DIR__, "$(ARGS[i])_filtered_dataset.csv")) for i in 3:length(ARGS)]
+dfs = [df_parser.getdf("$(ARGS[i])_filtered_dataset.csv") for i in 3:length(ARGS)]
 
 println("Generating augmentations...")
 
