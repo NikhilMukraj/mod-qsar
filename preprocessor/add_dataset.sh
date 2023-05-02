@@ -24,11 +24,11 @@ do
     case "${flag}" in
         f) filename=${OPTARG};;
         t) tag=${OPTARG};;
-        d) debug=${OPTARG};;
         n) num=${OPTARG};;
-        v) vocab=${OPTARG};;
         m) max_len=${OPTARG};;
         o) override=${OPTARG};;
+        v) vocab=${OPTARG};;
+        d) debug=${OPTARG};;
     esac
 done
 

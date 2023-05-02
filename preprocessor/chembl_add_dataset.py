@@ -16,6 +16,7 @@ parser.add_argument('-a', '--aggregate')
 parser.add_argument('-n', '--number-of-augmentations', help='Number of augmentations to use when generating .npy files, defaults to 0')
 parser.add_argument('-m', '--max-length', help='Maximum length of amount of tokens in each sample or false if none is necessary')
 parser.add_argument('-o', '--override', help='Skip over strings with tokens not in vocab file')
+parser.add_argument('-v', '--vocab', help='(Optional) filename of vocabulary file to use')
 
 parsed_args = parser.parse_args()
 
@@ -66,6 +67,11 @@ if parsed_args.number_of_augmentations:
 else:
     num = 0
 
+if not parsed_args.vocab:
+    vocab = 'vocab.csv'
+else:
+    vocab = parsed_args.vocab
+
 bool_dict = {'true' : True, 'false' : False}
 
 if parsed_args.override and parsed_args.override.lower() not in ['false', 'true']:
@@ -100,7 +106,7 @@ if len([i for i in args_list if i == '-f']) > 1:
     print(f'{RED}Currently can only add one CHEMBL dataset at a time{NC}')
     sys.exit(1)
 
-args_list += ['-n', str(num), '-m', str(max_len).lower(), '-o', str(override).lower()]
+args_list += ['-n', str(num), '-m', str(max_len).lower(), '-o', str(override).lower(), '-v', vocab]
 
 chembl.generate_dataset(args, aggregate_args=aggregate_args, do_full_processing=True)
 
