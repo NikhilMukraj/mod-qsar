@@ -50,3 +50,7 @@ model.save(f'{sys.argv[4]}_rnn_model.h5')
 
 # pd.DataFrame(train_preds).to_csv(f'{os.getcwd()}//train_preds.csv', index=False)
 # pd.DataFrame(test_preds).to_csv(f'{os.getcwd()}//test_preds.csv', index=False)
+
+if len(sys.argv) >= 7:
+    np.save(sys.argv[5], testX)
+    np.save(sys.argv[6], testY)

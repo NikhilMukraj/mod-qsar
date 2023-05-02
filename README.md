@@ -133,12 +133,15 @@ python3 ./preprocessor/chembl_add_dataset.py dataset_args.json -a aggregate_args
 Train QSAR model:
 
 ```bash
-python3 ./predictor/train_keras_rnn.py X.npy Y.npy 100 name
+python3 ./predictor/train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
 ```
 
 - First argument : A `.npy` file containing the tokenized X features
 - Second argument : Must be labels in a `.npy` file
 - Third argument : Amount of epochs to train for (positive integer), final argument specifies tag to name the model and training history
+- Fourth argument : Name to add to model and model history outfiles
+- Fifth argument : (Optional) name of file to dump features given dataset into for `optimize_n.sh`
+- Sixth argument : (Optional) name of file to dump labels given dataset into for `optimize_n.sh`
 
 (Optional) Optimize accuracy post training with additional augmentations:
 
