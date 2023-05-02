@@ -18,13 +18,14 @@ do
     fi
 done
 
-while getopts f:t:d:n:m:o: flag
+while getopts f:t:d:n:v:m:o: flag
 do
     case "${flag}" in
         f) filename=${OPTARG};;
         t) tag=${OPTARG};;
         d) debug=${OPTARG};;
         n) num=${OPTARG};;
+        v) vocab=${OPTARG};;
         m) max_len=${OPTARG};;
         o) override=${OPTARG};;
     esac
@@ -74,6 +75,14 @@ else
     check_if_pos_int $max_len
 fi
 
+if [[ -z $vocab ]]
+then
+    vocab="vocab.csv"
+elif [[ ! -z $vocab && ! -f $vocab ]]
+    printf "${RED}$vocab not found${NC}"
+    exit 1
+fi
+
 convert_to_bool() {
     result=$1
     if [[ -z $1 || $1 == "f" || $1 == "false" ]]
@@ -104,7 +113,7 @@ fi
 
 python3 initial_filter.py "$filename" $tag $override $debug || exit 1
 printf "${GREEN}Finished filtering initial dataset${NC}\n"
-julia --sysimage pkgs.so add_dataset.jl $tag $num $max_len $override $debug || exit 1
+julia --sysimage pkgs.so add_dataset.jl $tag $num $max_len $override $vocab $debug || exit 1
 printf "${GREEN}Finished augmentations${NC}\n"
 python3 final_preprocessing.py $tag $debug || exit 1
 

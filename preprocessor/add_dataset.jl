@@ -35,7 +35,7 @@ end
 
 override = parse(Bool, lowercase(ARGS[4]))
 
-df = df_parser.getdf(joinpath(@__DIR__, "$(ARGS[begin])_filtered_dataset.csv"))
+df = df_parser.getdf("$(ARGS[begin])_filtered_dataset.csv")
 
 println("Generating augmentations...")
 
@@ -58,8 +58,7 @@ activity = []
 
 # check for pre-existing tokens here
 
-vocab_path = joinpath(@__DIR__, "vocab.csv")
-
+vocab_path = ARGS[5]
 vocab = df_parser.dfToStringMatrix(df_parser.getdf(vocab_path))
 
 tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
