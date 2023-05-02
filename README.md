@@ -120,7 +120,7 @@ Example `aggregate_args.json`:
 Add another dataset to a previously generated `vocab.csv` using CHEMBL (must be a singular dataset with or without aggregation):
 
 ```bash
-python3 ./preprocessor/chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true
+python3 ./preprocessor/chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true -v vocab.csv
 ```
 
 - First argument: `.json` file that specifies the target and threshold for activity
@@ -128,6 +128,7 @@ python3 ./preprocessor/chembl_add_dataset.py dataset_args.json -a aggregate_args
 - `-n` : Positive integer representing amount of augmentations to add
 - `-m` : Maximum length of tokens, any samples found that are longer are removed from the dataset
 - `-o` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
+- `-v` : (Optional) filename of vocabulary to use (defaults to `vocab.csv`)
 
 (See above examples for `dataset_args.json` and `aggregate_args.json`)
 
