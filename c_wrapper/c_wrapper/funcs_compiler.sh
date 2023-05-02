@@ -1,5 +1,5 @@
 #!/bin/bash
 
 
-gcc -fPIC -shared -o src/ldist.so src/levenshtein.c
-gcc -fPIC -shared -o src/onehot.so src/onehot.c
+gcc -fPIC -shared -o "$1/src/ldist.so" "$1/src/levenshtein.c"
+gcc -fPIC -shared -o "$1/src/onehot.so" "$1/src/onehot.c"

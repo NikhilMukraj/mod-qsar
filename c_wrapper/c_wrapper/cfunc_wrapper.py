@@ -20,7 +20,7 @@ import os
 this_dir, this_filename = os.path.split(__file__)
 
 if len([i for i in os.listdir(f'{this_dir}//src') if '.so' in i]) == 0:
-    subprocess.run(['./funcs_compiler.sh'])
+    subprocess.run(['bash', f'{this_dir}/funcs_compiler.sh', this_dir])
 
 try:
     leven_func = ctypes.CDLL(f'{this_dir}//src//ldist.so')
