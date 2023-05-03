@@ -29,6 +29,10 @@ def get_activities(target, activity_type, activity, name=None):
 
     activity_set = [i for i in tqdm(activity.filter(target_chembl_id=target).filter(standard_type=activity_type))]
 
+    if len(activity_set) == 0:
+        print(f'{RED}No bioactivities found{NC}')
+        sys.exit(1)
+
     if name:
         print(f'{GREEN}Finished getting bioactivity for {name}{NC}')
 
@@ -127,14 +131,24 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
             sys.exit(1)    
 
     # target = new_client.target
-    activity = new_client.activity
+    activity_client = new_client.activity
+    target_client = new_client.target
 
     targets = [i['target_chembl_id'] for i in args.values()]
+    for i in targets:
+        if (target_return := target_client.filter(chembl_id=i).only(['target_chembl_id', 'pref_name'])):
+            print(f'{GREEN}Found CHEMBL target for {i}: {target_return[0]["pref_name"]}{NC}')
+        else:
+            print(f'{RED}Cannot find corresponding CHEMBL target for {i}{NC}')
+            sys.exit(1)
+
     names = [i for i in args.keys()]
     activity_types = [i['activity_type'] for i in args.values()]
 
-    activities = {(name, target) : get_activities(target, activity_type, activity, name=name) 
+    activities = {(name, target) : get_activities(target, activity_type, activity_client, name=name) 
                 for name, target, activity_type in zip(names, targets, activity_types)}
+
+    sys.exit(1)
 
     # units = set(chain.from_iterable([[i['standard_units'] for i in activity_set if i['standard_units']] for activity_set in activities.values()]))
 
