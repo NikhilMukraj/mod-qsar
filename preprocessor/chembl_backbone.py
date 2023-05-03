@@ -130,7 +130,6 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
             print(f'{RED}Aggregate cannot have duplicate "tag" arguments{NC}')
             sys.exit(1)    
 
-    # target = new_client.target
     activity_client = new_client.activity
     target_client = new_client.target
 
@@ -147,8 +146,6 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
 
     activities = {(name, target) : get_activities(target, activity_type, activity_client, name=name) 
                 for name, target, activity_type in zip(names, targets, activity_types)}
-
-    sys.exit(1)
 
     # units = set(chain.from_iterable([[i['standard_units'] for i in activity_set if i['standard_units']] for activity_set in activities.values()]))
 
