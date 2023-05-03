@@ -10,18 +10,20 @@ do
         -f : filename containing raw bioassay .csv from pubchem
         -t : tag to add onto new preprocessed data files
         -n : must be a positive integer, optional defaults to 5, number of times to add augmented strings
+        -v : filename for vocabulary, optional, defaults to vocab.csv
         -d : true or false, optional, defaults to false, adds debug output
         "
         exit 0
     fi
 done
 
-while getopts f:t:d:n: flag
+while getopts f:t:d:v:n: flag
 do
     case "${flag}" in
         f) filenames+=("${OPTARG}");;
         t) tags+=("${OPTARG}");;
         d) debug=${OPTARG};;
+        v) vocab=${OPTARG};;
         n) num=${OPTARG};;
     esac
 done
@@ -67,6 +69,11 @@ check_if_pos_int() {
 
 check_if_pos_int $num
 
+if [[ -z $vocab ]]
+then
+    vocab="vocab.csv"
+fi
+
 convert_to_bool() {
     result=$1
     if [[ -z $1 || $1 == "f" || $1 == "false" ]]
@@ -99,7 +106,7 @@ done
 
 printf "${GREEN}Finished filtering initial dataframes${NC}\n"
 
-julia --sysimage pkgs.so generate_vocab.jl $num $debug ${tags[@]} || exit 1
+julia --sysimage pkgs.so generate_vocab.jl $num $vocab $debug ${tags[@]} || exit 1
 
 printf "${GREEN}Finished augmentations${NC}\n"
 

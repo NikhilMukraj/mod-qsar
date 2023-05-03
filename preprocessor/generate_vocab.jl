@@ -24,9 +24,10 @@ atomwise_tokenizer(str) = py"atomwise_tokenizer"(str)
 return_tokens(str, vocab) = py"return_tokens"(str, vocab)
 
 n = parse(Int, ARGS[1])
-debug = parse(Bool, lowercase(ARGS[2]))
+vocab_path = ARGS[2]
+debug = parse(Bool, lowercase(ARGS[3]))
 
-dfs = [df_parser.getdf("$(ARGS[i])_filtered_dataset.csv") for i in 3:length(ARGS)]
+dfs = [df_parser.getdf("$(ARGS[i])_filtered_dataset.csv") for i in 4:length(ARGS)]
 
 println("Generating augmentations...")
 
@@ -70,7 +71,7 @@ py"""
 vocab = list($(vocab))
 vocab.sort()
 vocab_df = pd.DataFrame(vocab, columns=["tokens"])
-vocab_df.to_csv(f'{os.getcwd()}//vocab.csv', index=None)
+vocab_df.to_csv($(vocab_path), index=None)
 """
 
 vocab = py"vocab"
