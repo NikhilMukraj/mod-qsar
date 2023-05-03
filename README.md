@@ -30,12 +30,13 @@ Download dependencies using:
 Preprocess datasets using:
 
 ```bash
-./preprocessor/preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10
+./preprocessor/preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v vocab.csv
 ```
 
 - `-f` : PubChem bioassay `.csv` file, multiple can be specified
 - `-t` : String specifying a tag to add to the preprocessed dataset
 - `-n` : Positive integer representing amount of augmentations to add
+- `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
 
 To use a non PubChem dataset, use a `.csv` file in the following format:
 
@@ -61,13 +62,14 @@ Add another dataset using a previously generated `vocab.csv`:
 Curate datasets using CHEMBL:
 
 ```bash
-python3 ./preprocessor/chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10
+python3 ./preprocessor/chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10 -v vocab.csv
 ```
 
 - First argument : `.json` file that specifies the target and threshold for activity
 - `-a` : Aggregate datasets into singular files
 - `-f` : Boolean that states whether to generate `.npy` files in same manner as `preprocessor.sh` script
 - `-n` : Integer amount greater than or equal to 0 representing amount of augmentations to include in `preprocessor.sh` script
+- `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
 
 First `.json` file arguments:
 
