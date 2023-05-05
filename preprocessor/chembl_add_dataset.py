@@ -110,6 +110,12 @@ args_list += ['-n', str(num), '-m', str(max_len).lower(), '-o', str(override).lo
 
 chembl.generate_dataset(args, aggregate_args=aggregate_args, do_full_processing=True)
 
-subprocess.run(args_list)
+process = subprocess.Popen(args_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+process.wait()
+output, error_code = process.communicate()
+
+if process.returncode != 0:
+    print(f'{RED}Process failed{NC}')
+    sys.exit(1)
 
 print(f'{GREEN}Finished generating CHEMBL dataset with pre-existing vocab file{NC}')
