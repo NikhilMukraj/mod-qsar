@@ -22,7 +22,7 @@ After the augmentation hyperparameter is optimized, a genetic algorithm is used 
 Download dependencies using:
 
 ```bash
-./initialize.sh
+bash ./initialize.sh
 ```
 
 (Note that the first run may take a little while since it needs to compile the necessary files but all subsequent runs should be faster)
@@ -30,7 +30,7 @@ Download dependencies using:
 Preprocess datasets using:
 
 ```bash
-./preprocessor/preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v vocab.csv
+bash ./preprocessor/preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v vocab.csv
 ```
 
 - `-f` : PubChem bioassay `.csv` file, multiple can be specified
@@ -49,7 +49,7 @@ To use a non PubChem dataset, use a `.csv` file in the following format:
 Add another dataset using a previously generated `vocab.csv`:
 
 ```bash
-./preprocesor/add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv
+bash ./preprocesor/add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv
 ```
 
 - `-f` : PubChem bioassay `.csv` file, multiple can be specified
@@ -150,7 +150,7 @@ python3 ./predictor/train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
 (Optional) Optimize accuracy post training with additional augmentations:
 
 ```bash
-./predictor/optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10
+bash ./predictor/optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10
 ```
 
 - `-x` : `.npy` file containing tokenized X features
