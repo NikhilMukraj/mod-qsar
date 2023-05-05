@@ -30,7 +30,8 @@ bash ./initialize.sh
 Preprocess datasets using:
 
 ```bash
-bash ./preprocessor/preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v vocab.csv
+cd preprocessor
+bash ./preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v vocab.csv
 ```
 
 - `-f` : PubChem bioassay `.csv` file, multiple can be specified
@@ -49,7 +50,8 @@ To use a non PubChem dataset, use a `.csv` file in the following format:
 Add another dataset using a previously generated `vocab.csv`:
 
 ```bash
-bash ./preprocesor/add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv
+cd preprocessor
+bash ./add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv
 ```
 
 - `-f` : PubChem bioassay `.csv` file, multiple can be specified
@@ -62,7 +64,8 @@ bash ./preprocesor/add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -
 Curate datasets using CHEMBL:
 
 ```bash
-python3 ./preprocessor/chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10 -v vocab.csv
+cd preprocessor
+python3 chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10 -v vocab.csv
 ```
 
 - First argument : `.json` file that specifies the target and threshold for activity
@@ -122,7 +125,8 @@ Example `aggregate_args.json`:
 Add another dataset to a previously generated `vocab.csv` using CHEMBL (must be a singular dataset with or without aggregation):
 
 ```bash
-python3 ./preprocessor/chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true -v vocab.csv
+cd preprocessor
+python3 ./chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true -v vocab.csv
 ```
 
 - First argument: `.json` file that specifies the target and threshold for activity
@@ -137,7 +141,8 @@ python3 ./preprocessor/chembl_add_dataset.py dataset_args.json -a aggregate_args
 Train QSAR model:
 
 ```bash
-python3 ./predictor/train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
+cd predictor
+python3 train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
 ```
 
 - First argument : A `.npy` file containing the tokenized X features
@@ -150,7 +155,8 @@ python3 ./predictor/train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
 (Optional) Optimize accuracy post training with additional augmentations:
 
 ```bash
-bash ./predictor/optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10
+cd predictor
+bash ./optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10
 ```
 
 - `-x` : `.npy` file containing tokenized X features
@@ -162,7 +168,8 @@ bash ./predictor/optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../p
 Generate chemicals:
 
 ```bash
-python3 ./inverse_qsar/inverse_qsar_cli.py args.json chemicals_file.csv fitness_scores.csv
+cd inverse_qsar
+python3 inverse_qsar_cli.py args.json chemicals_file.csv fitness_scores.csv
 ```
 
 - First argument : A `.json` file containing all arguments to be used while generating
@@ -216,7 +223,8 @@ Example `args.json`:
 Postprocess generated `.csv` of molecular candidates into image files and check to see if any are already known:
 
 ```bash
-python3 ./inverse_qsar_cli/postprocessor.py ./generated_drugs/images files.csv names.csv
+cd inverse_qsar
+python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 ```
 
 - First argument : Directory to write images to
