@@ -65,7 +65,7 @@ Curate datasets using CHEMBL:
 
 ```bash
 cd preprocessor
-python3 chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10 -v vocab.csv
+python3 chembl_dataset_generator.py dataset_args.json -a aggregate.json -f true -n 10 -v vocab.csv
 ```
 
 - First argument : `.json` file that specifies the target and threshold for activity
@@ -126,7 +126,7 @@ Add another dataset to a previously generated `vocab.csv` using CHEMBL (must be 
 
 ```bash
 cd preprocessor
-python3 ./chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true -v vocab.csv
+python3 ./chembl_add_dataset.py dataset_args.json -a aggregate.json -n 10 -m 196 -o true -v vocab.csv
 ```
 
 - First argument: `.json` file that specifies the target and threshold for activity
@@ -136,7 +136,7 @@ python3 ./chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -
 - `-o` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
 - `-v` : (Optional) filename of vocabulary to use (defaults to `vocab.csv`)
 
-(See above examples for `dataset_args.json` and `aggregate_args.json`)
+(See above examples for `dataset_args.json` and `aggregate.json`)
 
 Train QSAR model:
 
