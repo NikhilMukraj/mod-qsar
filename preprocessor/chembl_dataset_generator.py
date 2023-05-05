@@ -85,6 +85,12 @@ for i in args_dict.values():
 
 args_list += ['-n', str(num)]
 
-subprocess.run(args_list)
+process = subprocess.Popen(args_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+process.wait()
+output, error_code = process.communicate()
 
-print(f'{GREEN}Finished generating CHEMBL dataset{NC}')
+if process.returncode != 0:
+    print(f'{RED}Process failed{NC}')
+    sys.exit(1)
+
+print(f'{GREEN}Finished generating dataset{NC}')
