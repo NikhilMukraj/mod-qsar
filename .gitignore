@@ -32,17 +32,14 @@
 /predictor/__pycache__
 /predictor/.ipynb_checkpoints
 /settings.json
-/t
 /*.toml
 /*.so
 /*.dll
 /*.o
 /*.bson
-/*.txt
 /*.jld
 /*.npy
 /testing*
 /.vs
 /__pycache__
 /aws
-!/requirements.txt
