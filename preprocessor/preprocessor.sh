@@ -98,7 +98,13 @@ sysimage=$result
 convert_to_bool $debug
 debug=$result
 
-if [[ sysimage && ! -f "pkgs.so" ]]
+if [[ $sysimage == "False" ]]
+then
+    echo $sysimage
+fi
+exit 1
+
+if [[ $sysimage != "False" && ! -f "pkgs.so" ]]
 then 
     printf "Julia sysimage not found, compiling PyCall sysimage...\n"
     julia -e 'using PackageCompiler; create_sysimage([:PyCall], sysimage_path="pkgs.so")' || exit 1
@@ -112,7 +118,7 @@ done
 
 printf "${GREEN}Finished filtering initial dataframes${NC}\n"
 
-if [[ sysimage ]]
+if [[ $sysimage != "False" ]]
 then
     julia --sysimage pkgs.so generate_vocab.jl $num $vocab $debug ${tags[@]} || exit 1
 else

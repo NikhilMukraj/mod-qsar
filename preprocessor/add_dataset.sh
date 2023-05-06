@@ -110,7 +110,7 @@ sysimage=$result
 convert_to_bool $override
 override=$result
 
-if [[ sysimage && ! -f "pkgs.so" ]]
+if [[ $sysimage != "False" && ! -f "pkgs.so" ]]
 then 
     echo "Julia sysimage not found, compiling PyCall sysimage..."
     julia -e 'using PackageCompiler; create_sysimage([:PyCall], sysimage_path="pkgs.so")' || exit 1
@@ -119,7 +119,7 @@ fi
 python3 initial_filter.py "$filename" $tag $override $debug || exit 1
 printf "${GREEN}Finished filtering initial dataset${NC}\n"
 
-if [[ sysimage ]]
+if [[ $sysimage != "False" ]]
 then
     julia --sysimage pkgs.so add_dataset.jl $tag $num $max_len $override $vocab $debug || exit 1
 else
