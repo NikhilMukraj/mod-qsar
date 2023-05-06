@@ -114,7 +114,7 @@ with subprocess.Popen(args_list, stdout=subprocess.PIPE, bufsize=1, universal_ne
     for line in process.stdout:
         print(line, end='') 
 
-if p.returncode != 0:
-    raise CalledProcessError(p.returncode, p.args)
+    if p.returncode != 0:
+        raise subprocess.CalledProcessError(p.returncode, p.args)
 
 print(f'{GREEN}Finished generating CHEMBL dataset with pre-existing vocab file{NC}')
