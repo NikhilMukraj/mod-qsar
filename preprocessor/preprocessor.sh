@@ -95,7 +95,7 @@ debug=$result
 if [[ ! -f "pkgs.so" ]]
 then 
     printf "Julia sysimage not found, compiling PyCall sysimage...\n"
-    julia -e 'using PackageCompiler; create_sysimage([:ProgressBars, :JLD, :PyCall], sysimage_path="pkgs.so")' || exit 1
+    julia -e 'using PackageCompiler; create_sysimage([:PyCall], sysimage_path="pkgs.so")' || exit 1
 fi
 
 for i in $(seq 0 $((${#filenames[@]}-1)))
