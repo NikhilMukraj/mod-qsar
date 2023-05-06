@@ -85,13 +85,11 @@ for i in args_dict.values():
 
 args_list += ['-n', str(num)]
 
-process = subprocess.Popen(args_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-process.wait()
-output, error_code = process.communicate()
+with subprocess.Popen(args_list, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as process:
+    for line in process.stdout:
+        print(line, end='') 
 
-if process.returncode != 0:
-    print(f'{RED}Process failed, error:{NC}')
-    print(process.stderr.read().decode().strip())
-    sys.exit(1)
+if p.returncode != 0:
+    raise CalledProcessError(p.returncode, p.args)
 
 print(f'{GREEN}Finished generating dataset{NC}')
