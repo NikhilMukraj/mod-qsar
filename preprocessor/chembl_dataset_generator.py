@@ -93,11 +93,11 @@ for i in args_dict.values():
 
 args_list += ['-n', str(num), '-s', sysimage]
 
-with subprocess.Popen(args_list, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as process:
-    for line in process.stdout:
+with subprocess.Popen(args_list, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
+    for line in p.stdout:
         print(line, end='') 
 
-if process.returncode != 0:
-    raise subprocess.CalledProcessError(process.returncode, process.args)
+if p.returncode != 0:
+    raise subprocess.CalledProcessError(p.returncode, p.args)
 
 print(f'{GREEN}Finished generating dataset{NC}')
