@@ -98,12 +98,6 @@ sysimage=$result
 convert_to_bool $debug
 debug=$result
 
-if [[ $sysimage == "False" ]]
-then
-    echo $sysimage
-fi
-exit 1
-
 if [[ $sysimage != "False" && ! -f "pkgs.so" ]]
 then 
     printf "Julia sysimage not found, compiling PyCall sysimage...\n"

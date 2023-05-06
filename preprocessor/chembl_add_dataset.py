@@ -17,6 +17,7 @@ parser.add_argument('-n', '--number-of-augmentations', help='Number of augmentat
 parser.add_argument('-m', '--max-length', help='Maximum length of amount of tokens in each sample or false if none is necessary')
 parser.add_argument('-o', '--override', help='Skip over strings with tokens not in vocab file')
 parser.add_argument('-v', '--vocab', help='(Optional) filename of vocabulary file to use')
+parser.add_argument('-s', '--sysimage', help='Use Julia --sysimage to run Julia component')
 
 parsed_args = parser.parse_args()
 
@@ -82,6 +83,14 @@ elif parsed_args.override and parsed_args.override.lower() in bool_dict:
 elif parsed_args.override is None:
     override = False
 
+if parsed_args.sysimage and parsed_args.sysimage.lower() not in ['false', 'true']:
+    print(f'{RED}"sysimage" must be a boolean{NC}')
+    sys.exit(1)
+elif parsed_args.sysimage and parsed_args.sysimage.lower() in bool_dict:
+    sysimage = bool_dict[parsed_args.sysimage.lower()]
+elif parsed_args.sysimage is None:
+    sysimage = False
+
 files_to_use = list(args.keys())
 if aggregate_args:
     for name, value in aggregate_args.items():
@@ -106,7 +115,8 @@ if len([i for i in args_list if i == '-f']) > 1:
     print(f'{RED}Currently can only add one CHEMBL dataset at a time{NC}')
     sys.exit(1)
 
-args_list += ['-n', str(num), '-m', str(max_len).lower(), '-o', str(override).lower(), '-v', vocab]
+args_list += ['-n', str(num), '-m', str(max_len).lower(), '-o', str(override).lower(), 
+              '-v', vocab, '-s', sysimage]
 
 chembl.generate_dataset(args, aggregate_args=aggregate_args, do_full_processing=True)
 
