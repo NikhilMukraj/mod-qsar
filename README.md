@@ -38,6 +38,7 @@ bash ./preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v 
 - `-t` : String specifying a tag to add to the preprocessed dataset
 - `-n` : Positive integer representing amount of augmentations to add
 - `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
+- `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
 To use a non PubChem dataset, use a `.csv` file in the following format:
 
@@ -60,6 +61,7 @@ bash ./add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv
 - `-m` : Maximum length of tokens, any samples found that are longer are removed from the dataset
 - `-o` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
 - `-v` : (Optional) filename representing vocabulary file to use (defaults to `vocab.csv`)
+- `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
 Curate datasets using CHEMBL:
 
@@ -73,6 +75,7 @@ python3 chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f 
 - `-f` : Boolean that states whether to generate `.npy` files in same manner as `preprocessor.sh` script
 - `-n` : Integer amount greater than or equal to 0 representing amount of augmentations to include in `preprocessor.sh` script
 - `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
+- `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
 First `.json` file arguments:
 
@@ -135,6 +138,7 @@ python3 ./chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -
 - `-m` : Maximum length of tokens, any samples found that are longer are removed from the dataset
 - `-o` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
 - `-v` : (Optional) filename of vocabulary to use (defaults to `vocab.csv`)
+- `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
 (See above examples for `dataset_args.json` and `aggregate_args.json`)
 
