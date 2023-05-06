@@ -90,7 +90,8 @@ process.wait()
 output, error_code = process.communicate()
 
 if process.returncode != 0:
-    print(f'{RED}Process failed{NC}')
+    print(f'{RED}Process failed, error:{NC}')
+    print(process.stderr.read().decode().strip())
     sys.exit(1)
 
 print(f'{GREEN}Finished generating dataset{NC}')
