@@ -13,13 +13,14 @@ do
         -m : max length of strings
         -o : true or false, if new tokens are found they are removed from the dataset
         -v : filename of vocabulary file, optional, defaults to vocab.csv
+        -s : use sysimage, optional, defaults to false
         -d : true or false, optional, defaults to false, adds debug output
         "
         exit 0
     fi
 done
 
-while getopts f:t:d:n:v:m:o: flag
+while getopts f:t:d:n:v:s:m:o: flag
 do
     case "${flag}" in
         f) filename=${OPTARG};;
@@ -28,6 +29,7 @@ do
         m) max_len=${OPTARG};;
         o) override=${OPTARG};;
         v) vocab=${OPTARG};;
+        s) sysimage=${OPTARG};;
         d) debug=${OPTARG};;
     esac
 done
@@ -103,10 +105,12 @@ override="${override,,}"
 
 convert_to_bool $debug
 debug=$result
+convert_to_bool $sysimage
+sysimage=$result
 convert_to_bool $override
 override=$result
 
-if [[ ! -f "pkgs.so" ]]
+if [[ sysimage && ! -f "pkgs.so" ]]
 then 
     echo "Julia sysimage not found, compiling PyCall sysimage..."
     julia -e 'using PackageCompiler; create_sysimage([:PyCall], sysimage_path="pkgs.so")' || exit 1
@@ -114,7 +118,14 @@ fi
 
 python3 initial_filter.py "$filename" $tag $override $debug || exit 1
 printf "${GREEN}Finished filtering initial dataset${NC}\n"
-julia --sysimage pkgs.so add_dataset.jl $tag $num $max_len $override $vocab $debug || exit 1
+
+if [[ sysimage ]]
+then
+    julia --sysimage pkgs.so add_dataset.jl $tag $num $max_len $override $vocab $debug || exit 1
+else
+    julia add_dataset.jl $tag $num $max_len $override $vocab $debug || exit 1
+fi
+
 printf "${GREEN}Finished augmentations${NC}\n"
 python3 final_preprocessing.py $tag $debug || exit 1
 

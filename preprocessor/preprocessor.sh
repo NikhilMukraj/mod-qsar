@@ -11,19 +11,21 @@ do
         -t : tag to add onto new preprocessed data files
         -n : must be a positive integer, optional defaults to 5, number of times to add augmented strings
         -v : filename for vocabulary, optional, defaults to vocab.csv
+        -s : use sysimage, optional, defaults to false
         -d : true or false, optional, defaults to false, adds debug output
         "
         exit 0
     fi
 done
 
-while getopts f:t:d:v:n: flag
+while getopts f:t:d:v:s:n: flag
 do
     case "${flag}" in
         f) filenames+=("${OPTARG}");;
         t) tags+=("${OPTARG}");;
         d) debug=${OPTARG};;
         v) vocab=${OPTARG};;
+        s) sysimage=${OPTARG};;
         n) num=${OPTARG};;
     esac
 done
@@ -88,11 +90,15 @@ convert_to_bool() {
     fi
 }
 
+sysimage="${sysimage,,}"
 debug="${debug,,}"
+
+convert_to_bool $sysimage
+sysimage=$result
 convert_to_bool $debug
 debug=$result
 
-if [[ ! -f "pkgs.so" ]]
+if [[ sysimage && ! -f "pkgs.so" ]]
 then 
     printf "Julia sysimage not found, compiling PyCall sysimage...\n"
     julia -e 'using PackageCompiler; create_sysimage([:PyCall], sysimage_path="pkgs.so")' || exit 1
@@ -106,7 +112,12 @@ done
 
 printf "${GREEN}Finished filtering initial dataframes${NC}\n"
 
-julia --sysimage pkgs.so generate_vocab.jl $num $vocab $debug ${tags[@]} || exit 1
+if [[ sysimage ]]
+then
+    julia --sysimage pkgs.so generate_vocab.jl $num $vocab $debug ${tags[@]} || exit 1
+else
+    julia generate_vocab.jl $num $vocab $debug ${tags[@]} || exit 1
+fi
 
 printf "${GREEN}Finished augmentations${NC}\n"
 
