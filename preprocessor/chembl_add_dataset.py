@@ -116,7 +116,7 @@ if len([i for i in args_list if i == '-f']) > 1:
     sys.exit(1)
 
 args_list += ['-n', str(num), '-m', str(max_len).lower(), '-o', str(override).lower(), 
-              '-v', vocab, '-s', sysimage]
+              '-v', vocab, '-s', str(sysimage).lower()]
 
 chembl.generate_dataset(args, aggregate_args=aggregate_args, do_full_processing=True)
 

@@ -91,13 +91,13 @@ for i in args_dict.keys():
 for i in args_dict.values():
     args_list += ['-t', i]
 
-args_list += ['-n', str(num), '-s', sysimage]
+args_list += ['-n', str(num), '-s', str(sysimage).lower()]
 
-with subprocess.Popen(args_list, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
-    for line in p.stdout:
+with subprocess.Popen(args_list, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as process:
+    for line in process.stdout:
         print(line, end='') 
 
-if p.returncode != 0:
-    raise subprocess.CalledProcessError(p.returncode, p.args)
+if process.returncode != 0:
+    raise subprocess.CalledProcessError(process.returncode, process.args)
 
 print(f'{GREEN}Finished generating dataset{NC}')
