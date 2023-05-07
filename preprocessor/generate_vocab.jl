@@ -110,12 +110,12 @@ function pad_features(input_strings, length_max)
     return features
 end
 
-for i in 3:length(ARGS)
-    padded_features = pad_features(strings[i-2], max_length)
+for i in 4:length(ARGS)
+    padded_features = pad_features(strings[i-3], max_length)
     padded_features = reduce(hcat, padded_features)'
 
     # save to jld and then process rest in python
     save("$(ARGS[i])_aug_unencoded_data.jld", "features", Matrix(padded_features), compress=true)
 
-    save("$(ARGS[i])_aug_activity.jld", "activity", Matrix(formatted_activity[i-2]), compress=true)
+    save("$(ARGS[i])_aug_activity.jld", "activity", Matrix(formatted_activity[i-3]), compress=true)
 end
