@@ -7,6 +7,7 @@ rdkit==2022.9.4
 selfies==2.1.1
 SmilesPE==0.0.3
 deepsmiles==1.0.1
+hdf5plugin==4.1.1
 chembl-webresource-client==0.10.8
 tensorflow==2.11.0
 tqdm==4.64.1
