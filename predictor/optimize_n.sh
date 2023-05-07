@@ -30,7 +30,6 @@ done
 
 RED='\033[0;31m'
 GREEN='\033[1;32m'
-CYAN='\033[1;36m'
 NC='\033[0m'
 
 if [[ -z $x || -z $y || -z $model ]]
@@ -89,5 +88,5 @@ then
 fi
 
 python3 aug_accs_calc.py "$model" "$x" "$y" $sample $vocab || exit 1
-printf "{GREEN}Finished calculating accuracy{NC}\n"
+printf "${GREEN}Finished calculating accuracy${NC}\n"
 julia --sysimage pkgs.so optimize_n.jl || exit 1

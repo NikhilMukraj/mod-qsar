@@ -9,3 +9,8 @@ pip install .
 
 cd ../c_wrapper
 pip install .
+
+GREEN='\033[1;32m'
+NC='\033[0m'
+
+printf "${GREEN}Finished initialization${NC}\n"
