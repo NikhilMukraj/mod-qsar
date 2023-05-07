@@ -15,6 +15,7 @@ parser.add_argument('args')
 parser.add_argument('-a', '--aggregate', help='Aggregate datasets into singular files')
 parser.add_argument('-f', '--full-preprocessing', help='Generate complete dataset with .npy files')
 parser.add_argument('-n', '--number-of-augmentations', help='Number of augmentations to use when generating .npy files, defaults to 0')
+parser.add_argument('-v', '--vocab', help='(Optional) filename of vocabulary file to use')
 parser.add_argument('-s', '--sysimage', help='Use Julia --sysimage to run Julia component')
 
 parsed_args = parser.parse_args()
@@ -66,6 +67,11 @@ elif parsed_args.sysimage and parsed_args.sysimage.lower() in bool_dict:
 elif parsed_args.sysimage is None:
     sysimage = False
 
+if not parsed_args.vocab:
+    vocab = 'vocab.csv'
+else:
+    vocab = parsed_args.vocab
+
 chembl.generate_dataset(args, aggregate_args=aggregate_args, do_full_processing=do_full_processing)
 
 if not do_full_processing:
@@ -91,7 +97,7 @@ for i in args_dict.keys():
 for i in args_dict.values():
     args_list += ['-t', i]
 
-args_list += ['-n', str(num), '-s', str(sysimage).lower()]
+args_list += ['-n', str(num), 'v', vocab, '-s', str(sysimage).lower()]
 
 with subprocess.Popen(args_list, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as process:
     for line in process.stdout:
