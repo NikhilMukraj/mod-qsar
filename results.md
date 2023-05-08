@@ -66,7 +66,7 @@ The top candidates were compared to the existing antipsychotics in terms of phar
 
 ![Inhibition Profiles](./results/inhibition_profiles.png)
 
-The candidates only significantly differed in categories in the table below. All other categories calculated by SwissADME did not significantly differ in any other categories. A complete evaluation of the pharmokinetics can be found [here](./results)
+The candidates only significantly differed in categories in the table below. All other categories calculated by SwissADME did not significantly differ in any other categories. A complete evaluation of the pharmokinetics can be found [here](./results).
 
 | Category                 | Average for Existing Antipsychotics | Average for Drug Candidates |
 |--------------------------|-------------------------------------|-----------------------------|
