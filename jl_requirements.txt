@@ -1,5 +1,5 @@
-PackageCompiler
-Flux
-ProgressBars
-PyCall
-JLD
+PackageCompiler==2.1.5
+Flux==0.13.13
+ProgressBars==1.4.1
+PyCall==1.95.1
+JLD==0.13.3
