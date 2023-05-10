@@ -31,7 +31,7 @@ Preprocess datasets using:
 
 ```bash
 cd preprocessor
-bash ./preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v vocab.csv
+bash ./preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v vocab.csv -s true
 ```
 
 - `-f` : PubChem bioassay `.csv` file, multiple can be specified
@@ -52,7 +52,7 @@ Add another dataset using a previously generated `vocab.csv`:
 
 ```bash
 cd preprocessor
-bash ./add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv
+bash ./add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv -s true
 ```
 
 - `-f` : PubChem bioassay `.csv` file, multiple can be specified
@@ -67,7 +67,7 @@ Curate datasets using CHEMBL:
 
 ```bash
 cd preprocessor
-python3 chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10 -v vocab.csv
+python3 chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10 -v vocab.csv -s true
 ```
 
 - First argument : `.json` file that specifies the target and threshold for activity
@@ -129,7 +129,7 @@ Add another dataset to a previously generated `vocab.csv` using CHEMBL (must be 
 
 ```bash
 cd preprocessor
-python3 ./chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true -v vocab.csv
+python3 ./chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true -v vocab.csv -s true
 ```
 
 - First argument: `.json` file that specifies the target and threshold for activity
