@@ -81,7 +81,7 @@ First `.json` file arguments:
 
 - Filename
   - `target_chembl_id` : Valid target ID from CHEMBL database
-  - `activity_type` : Valid type of activity from CHEMBL database
+  - `activity_type` : Valid type of activity from CHEMBL database, (`IC50` or `EC50` for example)
   - `tag` : String representing tag to use in `preprocessor.sh` script
   - `min` : Float minimum threshold for being considered active
   - `max` : Float maximum threshold for being considered active
