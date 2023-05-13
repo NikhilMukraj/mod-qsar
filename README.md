@@ -254,6 +254,7 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 ## Todo
 
 - Change preprocessing step to append to `.npy` file as loop progresses
+- Blood brain permeability scoring function
 - Range option for `optimize_n.sh`
 - Debug information
 - Add hyperparameter optimization
