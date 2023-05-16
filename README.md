@@ -160,7 +160,7 @@ python3 train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
 
 ```bash
 cd predictor
-bash ./optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10
+bash ./optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10 -a 2 -b 11 -i 2
 ```
 
 - `-x` : `.npy` file containing tokenized X features
@@ -168,6 +168,9 @@ bash ./optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocesso
 - `-m` : Path of model to optimize
 - `-v` : (Optional) filename of vocabulary to use (defaults to `../preprocessor/vocab.csv`)
 - `-s` : (Optional) positive integer greater than 0, program will sample 1 in `-s` entries in `-x` and `-y` to evaluate
+- `-a` : (Optional) positive integer greater than 0, minimum part of augmentation number range, defaults to 2
+- `-b` : (Optional) positive integer greater than 0, maximum part of augmentation number range, defaults to 11
+- `-i` : (Optional) positive integer greater than 0, increment of augmentation number range, defaults to 2
 
 Generate chemicals:
 
@@ -255,7 +258,7 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 
 - Change preprocessing step to append to `.npy` file as loop progresses
 - Blood brain permeability scoring function
-- Range option for `optimize_n.sh`
+- Allow custom scoring functions by importing from another file
 - Debug information
 - Add hyperparameter optimization
 - Add Flux model integration
