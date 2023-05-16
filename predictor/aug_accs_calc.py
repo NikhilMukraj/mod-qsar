@@ -58,7 +58,7 @@ print("Calculating accuracies...")
 preds = model.predict(X)
 initial_acc = accuracy_score([np.argmax(i) for i in Y], [np.argmax(i) for i in preds])
 
-testing_range = range(2, 11, 2)
+testing_range = range(int(sys.argv[6]), int(sys.argv[7]), int(sys.argv[8]))
 accs = {i : 0 for i in testing_range}
 for index, num in enumerate(testing_range):
     aug_preds = []
