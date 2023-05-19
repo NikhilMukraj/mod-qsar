@@ -249,10 +249,14 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 ## Scoring Functions
 
 - `model` : Uses the QSAR model as a scoring function
-- `lipinski` : Uses Lipinski's Rule of Five
-- `qed` : Uses QED drug-likeness measure
-- `pains_filter` : Filters out PAINS
-- `custom_lipinski` : Uses a custom weighted version of Lipinski's Rule of Five
+- `lipinski` : Uses Lipinski's Rule of Five, (1 if true 0 otherwise)
+- `qed` : Uses QED drug-likeness measure, (1 if true 0 otherwise)
+- `ghose` : Uses Ghose drug-likeness measure, (1 if true 0 otherwise)
+- `limit_rings` : Returns 0 if molecule has carbon rings larger than 6 atoms
+- `pains_filter` : Filters out PAINS, (1 if has PAINS substructures 0 otherwise)
+- `custom_lipinski` : Uses a custom weighted version of Lipinski's Rule of Five, (1 if true 0 otherwise)
+- `bbb_permeable` : Checks if molecule is blood brain barrier permeable using the BOILED-egg method, (1 if true 0 otherwise)
+- `gastro_absorption` : Checks if molecule is has high gastrointestinal absorption using the BOILED-egg method, (1 if true 0 otherwise)
 
 ## Todo
 
