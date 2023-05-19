@@ -2,6 +2,7 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import Lipinski
 from rdkit.Chem.FilterCatalog import FilterCatalog, FilterCatalogParams
+from shapely.geometry import Point, Polygon
 import numpy as np
 import pandas as pd
 import json
@@ -11,6 +12,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from tensorflow.keras import models
 from smiles_tools import return_tokens
 from smiles_tools import SmilesEnumerator
+from bbb_gia import bbb_coords, gia_coords
 from c_wrapper import seqOneHot
 from ml_scorer import get_score
 import string_ga
@@ -202,6 +204,32 @@ def get_pains(molecule):
     isPAINS = catalog.GetFirstMatch(molecule)
     return int(isPAINS is None)
 
+# https://github.com/bfmilne/pyBOILEDegg/tree/main
+
+gia = pd.DataFrame(gia_coords, columns=['tpsa', 'wlogp'])
+bbb = pd.DataFrame(bbb_coords, columns=['tpsa', 'wlogp'])
+
+gia_ellipse = Polygon(gia_coords)
+bbb_ellipse = Polygon(bbb_coords)
+
+def bbb_permeable(molecule):
+    tpsa = Descriptors.TPSA(molecule, includeSandP=True)
+    wlogp = Descriptors.MolLogP(molecule)
+
+    if mol_coords.within(bbb_ellipse):
+        return 1
+    else:
+        return 0
+
+def gastro_absorption(molecule):
+    tpsa = Descriptors.TPSA(molecule, includeSandP=True)
+    wlogp = Descriptors.MolLogP(molecule)
+
+    if mol_coords.within(gia_ellipse):
+        return 1
+    else:
+        return 0
+
 drug_likeness_parser = {
     'lipinski': get_lipinski, 
     'custom_lipinski': get_custom_lipinski,
@@ -209,6 +237,8 @@ drug_likeness_parser = {
     'ghose': get_ghose,
     'pains': get_pains,
     'limit_rings': limit_rings,
+    'bbb_permeable': bbb_permeable,
+    'gastro_absorption': gastro_absorption,
 }
 drug_likeness_metric = [drug_likeness_parser[i] for i in contents['scoring_function'] if '.h5' not in i]
 
