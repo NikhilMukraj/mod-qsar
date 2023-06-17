@@ -199,7 +199,7 @@ python3 inverse_qsar_cli.py args.json chemicals_file.csv fitness_scores.csv
   - `file_name` : Pre-existing file of molecules to draw initial population from
   - `vocab` : Pre-existing file containing the vocabulary mapping
 - Second argument : A `.csv` to dump the molecules into  
-- Third argument : Optional `.csv` file to dump fitness scores after training
+- Third argument : (Optional) `.csv` file to dump fitness scores after training
 
 Example `args.json`:
 
