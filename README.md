@@ -48,6 +48,15 @@ To use a non PubChem dataset, use a `.csv` file in the following format:
 | CC1=C2C(=NN1)C(=S)NC(=O)N2       | Inactive                 |
 | ...                              | ...                      |
 
+Generate a default vocab file with default symbols:
+
+```bash
+cd preprocessor
+python default_vocab_generator.py vocab.csv
+```
+
+- First argument : Filename of vocabulary file
+
 Add another dataset using a previously generated `vocab.csv`:
 
 ```bash
