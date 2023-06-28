@@ -27,6 +27,16 @@ bash ./initialize.sh
 
 (Note that the first run may take a little while since it needs to compile the necessary files but all subsequent runs should be faster)
 
+Note, vocabulary file (examples use `vocab.csv`) must be a `.csv` file in the following format:
+
+| tokens |
+|--------|
+| C      |
+| F      |
+| -      |
+| 3      |
+| ...    |
+
 Preprocess datasets using:
 
 ```bash
@@ -196,7 +206,7 @@ python3 inverse_qsar_cli.py args.json chemicals_file.csv fitness_scores.csv
   - `seed` : Random seed
   - `average_size` : Average size of chemical
   - `size_stdev` : Average standard deviation of chemical
-  - `string_type` : Type of string formatting (recommended to use SMILES)
+  - `string_type` : Type of string formatting (recommended to use SMILES or use a file in the same format as `vocab.csv`)
   - `scoring_function` : Type of scoring function to use
   - `strict` : Whether to completely eliminate molecules based on a weight threshold
   - `augment` : List containing boolean whether to augment data for model scoring function and integer how many times to augment
