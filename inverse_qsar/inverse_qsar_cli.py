@@ -2,7 +2,7 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import Lipinski
 from rdkit.Chem.FilterCatalog import FilterCatalog, FilterCatalogParams
-from shapely.geometry import Point, Polygon
+from shapely.geometry import Polygon
 import numpy as np
 import pandas as pd
 import json
