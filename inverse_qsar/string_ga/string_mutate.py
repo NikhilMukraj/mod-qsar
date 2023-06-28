@@ -5,6 +5,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 
 import random
+import os
 import numpy as np
 
 import string_ga.string_crossover as co
@@ -15,14 +16,12 @@ rdBase.DisableLog('rdApp.error')
 def get_symbols():
     if co.string_type == 'SMILES':
         symbols = ['C', 'O', '(', '=', ')', '[C@@H]', '[C@H]', 'H', '1', 'N', '2', '3', 'F', 'S', 
-                    'Cl', '#', '+', '-', '/', '4', 'B', 'Br', '\\', '5', 'I']
-    
-    if co.string_type == 'DeepSMILES':
+                    'Cl', '#', '+', '-', '/', '4', 'B', 'Br', '\\', '5', 'I'] 
+    elif co.string_type == 'DeepSMILES':
         symbols = ['C', 'N', ')', 'S', '=', 'O', '6', '5', '9', 'B', 'Br', '[C@@H]', '[C@H]', 'H', 
                     '+', '%10', '%11', '%12', '%13', '%14', '%15', '%16', '%17', '1', '0', '2', 'l',
                     '3', 'F', '#', '7', 'I', '-', '/', '\\', '4', '8']
-    
-    if co.string_type == 'SELFIES':
+    elif co.string_type == 'SELFIES':
         symbols = ['C', 'Branch1_2', 'epsilon', 'Branch1_3', '=C', 'O', '#N', '=O', 'N', 'Ring1', 
                'Branch1_1', 'F', '=N', '#C', 'C@@H', 'S', 'Branch2_2', 'Ring2', 'Branch2_3', 
                'Branch2_1', 'Cl', 'O-', 'C@H', 'NH+', 'C@', 'Br', '/C', '/O', 'NH3+', '=S', 'NH2+', 
@@ -33,6 +32,10 @@ def get_symbols():
                 'P+', '\\N+', 'Expl/Ring1', 'S+', '=O+', '/N-', 'CH2-', '=P@', '=SH+', 'CH-', '/Br', 
                 '/C@@', '\\Br', '/C@', '/O+', '\\F', '=S+', 'PH+', '\\NH2+', 'PH', '/NH-', '\\S@', 'S@@+', 
                 '/NH2+', '\\I']
+    elif os.path.exists(co.string_type):
+        symbols = pd.read_csv(co.string_type)['tokens'].to_list()
+    else:
+        raise ValueError(f'Unsupported co.string_type of "{co.string_type}"')
 
     return symbols
 
