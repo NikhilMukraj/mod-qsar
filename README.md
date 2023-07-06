@@ -277,10 +277,13 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 - `bbb_permeable` : Checks if molecule is blood brain barrier permeable using the BOILED-egg method, (1 if true 0 otherwise)
 - `gastro_absorption` : Checks if molecule is has high gastrointestinal absorption using the BOILED-egg method, (1 if true 0 otherwise)
 
+## Custom Scoring Functions
+
+Use the format `"./filepath/to/python_file.py:function_name"` as an element in a list passed in the `scoring_function` argument where a `:` deliminates what is the filepath and what is the function name. The custom function must return a float. Custom functions must be specified last.
+
 ## Todo
 
 - Change preprocessing step to append to `.npy` file as loop progresses
-- Allow custom scoring functions by importing from another file
 - Debug information
 - Add hyperparameter optimization
 - Add Flux model integration
