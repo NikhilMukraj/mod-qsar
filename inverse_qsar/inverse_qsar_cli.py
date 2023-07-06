@@ -17,6 +17,7 @@ from c_wrapper import seqOneHot
 from ml_scorer import get_score
 import string_ga
 from functools import lru_cache
+import importlib.util
 
 
 GREEN = '\033[1;32m'
@@ -96,8 +97,14 @@ def remove_next_dups(lst):
             i += 1
     return lst
 
-if len(dups := remove_next_dups(['.h5' in i for i in contents['scoring_function']])) > 2 or (len(dups) <= 2 and dups[0] == 0 and dups[-1] == 1):
+if len(dups := remove_next_dups(['.h5' in i for i in contents['scoring_function']])) > 2 \
+    or (len(dups) <= 2 and dups[0] == 0 and dups[-1] == 1):
     print(f'{RED}"scoring_function" argument must specify models before all other scoring functions{NC}')
+    sys.exit(1)
+
+if len(dups := remove_next_dups([':' in i for i in contents['scoring_function']])) > 2 \
+    or (len(dups) <= 2 and dups[0] == 1 and dups[-1] == 0):
+    print(f'{RED}"scoring_function" argument must specify custom functions after all other scoring functions{NC}')
     sys.exit(1)
 
 if contents['threads'] < 1: 
@@ -230,6 +237,22 @@ def gastro_absorption(molecule):
     else:
         return 0
 
+def module_from_file(module_name, file_path):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+def get_function(file_path, function_name):
+    _, filename = os.path.split(file_path)
+    module_name, _ = os.path.splitext(filename)
+    module = module_from_file(module_name, file_path)
+
+    return getattr(module, function_name)
+
+def generate_function(func):
+    return lambda x: float(func(x))
+
 drug_likeness_parser = {
     'lipinski': get_lipinski, 
     'custom_lipinski': get_custom_lipinski,
@@ -240,7 +263,12 @@ drug_likeness_parser = {
     'bbb_permeable': bbb_permeable,
     'gastro_absorption': gastro_absorption,
 }
-drug_likeness_metric = [drug_likeness_parser[i] for i in contents['scoring_function'] if '.h5' not in i]
+
+drug_likeness_metric = [drug_likeness_parser[i] for i in contents['scoring_function'] 
+                        if '.h5' not in i and ':' not in i]
+custom_funcs = [generate_function(get_function(*i.split(':'))) 
+                for i in contents['scoring_function'] if ':' in i]
+drug_likeness_metric.extend(custom_funcs)
 
 vocab = pd.read_csv(contents['vocab'])['tokens'].to_list()
 tokenizer = {i : n for n, i in enumerate(vocab)}
