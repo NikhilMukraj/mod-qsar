@@ -199,24 +199,24 @@ python3 inverse_qsar_cli.py args.json chemicals_file.csv fitness_scores.csv
 ```
 
 - First argument : A `.json` file containing all arguments to be used while generating
-  - `population_size` : Initial size of chemicals pool
-  - `mating_pool_size` : Size of genetic mating pool
-  - `generations` : Number of iterations
-  - `mutation_rate` : Chance that chemical will be changed randomly during training
-  - `seed` : Random seed
-  - `average_size` : Average size of chemical
-  - `size_stdev` : Average standard deviation of chemical
-  - `string_type` : Type of string formatting (recommended to use SMILES or use a file in the same format as `vocab.csv`)
+  - `population_size` : Initial size of chemicals pool (positive integer)
+  - `mating_pool_size` : Size of genetic mating pool (positive integer)
+  - `generations` : Number of iterations (positive integer)
+  - `mutation_rate` : Chance that chemical will be changed randomly during training (float between 0 and 1)
+  - `seed` : Random seed (null or an integer)
+  - `average_size` : Average size of chemical (positive integer or float)
+  - `size_stdev` : Average standard deviation of chemical (positive integer or float)
+  - `string_type` : Type of string formatting (recommended to use `SMILES` as input or specify a filepath to a file in the same format as `vocab.csv`)
   - `scoring_function` : Type of scoring function to use
-  - `strict` : Whether to completely eliminate molecules based on a weight threshold
-  - `augment` : List containing boolean whether to augment data for model scoring function and integer how many times to augment
-  - `max_len` : Maximum token length of molecules (automatically grab `max_len` by providing `null` as an argument)
-  - `max_score` : Score to stop at
-  - `prune_population` : Trim size of population
-  - `target`: Target value for scoring functions to optimize
-  - `weight`: Weight to apply to each output of scoring function
-  - `file_name` : Pre-existing file of molecules to draw initial population from
-  - `vocab` : Pre-existing file containing the vocabulary mapping
+  - `strict` : Whether to completely eliminate molecules based on a weight threshold (boolean)
+  - `augment` : List containing boolean whether to augment data for model scoring function and integer how many times to augment (positive integer)
+  - `max_len` : Maximum token length of molecules (positive integer or automatically grab `max_len` by providing `null` as an argument)
+  - `max_score` : Score to stop at (float)
+  - `prune_population` : Trim size of population (boolean)
+  - `target`: Target value for scoring functions to optimize (list of values between 0 and 1)
+  - `weight`: Weight to apply to each output of scoring function (list of floats)
+  - `file_name` : Pre-existing file of molecules to draw initial population from (filepath)
+  - `vocab` : Pre-existing file containing the vocabulary mapping (filepath)
 - Second argument : A `.csv` to dump the molecules into  
 - Third argument : (Optional) `.csv` file to dump fitness scores after training
 
