@@ -68,6 +68,18 @@ for key, value in contents.items():
         print(f'{RED}Type mismatch in argument, expected type in {necessary_args[key]} at "{key}" argument but got {type(value)}{NC}')
         sys.exit(1)
 
+if contents['population_size'] <= 0:
+    print(f'{RED}"population_size" argument must be greater than 0{NC}')
+    sys.exit(1)
+
+if contents['mating_pool_size'] <= 0:
+    print(f'{RED}"mating_pool_size" argument must be greater than 0{NC}')
+    sys.exit(1)
+
+if contents['generations'] <= 0:
+    print(f'{RED}"generations" argument must be greater than 0{NC}')
+    sys.exit(1)
+
 if type(contents['augment'][0]) != bool:
     print(f'{RED}Type mismatch in argument, expected type {bool} at "augment" argument at first index but got {type(contents["augment"][0])}{NC}')
     sys.exit(1)
