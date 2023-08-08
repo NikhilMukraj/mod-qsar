@@ -274,8 +274,8 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 - `limit_rings` : Returns 0 if molecule has carbon rings larger than 6 atoms
 - `pains_filter` : Filters out PAINS, (1 if has PAINS substructures 0 otherwise)
 - `custom_lipinski` : Uses a custom weighted version of Lipinski's Rule of Five, (1 if true 0 otherwise)
-- `bbb_permeable` : Checks if molecule is blood brain barrier permeable using the BOILED-egg method, (1 if true 0 otherwise)
-- `gastro_absorption` : Checks if molecule is has high gastrointestinal absorption using the BOILED-egg method, (1 if true 0 otherwise)
+- `bbb_permeable` : Checks if molecule is blood brain barrier permeable using the [BOILED-egg method](https://github.com/bfmilne/pyBOILEDegg/tree/main), (1 if true 0 otherwise)
+- `gastro_absorption` : Checks if molecule is has high gastrointestinal absorption using the [BOILED-egg method](https://github.com/bfmilne/pyBOILEDegg/tree/main), (1 if true 0 otherwise)
 
 ## Custom Scoring Functions
 
@@ -283,6 +283,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
+- Add option to omit `vocab.csv` file if not necessary
 - Change preprocessing step to append to `.npy` file as loop progresses
 - Debug information
 - Add hyperparameter optimization
