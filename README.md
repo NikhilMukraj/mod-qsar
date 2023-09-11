@@ -283,6 +283,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
+- Add BindingDB as option to aggregate data from
 - Add option to omit `vocab.csv` file if not necessary
 - Modify preprocessing, neural networks, and inverse-qsar functionality to include a regression model for binding affinity values
 - Change preprocessing step to append to `.npy` file as loop progresses
