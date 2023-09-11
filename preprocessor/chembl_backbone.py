@@ -180,3 +180,4 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
             pd.concat([dfs[name] for name in names]).to_csv(filename, index=None)
 
     print(f'{GREEN}Finished creating CHEMBL dataset{NC}')
+    
