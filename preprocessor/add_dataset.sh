@@ -7,7 +7,7 @@ do
     then
         echo "
         -h : help command
-        -f : filename containing raw bioassay .csv from pubchem
+        -f : filename containing raw bioassay .csv
         -t : tag to add onto new preprocessed data files
         -n : must be a positive integer, optional, number of times to add augmented strings
         -m : max length of strings
