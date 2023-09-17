@@ -6,7 +6,7 @@ A modular inverse QSAR pipeline
 
 Built and tested on WSL using Ubuntu 22.04.1 LTS, has been tested for Ubuntu without WSL and works there as well.
 Built using [SmilesEnumerator](https://github.com/EBjerrum/SMILES-enumeration), [StringGA](https://github.com/jensengroup/String-GA), Python (3.10.6) and Julia (1.8.1).
-The pipeline works by first taking in a series of PubChem or CHEMBL `.csv` files that contain a SMILES string associated with a biotarget.
+The pipeline works by first taking in a series of `.csv` files that contain a SMILES string associated with a biotarget binding outcome.
 The pipeline then filteres that dataset such that an equal amount of active and inactive compounds are found within the dataset.
 The pipeline starting augmenting the dataset by enumerating over SMILES strings and generating a vocabulary of tokens used in those `.csv` files.
 After this vocabulary is generated the strings are converted into a series of onehot encoded arrays dumped into a `.npy` file.
@@ -44,15 +44,15 @@ cd preprocessor
 bash ./preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v vocab.csv -s true
 ```
 
-- `-f` : PubChem bioassay `.csv` file, multiple can be specified
+- `-f` : Bioassay `.csv` file, multiple can be specified
 - `-t` : String specifying a tag to add to the preprocessed dataset
 - `-n` : Positive integer representing amount of augmentations to add
 - `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
 - `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
-To use a non PubChem dataset, use a `.csv` file in the following format:
+To use a dataset, use a `.csv` file in the following format:
 
-| PUBCHEM_EXT_DATASOURCE_SMILES    | PUBCHEM_ACTIVITY_OUTCOME |
+| SMILES                           | ACTIVITY                 |
 |----------------------------------|--------------------------|
 | CC1=NN(C2=NC(=O)N(C(=O)C2=N1)C)C | Active                   |
 | CC1=C2C(=NN1)C(=S)NC(=O)N2       | Inactive                 |
@@ -74,7 +74,7 @@ cd preprocessor
 bash ./add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv -s true
 ```
 
-- `-f` : PubChem bioassay `.csv` file, multiple can be specified
+- `-f` : Bioassay `.csv` file, multiple can be specified, use the `.csv` shown above
 - `-t` : String specifying a tag to add to the preprocessed dataset, amount of `-t` and `-f` arguments must be the same
 - `-n` : Positive integer representing amount of augmentations to add
 - `-m` : Maximum length of tokens, any samples found that are longer are removed from the dataset
@@ -283,7 +283,6 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
-- Remove `PUBCHEM` tag from dataframe columns
 - Add BindingDB as option to aggregate data from
 - Add option to omit `vocab.csv` file if not necessary
 - Modify preprocessing, neural networks, and inverse-qsar functionality to include a regression model for binding affinity values

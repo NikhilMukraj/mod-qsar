@@ -161,7 +161,7 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
     for name, activity_set in activity_dict.items():
         is_active = lambda val: args[name]['min'] <= val <= args[name]['max']
 
-        df = pd.DataFrame([], columns=['PUBCHEM_EXT_DATASOURCE_SMILES', 'PUBCHEM_ACTIVITY_OUTCOME'])
+        df = pd.DataFrame([], columns=['SMILES', 'ACTIVITY'])
         for i in activity_set:
             smiles_string, value, _ = i
             df.loc[len(df.index)] = [smiles_string, 'Active' if is_active(value) else 'Inactive']
@@ -172,7 +172,7 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
 
     for name, df in dfs.items():
         print(name)
-        print(df['PUBCHEM_ACTIVITY_OUTCOME'].value_counts())
+        print(df['ACTIVITY'].value_counts())
 
     if aggregate_args:
         for filename, names in aggregate_args.items():

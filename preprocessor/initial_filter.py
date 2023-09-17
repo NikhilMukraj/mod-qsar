@@ -12,20 +12,20 @@ if len(sys.argv) < 2:
 
 df = pd.read_csv(f'{sys.argv[1]}', low_memory=False)
 
-df = df[['PUBCHEM_EXT_DATASOURCE_SMILES', 'PUBCHEM_ACTIVITY_OUTCOME']]
+df = df[['SMILES', 'ACTIVITY']]
 
-df = df.loc[df['PUBCHEM_ACTIVITY_OUTCOME'] != 'Inconclusive', :]
-df = df[~df['PUBCHEM_EXT_DATASOURCE_SMILES'].isnull()]
+df = df.loc[df['ACTIVITY'] != 'Inconclusive', :]
+df = df[~df['SMILES'].isnull()]
 
-activeDF = df.loc[df['PUBCHEM_ACTIVITY_OUTCOME'] == 'Active', :]
-inactiveDF = df.loc[df['PUBCHEM_ACTIVITY_OUTCOME'] == 'Inactive', :]
+activeDF = df.loc[df['ACTIVITY'] == 'Active', :]
+inactiveDF = df.loc[df['ACTIVITY'] == 'Inactive', :]
 
 if len(activeDF) <= len(inactiveDF):
-    filtered = pd.concat([activeDF.loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME'], 
-                          inactiveDF.sample(n=len(activeDF)).loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME']])
+    filtered = pd.concat([activeDF.loc[:, 'SMILES':'ACTIVITY'], 
+                          inactiveDF.sample(n=len(activeDF)).loc[:, 'SMILES':'ACTIVITY']])
 else:
-    filtered = pd.concat([activeDF.sample(n=len(inactiveDF)).loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME'], 
-                          inactiveDF.loc[:, 'PUBCHEM_EXT_DATASOURCE_SMILES':'PUBCHEM_ACTIVITY_OUTCOME']])
+    filtered = pd.concat([activeDF.sample(n=len(inactiveDF)).loc[:, 'SMILES':'ACTIVITY'], 
+                          inactiveDF.loc[:, 'SMILES':'ACTIVITY']])
 
 filtered.to_csv(f'{sys.argv[2]}_filtered_dataset.csv', index=False)
 
