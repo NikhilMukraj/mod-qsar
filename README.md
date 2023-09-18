@@ -99,7 +99,7 @@ python3 dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n
 First `.json` file arguments:
 
 - Filename
-  - `id` : Valid target ID (either input a valid CHEMBL target to pull from the CHEMBL database or a valid UniProt to pull from BindingDB)
+  - `id` : Valid target ID (either input a valid CHEMBL target to pull from the CHEMBL database or a valid UniProt target to pull from BindingDB)
   - `activity_type` : Valid type of binding activity, (`IC50` or `EC50` for example)
   - `tag` : String representing tag to use in `preprocessor.sh` script
   - `min` : Float minimum threshold for being considered active (in nM)
