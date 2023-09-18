@@ -86,7 +86,7 @@ Curate datasets using CHEMBL:
 
 ```bash
 cd preprocessor
-python3 chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10 -v vocab.csv -s true
+python3 dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n 10 -v vocab.csv -s true
 ```
 
 - First argument : `.json` file that specifies the target and threshold for activity
@@ -99,8 +99,8 @@ python3 chembl_dataset_generator.py dataset_args.json -a aggregate_args.json -f 
 First `.json` file arguments:
 
 - Filename
-  - `target_chembl_id` : Valid target ID from CHEMBL database
-  - `activity_type` : Valid type of activity from CHEMBL database, (`IC50` or `EC50` for example)
+  - `id` : Valid target ID (either input a valid CHEMBL target to pull from the CHEMBL database or a valid UniProt to pull from BindingDB)
+  - `activity_type` : Valid type of binding activity, (`IC50` or `EC50` for example)
   - `tag` : String representing tag to use in `preprocessor.sh` script
   - `min` : Float minimum threshold for being considered active (in nM)
   - `max` : Float maximum threshold for being considered active (in nM)
@@ -110,21 +110,28 @@ Example `dataset_args.json`:
 ```json
 {
     "serotonin_antagonist.csv" : {
-        "target_chembl_id" : "CHEMBL224",
+        "id" : "CHEMBL224",
         "activity_type" : "IC50",
         "tag" : "sero",
         "min" : 0,
         "max" : 100
     },
+    "other_serotonin_antagonist.csv" : {
+        "id" : "P28223",
+        "activity_type" : "IC50",
+        "tag" : "sero_other",
+        "min" : 0,
+        "max" : 100
+    },
     "d2_antagonist.csv" : {
-        "target_chembl_id" : "CHEMBL217",
+        "id" : "CHEMBL217",
         "activity_type" : "IC50",
         "tag": "d2",
         "min" : 0,
         "max" : 100
     },
     "d3_antagonist.csv" : {
-        "target_chembl_id" : "CHEMBL234",
+        "id" : "CHEMBL234",
         "activity_type" : "IC50",
         "tag" : "d3",
         "min" : 0,
@@ -148,7 +155,7 @@ Add another dataset to a previously generated `vocab.csv` using CHEMBL (must be 
 
 ```bash
 cd preprocessor
-python3 ./chembl_add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true -v vocab.csv -s true
+python3 ./add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -o true -v vocab.csv -s true
 ```
 
 - First argument: `.json` file that specifies the target and threshold for activity
@@ -283,7 +290,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
-- Add BindingDB as option to aggregate data from
+- List all valid activity types
 - Add option to omit `vocab.csv` file if not necessary
 - Modify preprocessing, neural networks, and inverse-qsar functionality to include a regression model for binding affinity values
 - Change preprocessing step to append to `.npy` file as loop progresses
