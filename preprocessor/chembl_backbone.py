@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import sys
 import json
-from itertools import chain
+# from itertools import chain
 
 
 GREEN = '\033[1;32m'

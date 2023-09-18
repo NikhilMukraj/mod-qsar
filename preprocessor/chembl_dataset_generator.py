@@ -3,7 +3,6 @@ import argparse
 import json
 import chembl_backbone as chembl
 import subprocess
-from itertools import chain
 
 
 GREEN = '\033[1;32m'
