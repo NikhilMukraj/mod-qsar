@@ -22,7 +22,6 @@ optional_args = {
     'tag' : [str],
 }
 
-
 def get_activities(target, activity_type, activity, name=None):
     if name:
         print(f'Getting bioactivty for {name}')
