@@ -6,8 +6,8 @@ A modular inverse QSAR pipeline
 
 Built and tested on WSL using Ubuntu 22.04.1 LTS, has been tested for Ubuntu without WSL and works there as well.
 Built using [SmilesEnumerator](https://github.com/EBjerrum/SMILES-enumeration), [StringGA](https://github.com/jensengroup/String-GA), Python (3.10.6) and Julia (1.8.1).
-The pipeline works by first taking in a series of `.csv` files that contain a SMILES string associated with a biotarget binding outcome.
-The pipeline then filteres that dataset such that an equal amount of active and inactive compounds are found within the dataset.
+The pipeline works by first taking in a series of `.csv` files that contain a SMILES string associated with a biotarget binding outcome that can either be manually inputted or pulled from the [ChEMBL](https://www.ebi.ac.uk/chembl/) or [BindingDB](https://www.bindingdb.org/rwd/bind/index.jsp).
+The pipeline then filters that dataset such that an equal amount of active and inactive compounds are found within the dataset.
 The pipeline starting augmenting the dataset by enumerating over SMILES strings and generating a vocabulary of tokens used in those `.csv` files.
 After this vocabulary is generated the strings are converted into a series of onehot encoded arrays dumped into a `.npy` file.
 For each biotarget given in the initial preprocessing phase, a QSAR model is trained to determine whether a compound is active or inactive and the models are saved as `.h5` files.
@@ -82,7 +82,7 @@ bash ./add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv 
 - `-v` : (Optional) filename representing vocabulary file to use (defaults to `vocab.csv`)
 - `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
-Curate datasets using CHEMBL:
+Curate datasets using ChEMBL:
 
 ```bash
 cd preprocessor
@@ -99,8 +99,8 @@ python3 dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n
 First `.json` file arguments:
 
 - Filename
-  - `id` : Valid target ID (either input a valid CHEMBL target to pull from the CHEMBL database or a valid UniProt target to pull from BindingDB)
-  - `activity_type` : Valid type of binding activity, (`IC50` or `EC50` for example)
+  - `id` : Valid target ID (either input a valid ChEMBL target to pull from the ChEMBL database or a valid UniProt target to pull from BindingDB)
+  - `activity_type` : Valid type of binding activity from ChEMBL or BindingDB, (`IC50` or `EC50` for example)
   - `tag` : String representing tag to use in `preprocessor.sh` script
   - `min` : Float minimum threshold for being considered active (in nM)
   - `max` : Float maximum threshold for being considered active (in nM)
@@ -151,7 +151,7 @@ Example `aggregate_args.json`:
 }
 ```
 
-Add another dataset to a previously generated `vocab.csv` using CHEMBL (must be a singular dataset with or without aggregation):
+Add another dataset to a previously generated `vocab.csv` using ChEMBL (must be a singular dataset with or without aggregation):
 
 ```bash
 cd preprocessor
@@ -290,9 +290,9 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
-- List all valid activity types
-- Add option to omit `vocab.csv` file if not necessary
 - Modify preprocessing, neural networks, and inverse-qsar functionality to include a regression model for binding affinity values
+- Option to select top n amount of molecules as active or inactive
+- Add option to omit `vocab.csv` file if not necessary
 - Change preprocessing step to append to `.npy` file as loop progresses
 - Debug information
 - Add hyperparameter optimization
