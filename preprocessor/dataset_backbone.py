@@ -182,7 +182,7 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
             print(f'{GREEN}Found CHEMBL target for {i}: {target_name}{NC}')
         else:
             print(f'{RED}Target input must be either valid CHEMBL ID or UniProt ID{NC}')
-            sys.exit()
+            sys.exit(1)
 
     names = [i for i in args.keys()]
     activity_types = [i['activity_type'] for i in args.values()]
