@@ -290,6 +290,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
+- Automatically calculate maximum length for add_dataset
 - Modify preprocessing, neural networks, and inverse-qsar functionality to include a regression model for binding affinity values
 - Option to select top n amount of molecules as active or inactive
 - Add option to omit `vocab.csv` file if not necessary
