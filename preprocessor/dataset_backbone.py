@@ -13,7 +13,7 @@ import xmltodict
 
 GREEN = '\033[1;32m'
 NC = '\033[0m'
-RED='\033[0;31m'
+RED = '\033[0;31m'
 
 necessary_args = {
     'id' : [str], 
