@@ -290,6 +290,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
+- Reformat `.jl` files to use `eachIndex` instead of `length` ([https://docs.julialang.org/en/v1/base/arrays/#Base.eachindex])
 - Automatically calculate maximum length for add_dataset
 - Modify preprocessing, neural networks, and inverse-qsar functionality to include a regression model for binding affinity values
 - Option to select top n amount of molecules as active or inactive
