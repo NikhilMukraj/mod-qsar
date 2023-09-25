@@ -17,7 +17,7 @@ X = np.load(sys.argv[1])
 Y = np.load(sys.argv[2])
 
 trainX, testX, trainY, testY = train_test_split(X, Y, test_size=.1)
-trainX.shape, testX.shape, trainY.shape, testY.shape
+print(trainX.shape, testX.shape, trainY.shape, testY.shape)
 
 opt = Adam(.0001)
 input_shape = trainX[0].shape
