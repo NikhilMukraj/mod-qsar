@@ -104,6 +104,7 @@ First `.json` file arguments:
   - `tag` : String representing tag to use in `preprocessor.sh` script
   - `min` : Float minimum threshold for being considered active (in nM)
   - `max` : Float maximum threshold for being considered active (in nM)
+    - `min` and `max` arguments only necessary for classification, for a regression dataset omit these arguments
 
 Example `dataset_args.json`:
 
@@ -136,6 +137,11 @@ Example `dataset_args.json`:
         "tag" : "d3",
         "min" : 0,
         "max" : 100
+    },
+    "regression_d3_antagonist.csv" : {
+        "id" : "P28223",
+        "activity_type" : "Ki",
+        "tag" : "d3_regression"
     }
 }
 ```
@@ -275,6 +281,7 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 ## Scoring Functions
 
 - `model` : Uses the QSAR model as a scoring function
+  - To use a regression model, prefix the model filenname with `regr`, the output will be scaled between 0 and 500 nM, the output should be 0 if the input was 0 nM and 1 if the input was 500 nM or more
 - `lipinski` : Uses Lipinski's Rule of Five, (1 if true 0 otherwise)
 - `qed` : Uses QED drug-likeness measure, (1 if true 0 otherwise)
 - `ghose` : Uses Ghose drug-likeness measure, (1 if true 0 otherwise)
