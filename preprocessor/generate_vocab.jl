@@ -29,6 +29,12 @@ debug = parse(Bool, lowercase(ARGS[3]))
 
 dfs = [df_parser.getdf("$(ARGS[i])_filtered_dataset.csv") for i in 4:length(ARGS)]
 
+is_df_string(df_col) = py"pd.api.types.is_string_dtype"(df_col)
+is_df_numeric(df_col) = py"pd.api.types.is_numeric_dtype"(df_col)
+
+RED = "\033[0;31m"
+NC = "\033[0m"
+
 println("Generating augmentations...")
 
 smiles = let smiles
@@ -36,8 +42,16 @@ smiles = let smiles
     for df_num in 1:length(smiles)
         println("Augmentation set number: $df_num")
         for i in tqdm(1:length(smiles[df_num][:, begin]))
-            for augmented in augment_smiles(smiles[df_num][:, begin][i], n)
-                smiles[df_num] = vcat(smiles[df_num], String[augmented smiles[df_num][:, end][i]])
+            if is_df_string(dfs[df_num]["ACTIVITY"])
+                for augmented in augment_smiles(smiles[df_num][:, begin][i], n)
+                    smiles[df_num] = vcat(smiles[df_num], String[augmented smiles[df_num][:, end][i]])
+                end
+            elseif is_df_numeric(dfs[df_num]["ACTIVITY"])
+                for augmented in augment_smiles(smiles[df_num][:, begin][i], n)
+                    smiles[df_num] = vcat(smiles[df_num], Any[augmented smiles[df_num][:, end][i]])
+                end
+            else
+                error("$(RED)Dataset of unknown type found, must either be all strings of \"Active\" or \"Inactive\" or all numeric values$(NC)")
             end
         end
     end
@@ -50,15 +64,29 @@ strings = [[] for df_num in 1:length(smiles)]
 activity = [[] for df_num in 1:length(smiles)]
 vocabs = []
 
+function push_boolean_activity!(activity_vector, smiles_vector, df_id, index)
+    push!(activity_vector[df_id], smiles_vector[df_id][:, end][index] == "Active" ? [1, 0] : [0, 1])
+end
+
+function push_numeric_activity!(activity_vector, smiles_vector, df_id, index)
+    push!(activity_vector[df_id], [smiles_vector[df_id][:, end][index]])
+end
+
 for df_num in tqdm(1:length(smiles))
+    push_type! = let function_to_use
+        if is_df_string(dfs[df_num]["ACTIVITY"])
+            function_to_use = push_boolean_activity!
+        elseif is_df_numeric(dfs[df_num]["ACTIVITY"])
+            function_to_use = push_numeric_activity!
+        end
+        function_to_use
+    end
+
     for i in 1:length(smiles[df_num][:, begin])
         tokens = [j for j in atomwise_tokenizer(smiles[df_num][:, begin][i])]
         push!(strings[df_num], tokens)
-        push!(activity[df_num], smiles[df_num][:, end][i] == "Active" ? [1, 0] : [0, 1])
-
-        # if i % 100 == 0
-        #     println("$df_num | $i | strings: $(length(strings[df_num])), activity: $(length(activity[df_num]))")
-        # end
+        # push!(activity[df_num], smiles[df_num][:, end][i] == "Active" ? [1, 0] : [0, 1])
+        push_type!(activity, smiles, df_num, i)
     end
 
     # create vocab df and convert to tokens
@@ -110,12 +138,14 @@ function pad_features(input_strings, length_max)
     return features
 end
 
+# println(formatted_activity[5-3])
+
 for i in 4:length(ARGS)
     padded_features = pad_features(strings[i-3], max_length)
     padded_features = reduce(hcat, padded_features)'
-
     # save to jld and then process rest in python
     save("$(ARGS[i])_aug_unencoded_data.jld", "features", Matrix(padded_features), compress=true)
 
     save("$(ARGS[i])_aug_activity.jld", "activity", Matrix(formatted_activity[i-3]), compress=true)
+    # save("$(ARGS[i])_aug_activity.jld", "activity", formatted_activity[i-3], compress=true)
 end

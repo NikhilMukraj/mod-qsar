@@ -37,15 +37,34 @@ override = parse(Bool, lowercase(ARGS[4]))
 
 df = df_parser.getdf("$(ARGS[begin])_filtered_dataset.csv")
 
+is_df_string(df_col) = py"pd.api.types.is_string_dtype"(df_col)
+is_df_numeric(df_col) = py"pd.api.types.is_numeric_dtype"(df_col)
+
+RED = "\033[0;31m"
+NC = "\033[0m"
+
 println("Generating augmentations...")
 
 smiles = let temp_df
     temp_df = df_parser.dfToStringMatrix(df)
-    for i in tqdm(1:length(temp_df[:, begin]))
+    # for i in tqdm(1:length(temp_df[:, begin]))
+    #     for augmented in augment_smiles(temp_df[:, begin][i], n)
+    #         temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
+    #     end
+    # end
+
+    if is_df_string(temp_df["ACTIVITY"])
         for augmented in augment_smiles(temp_df[:, begin][i], n)
             temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
         end
+    elseif is_df_numeric(temp_df["ACTIVITY"])
+        for augmented in augment_smiles(temp_df[:, begin][i], n)
+            temp_df = vcat(temp_df, Any[augmented temp_df[:, end][i]])
+        end
+    else
+        error("$(RED)Dataset of unknown type found, must either be all strings of \"Active\" or \"Inactive\" or all numeric values$(NC)")
     end
+    
     temp_df
 end
 
@@ -64,6 +83,23 @@ vocab = df_parser.dfToStringMatrix(df_parser.getdf(vocab_path))
 tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
 reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
 
+function push_boolean_activity!(activity_vector, smiles_vector, df_id, index)
+    push!(activity_vector[df_id], smiles_vector[df_id][:, end][index] == "Active" ? [1, 0] : [0, 1])
+end
+
+function push_numeric_activity!(activity_vector, smiles_vector, df_id, index)
+    push!(activity_vector[df_id], [smiles_vector[df_id][:, end][index]])
+end
+
+push_type! = let function_to_use
+    if is_df_string(temp_df["ACTIVITY"])
+        function_to_use = push_boolean_activity!
+    elseif is_df_numeric(temp_df["ACTIVITY"])
+        function_to_use = push_numeric_activity!
+    end
+    function_to_use
+end
+
 for i in tqdm(1:length(smiles[:, begin]))
     returned_tokens, validToken = return_tokens(smiles[:, begin][i], tokenizer)
     if validToken && override
@@ -76,16 +112,9 @@ for i in tqdm(1:length(smiles[:, begin]))
     processed_tokens = [tokenizer[j] for j in returned_tokens]
     if typeof(max_length) != Bool && length(processed_tokens) <= max_length
         push!(strings, processed_tokens)
-        push!(activity, smiles[:, end][i] == "Active" ? [1, 0] : [0, 1])
+        push_type!(activity, smiles, df_num, i)
     end
-
-    # if i % 100 == 0
-    #     println("$i | strings: $(length(strings)), activity: $(length(activity))")
-    # end
 end
-
-# strings = [[tokenizer[standardizeCase(j)] for j in return_tokens(i)[begin]] for i in smiles[:, begin]]
-# activity = reduce(hcat, [i == "Active" ? [1, 0] : [0, 1] for i in smiles[:, end]])'
 
 activity = reduce(hcat, activity)'
 
