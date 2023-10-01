@@ -9,15 +9,16 @@ import xmltodict
 # from itertools import chain
 
 
-# NEED TO TYPE MULTIPLE ACTIVITY TYPES FOR A SINGLE QUERY
-
 GREEN = '\033[1;32m'
 NC = '\033[0m'
 RED = '\033[0;31m'
 
 necessary_args = {
     'id' : [str], 
-    'activity_type' : [str], 
+    'activity_type' : [str],
+}
+
+boolean_activity_args = {
     'min' : [float, int], 
     'max' : [float, int],
 }
@@ -25,6 +26,15 @@ necessary_args = {
 optional_args = {
     'tag' : [str],
 }
+
+necessary_aggregate_args = {
+    'filenames' : [list],
+}
+
+def check_arg_with_type(arg_type, given_arg, args_template):
+    if arg_type in args_template and type(given_arg) not in args_template[arg_type]:
+        print(f'{RED}Type mismatch in argument at activity query "{arg_type}", expected type in {args_template[arg_type]} at "{arg_type}" argument but got {type(given_arg)}{NC}')
+        sys.exit(1)
 
 def get_activities(target, activity_type, activity, name=None):
     if name:
@@ -81,7 +91,9 @@ def convert_to_nm(arr):
 def generate_dataset(args, aggregate_args=None, do_full_processing=False):
     for name, i in args.items():
         for arg in i:
-            if arg not in necessary_args and arg not in optional_args:
+            if arg not in necessary_args \
+                and arg not in optional_args \
+                and arg not in boolean_activity_args:
                 print(f'{RED}Unknown argument at activity query "{name}": {arg}{NC}')
                 sys.exit(1)
 
@@ -103,15 +115,20 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
                 print(f'{RED}Missing argument in activity query "{name}": {i}{NC}')
                 sys.exit(1)
 
+    boolean_activity = {}
+    for name, arg_set in args.items():
+        boolean_arg_set = [i in arg_set for i in boolean_activity_args.keys()]
+        if len(boolean_arg_set) == 1:
+            print(f'{RED}Activity query must specify both a "min" and "max" argument or neither{NC}')
+            sys.exit(1)
+            
+        boolean_activity[name] = all(boolean_arg_set)
+
     for name, i in args.items():
         for key, value in i.items():
-            if key in necessary_args and type(value) not in necessary_args[key]:
-                print(f'{RED}Type mismatch in argument at activity query "{name}", expected type in {necessary_args[key]} at "{key}" argument but got {type(value)}{NC}')
-                sys.exit(1)
+            check_arg_with_type(key, value, necessary_args)
 
-            if key in optional_args and type(value) not in optional_args[key]:
-                print(f'{RED}Type mismatch in argument at activity query "{name}", expected type in {optional_args[key]} at "{key}" argument but got {type(value)}{NC}')
-                sys.exit(1)
+            check_arg_with_type(key, value, optional_args)
 
             if key == 'min' and (i[key] < 0 or i[key] >= i['max']):
                 print(f'{RED}"min" argument in activity query "{name}" must be greater than 0 and less than argument "max"{NC}')
@@ -124,10 +141,6 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
     if len(set(i['tag'] for i in args.values())) != len(args.keys()):
         print(f'{RED}Activity query cannot have duplicate "tag" arguments{NC}')
         sys.exit(1)
-
-    necessary_aggregate_args = {
-        'filenames' : [list],
-    }
 
     if aggregate_args:
         for key, entry in aggregate_args.items():
@@ -179,7 +192,7 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
                 sys.exit(1)
 
             target_name = name_json['proteinDescription']['recommendedName']['fullName']['value']
-            print(f'{GREEN}Found CHEMBL target for {i}: {target_name}{NC}')
+            print(f'{GREEN}Found BindingDB target for {i}: {target_name}{NC}')
         else:
             print(f'{RED}Target input must be either valid CHEMBL ID or UniProt ID{NC}')
             sys.exit(1)
@@ -192,10 +205,6 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
 
     # units = set(chain.from_iterable([[i['standard_units'] for i in activity_set if i['standard_units']] for activity_set in activities.values()]))
 
-    # name_link = f'https://rest.uniprot.org/uniprotkb/{i["id"]}.json'
-    # response = requests.get(name_link)
-    # name_json = json.loads(response.text)
-
     activity_dict = {}
 
     for key, activity_set in activities.items():
@@ -206,25 +215,40 @@ def generate_dataset(args, aggregate_args=None, do_full_processing=False):
     dfs = {}
 
     for name, activity_set in activity_dict.items():
-        is_active = lambda val: args[name]['min'] <= val <= args[name]['max']
-
         df = pd.DataFrame([], columns=['SMILES', 'ACTIVITY'])
-        for i in activity_set:
-            smiles_string, value, _ = i
-            df.loc[len(df.index)] = [smiles_string, 'Active' if is_active(value) else 'Inactive']
+        if boolean_activity[name]:
+            is_active = lambda val: args[name]['min'] <= val <= args[name]['max']
 
+            for i in activity_set:
+                smiles_string, value, _ = i
+                df.loc[len(df.index)] = [smiles_string, 'Active' if is_active(value) else 'Inactive']
+        else:
+            for i in activity_set:
+                smiles_string, value, _ = i
+                df.loc[len(df.index)] = [smiles_string, value]
+        
         dfs[name] = df
 
     [df.to_csv(name, index=None) for name, df in dfs.items()]
 
     for name, df in dfs.items():
         print(name)
-        print(df['ACTIVITY'].value_counts())
+        if boolean_activity[name]:
+            print(df['ACTIVITY'].value_counts())
+        else:
+            print(f'Binding affinity average (nM): {df["ACTIVITY"].mean()}')
+            print(f'Binding affinity standard deviation (nM): {df["ACTIVITY"].std()}')
 
     if aggregate_args:
         for filename, names in aggregate_args.items():
             names = names['filenames']
-            pd.concat([dfs[name] for name in names]).to_csv(filename, index=None)
+            if len(set([boolean_activity[i] for i in names])) == 1:
+                pd.concat([dfs[name] for name in names]).to_csv(filename, index=None)
+            else:
+                print(f'{RED}Aggregate of {names} should have either all boolean activities or all actual binding affinities{NC}')
+                sys.exit()
 
-    print(f'{GREEN}Finished creating CHEMBL dataset{NC}')
+        print(f'{GREEN}Finished aggregation of dataset{NC}')        
+
+    print(f'{GREEN}Finished creating dataset{NC}')
     
