@@ -13,6 +13,7 @@ from tensorflow.keras import models
 from smiles_tools import return_tokens
 from smiles_tools import SmilesEnumerator
 from bbb_gia import bbb_coords, gia_coords
+from model_class import ClassifierModel, RegressionModel
 from c_wrapper import seqOneHot
 from ml_scorer import get_score
 import string_ga
@@ -287,16 +288,20 @@ tokenizer = {i : n for n, i in enumerate(vocab)}
 
 potential_models = [i for i in contents['scoring_function'] if '.h5' in i]
 if len(potential_models) > 0:
-    models_array = [models.load_model(i) for i in potential_models]
+    # models_array = [models.load_model(i) for i in potential_models]
+    models_array = [ClassifierModel(i) if not i.startswith('regr') else RegressionModel(i)
+                    for i in potential_models]
     print('Compiling models...')
     [model.compile() for model in models_array]
     if contents['max_len']:
         max_len = contents['max_len']
-    elif len(set([model.layers[0].output_shape[1] for model in models_array])) != 1:
+    elif len(set([i.model.layers[0].output_shape[1] for i in models_array])) != 1:
+    # elif len(set([model.layers[0].output_shape[1] for model in models_array])) != 1:
         print(f'{RED}All models must have same input shape{NC}')
         sys.exit(1)
     else:
-        max_len = models_array[0].layers[0].output_shape[1]
+        # max_len = models_array[0].layers[0].output_shape[1]
+        max_len = models_array[0].model.layers[0].output_shape[1]
     seq_shape = np.array([max_len, np.max([i+1 for i in tokenizer.values()])+1], dtype=np.int32)
     model_pred = True
 else:
@@ -308,7 +313,10 @@ def ensemble_predict(tokens):
     full_seq = np.hstack([np.zeros(max_len-len(initial_seq)), initial_seq])
     full_seq = seqOneHot(np.array(full_seq, dtype=np.int32), seq_shape).reshape(1, *seq_shape)
     
-    return np.hstack([i.predict(full_seq, verbose=0) for i in models_array])
+    # return np.hstack([i.predict(full_seq, verbose=0) for i in models_array])
+    return np.hstack([i.predict(full_seq) for i in models_array])
+    # encapsulate regression models in class to use predict on it and automatically do
+    # clipping and normalization
 
 def augment_smiles(string, n):
     sme = SmilesEnumerator()
@@ -371,7 +379,8 @@ def model_scoring(string, scoring_args):
         return -1 * get_score(weight * np.hstack([pred, likeness_score]), np.array(target))
     else:
         augs = get_augs(string, num_of_augments)        
-        pred = np.hstack([i.predict(augs, verbose=0) for i in models_array]).sum(axis=0) / len(augs)
+        # pred = np.hstack([i.predict(augs, verbose=0) for i in models_array]).sum(axis=0) / len(augs)
+        pred = np.hstack([i.predict(augs) for i in models_array]).sum(axis=0) / len(augs)
 
         if strict and strictWeightReq(molecule):
             return -20  
@@ -380,7 +389,7 @@ def model_scoring(string, scoring_args):
 
 scoring_args = contents['target']
 
-if len(scoring_args) != sum(model.layers[-1].output_shape[1] for model in models_array) + len(drug_likeness_metric):
+if len(scoring_args) != sum(i.model.layers[-1].output_shape[1] for i in models_array) + len(drug_likeness_metric):
     print(f'{RED}Target arugment does not match scoring functions{NC}')
     sys.exit(1)
 if [i for i in scoring_args if not 0 <= i <= 1]:
