@@ -297,9 +297,6 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
-- Automatically calculate maximum length for add_dataset
-- Option to select top n amount of molecules as active or inactive
-- Add option to omit `vocab.csv` file if not necessary
 - Change preprocessing step to append to `.npy` file as loop progresses
 - Debug information
 - Add hyperparameter optimization
