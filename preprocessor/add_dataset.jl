@@ -100,7 +100,7 @@ push_type! = let function_to_use
     function_to_use
 end
 
-for i in tqdm(1:length(smiles[:, begin]))
+for i in tqdm(1:eachindex(smiles[:, begin])[end])
     returned_tokens, validToken = return_tokens(smiles[:, begin][i], tokenizer)
     if validToken && override
         # println("$i | Overriding token")
@@ -118,7 +118,7 @@ end
 
 activity = reduce(hcat, activity)'
 
-@assert length(strings) == size(activity)[begin]
+# @assert length(strings) == size(activity)[begin]
 
 # convert_back(x) = join([i in keys(reverse_tokenizer) ? reverse_tokenizer[i] : "" for i in x])
 

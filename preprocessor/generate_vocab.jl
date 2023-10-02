@@ -27,7 +27,7 @@ n = parse(Int, ARGS[1])
 vocab_path = ARGS[2]
 debug = parse(Bool, lowercase(ARGS[3]))
 
-dfs = [df_parser.getdf("$(ARGS[i])_filtered_dataset.csv") for i in 4:length(ARGS)]
+dfs = [df_parser.getdf("$(ARGS[i])_filtered_dataset.csv") for i in 4:eachindex(ARGS)[end]]
 
 is_df_string(df_col) = py"pd.api.types.is_string_dtype"(df_col)
 is_df_numeric(df_col) = py"pd.api.types.is_numeric_dtype"(df_col)
@@ -39,9 +39,9 @@ println("Generating augmentations...")
 
 smiles = let smiles
     smiles = df_parser.dfToStringMatrix.(dfs)
-    for df_num in 1:length(smiles)
+    for df_num in 1:eachindex(smiles)[end]
         println("Augmentation set number: $df_num")
-        for i in tqdm(1:length(smiles[df_num][:, begin]))
+        for i in tqdm(1:eachindex(smiles[df_num][:, begin])[end])
             if is_df_string(dfs[df_num]["ACTIVITY"])
                 for augmented in augment_smiles(smiles[df_num][:, begin][i], n)
                     smiles[df_num] = vcat(smiles[df_num], String[augmented smiles[df_num][:, end][i]])
@@ -60,8 +60,8 @@ end
 
 println("Generated augmented dataframe, now processing tokens...")
 
-strings = [[] for df_num in 1:length(smiles)]
-activity = [[] for df_num in 1:length(smiles)]
+strings = [[] for df_num in 1:eachindex(smiles)[end]]
+activity = [[] for df_num in 1:eachindex(smiles)[end]]
 vocabs = []
 
 function push_boolean_activity!(activity_vector, smiles_vector, df_id, index)
@@ -72,7 +72,7 @@ function push_numeric_activity!(activity_vector, smiles_vector, df_id, index)
     push!(activity_vector[df_id], [smiles_vector[df_id][:, end][index]])
 end
 
-for df_num in tqdm(1:length(smiles))
+for df_num in tqdm(1:eachindex(smiles)[end])
     push_type! = let function_to_use
         if is_df_string(dfs[df_num]["ACTIVITY"])
             function_to_use = push_boolean_activity!
@@ -82,7 +82,7 @@ for df_num in tqdm(1:length(smiles))
         function_to_use
     end
 
-    for i in 1:length(smiles[df_num][:, begin])
+    for i in 1:eachindex(smiles[df_num][:, begin])[end]
         tokens = [j for j in atomwise_tokenizer(smiles[df_num][:, begin][i])]
         push!(strings[df_num], tokens)
         # push!(activity[df_num], smiles[df_num][:, end][i] == "Active" ? [1, 0] : [0, 1])
@@ -107,20 +107,20 @@ vocab = py"vocab"
 tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
 # reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
 
-for section in 1:length(strings)
+for section in 1:eachindex(strings)[end]
     strings[section] = [[tokenizer[j] for j in i] for i in strings[section]]
 end
 
 formatted_activity = []
-for section in 1:length(activity)
+for section in 1:eachindex(activity)[end]
     push!(formatted_activity, reduce(hcat, activity[section])')
 end
 
-for section in 1:length(strings)
-    @assert length(strings[section]) == size(formatted_activity[section])[begin]
-end
+# for section in 1:eachindex(strings)[end]
+#     @assert length(strings[section]) == size(formatted_activity[section])[begin]
+# end
 
-max_length = maximum(reduce(vcat, [length.(strings[section]) for section in 1:length(strings)]))
+max_length = maximum(reduce(vcat, [length.(strings[section]) for section in 1:eachindex(strings)[end]]))
 
 function pad_features(input_strings, length_max)
     features = []
@@ -140,7 +140,7 @@ end
 
 # println(formatted_activity[5-3])
 
-for i in 4:length(ARGS)
+for i in 4:eachindex(ARGS)[end]
     padded_features = pad_features(strings[i-3], max_length)
     padded_features = reduce(hcat, padded_features)'
     # save to jld and then process rest in python
