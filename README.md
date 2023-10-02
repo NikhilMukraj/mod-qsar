@@ -297,7 +297,6 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
-- Reformat `.jl` files to use `eachIndex` instead of `length` ([https://docs.julialang.org/en/v1/base/arrays/#Base.eachindex])
 - Automatically calculate maximum length for add_dataset
 - Option to select top n amount of molecules as active or inactive
 - Add option to omit `vocab.csv` file if not necessary
