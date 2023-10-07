@@ -21,9 +21,7 @@ df = df[['SMILES', 'ACTIVITY']]
 
 # check type, if numeric skip this and say youre skipping this
 # if string proceed as normal
-# if neither specify that this is an unknown datatype
-
-# https://stackoverflow.com/questions/19900202/how-to-determine-whether-a-column-variable-is-numeric-or-not-in-pandas-numpy
+# if neither specify that this is an unknown datatype that cannot be used
 
 if is_string_dtype(df['ACTIVITY']):
     df = df.loc[df['ACTIVITY'] != 'Inconclusive', :]

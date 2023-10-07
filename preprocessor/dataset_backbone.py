@@ -13,6 +13,7 @@ GREEN = '\033[1;32m'
 NC = '\033[0m'
 RED = '\033[0;31m'
 
+# list out all arguments used
 necessary_args = {
     'id' : [str], 
     'activity_type' : [str],
@@ -40,6 +41,7 @@ def get_activities(target, activity_type, activity, name=None):
     if name:
         print(f'Getting bioactivty for {name}')
 
+    # processes chembl ids versus uniprot
     if target.startswith('CHEMBL'):
         activity_set = [i for i in tqdm(activity.filter(target_chembl_id=target).filter(standard_type=activity_type))]
 
