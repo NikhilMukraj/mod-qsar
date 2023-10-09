@@ -96,7 +96,7 @@ for i in args_dict.keys():
 for i in args_dict.values():
     args_list += ['-t', i]
 
-args_list += ['-n', str(num), 'v', vocab, '-s', str(sysimage).lower()]
+args_list += ['-n', str(num), '-v', vocab, '-s', str(sysimage).lower()]
 
 with subprocess.Popen(args_list, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as process:
     for line in process.stdout:
