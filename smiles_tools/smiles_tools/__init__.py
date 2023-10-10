@@ -1,2 +1,2 @@
 from .tokenization import *
-from .smienumeration import *
+from .smile_enumeration import *
