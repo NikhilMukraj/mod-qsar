@@ -5,7 +5,7 @@ from pandas.api.types import is_numeric_dtype
 import numpy as np
 import os
 import sys
-from SmilesPE.pretokenizer import atomwise_tokenizer
+# from SmilesPE.pretokenizer import atomwise_tokenizer
 
 
 NC = '\033[0m'
@@ -18,6 +18,9 @@ if len(sys.argv) < 3:
 df = pd.read_csv(f'{sys.argv[1]}', low_memory=False)
 
 df = df[['SMILES', 'ACTIVITY']]
+
+# remove valency patterns
+df = df[~df['SMILES'].str.contains(';')]
 
 # check type, if numeric skip this and say youre skipping this
 # if string proceed as normal
