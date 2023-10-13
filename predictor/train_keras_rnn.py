@@ -13,6 +13,10 @@ print(config.list_physical_devices('GPU'))
 
 # sudo cp /usr/lib/python3/dist-packages/tensorflow/libcudnn* /usr/lib/x86_64-linux-gnu/
 
+if len(sys.argv) < 4:
+    print('Too few args...')
+    sys.exit(1)
+
 X = np.load(sys.argv[1])
 Y = np.load(sys.argv[2])
 
