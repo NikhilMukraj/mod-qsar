@@ -3,6 +3,7 @@ import pandas as pd
 from pandas.api.types import is_string_dtype
 from pandas.api.types import is_numeric_dtype
 import numpy as np
+import re
 import os
 import sys
 # from SmilesPE.pretokenizer import atomwise_tokenizer
@@ -21,6 +22,30 @@ df = df[['SMILES', 'ACTIVITY']]
 
 # remove valency patterns
 df = df[~df['SMILES'].str.contains(';')]
+
+def has_atomic_number(string):
+    return re.search('\[#\d+\]', string)
+
+mapping = {
+    '[#1]': 'H',
+    '[#6]': 'C',
+    '[#7]': 'N',
+    '[#8]': 'O',
+    '[#9]': 'F',
+    '[#15]': 'P',
+    '[#16]': 'S',
+    '[#17]': 'Cl',
+    '[#35]': 'Br',
+    '[#53]': 'I',
+}
+
+def convert_atomic_number(string):
+    for key, value in mapping.items():
+        string = string.replace(key, value)
+
+    return string
+
+df['SMILES'] = df['SMILES'].apply(lambda x: x if not has_atomic_number(x) else convert_atomic_number(x))
 
 # check type, if numeric skip this and say youre skipping this
 # if string proceed as normal
