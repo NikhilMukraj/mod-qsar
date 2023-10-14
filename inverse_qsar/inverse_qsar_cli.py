@@ -286,10 +286,13 @@ drug_likeness_metric.extend(custom_funcs)
 vocab = pd.read_csv(contents['vocab'])['tokens'].to_list()
 tokenizer = {i : n for n, i in enumerate(vocab)}
 
+def is_regression_model(string):
+    return os.path.basename(string).startswith('regr')
+
 potential_models = [i for i in contents['scoring_function'] if '.h5' in i]
 if len(potential_models) > 0:
     # models_array = [models.load_model(i) for i in potential_models]
-    models_array = [ClassifierModel(i) if not i.startswith('regr') else RegressionModel(i)
+    models_array = [ClassifierModel(i) if not is_regression_model('regr') else RegressionModel(i)
                     for i in potential_models]
     print('Compiling models...')
     [model.compile() for model in models_array]
