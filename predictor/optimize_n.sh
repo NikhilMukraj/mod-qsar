@@ -15,6 +15,7 @@ do
         -a : optional, integer minimum for range greater than 0, defaults to 2
         -b : optional, integer maximum for range greater than -a, defaults to 11
         -i : optional, integer increment or step, defaults to 2
+        -p : optional, boolean as to whether or not to load packages with --sysimage, defaults to false
         "
         exit 0
     fi
@@ -31,6 +32,7 @@ do
         a) minimum=${OPTARG};;
         b) maximum=${OPTARG};;
         i) step=${OPTARG};;
+        p) sysimage=${OPTARG};;
     esac
 done
 
@@ -70,7 +72,7 @@ if [[ ! -z $sample ]]
 then
     check_if_pos_int $sample
 
-    if [[ ! $1 == 0 ]]
+    if [[ $1 == 0 ]]
     then
         printf "${RED}${sample} is 0${NC}\n"
         exit 1
@@ -83,7 +85,7 @@ if [[ ! -z $minimum ]]
 then
     check_if_pos_int $minimum
 
-    if [[ ! $1 == 0 ]]
+    if [[ $1 == 0 ]]
     then
         printf "${RED}${minimum} is 0${NC}\n"
         exit 1
@@ -96,7 +98,7 @@ if [[ ! -z $maximum ]]
 then
     check_if_pos_int $maximum
 
-    if [[ ! $1 == 0 ]]
+    if [[ $1 == 0 ]]
     then
         printf "${RED}${maximum} is 0${NC}\n"
         exit 1
@@ -109,7 +111,7 @@ if [[ ! -z $step ]]
 then
     check_if_pos_int $step
 
-    if [[ ! $1 == 0 ]]
+    if [[ $1 == 0 ]]
     then
         printf "${RED}${step} is 0${NC}\n"
         exit 1
@@ -127,7 +129,24 @@ then
     exit 1
 fi
 
-if [[ ! -f "pkgs.so" ]]
+convert_to_bool() {
+    result=$1
+    if [[ -z $1 || $1 == "f" || $1 == "false" ]]
+    then
+        result="False"
+    elif [[ $1 == "t" || $1 == "true" ]]
+    then
+        result="True"
+    else
+        echo "$1 is not true or false, defaulting to false"
+        result="False"
+    fi
+}
+
+convert_to_bool $sysimage
+sysimage=$result
+
+if [[ ! -f "pkgs.so" && $sysimage != "False" ]]
 then 
     printf "Julia sysimage not found, compiling Flux sysimage...\n"
     julia -e 'using PackageCompiler; create_sysimage([:Flux], sysimage_path="pkgs.so")' || exit 1
@@ -135,4 +154,9 @@ fi
 
 python3 aug_accs_calc.py "$model" "$x" "$y" $sample "$vocab" $minimum $maximum $step || exit 1
 printf "${GREEN}Finished calculating accuracy${NC}\n"
-julia --sysimage pkgs.so optimize_n.jl || exit 1
+if [[ $sysimage == "True" ]]
+then
+    julia --sysimage pkgs.so optimize_n.jl || exit 1
+else
+    julia optimize_n.jl || exit 1
+fi

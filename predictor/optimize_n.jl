@@ -1,5 +1,5 @@
 using Flux
-include("../../preprocessor/df_parser.jl")
+include("../preprocessor/df_parser.jl")
 
 
 accs = df_parser.dfToMatrix(df_parser.getdf("./augmented_accs.csv"))
@@ -21,20 +21,20 @@ for i in 1:100
     Flux.train!(loss, ps, data, opt)
 end
 
-scatter(accs[:, begin], accs[:, end], color="blue")
-test_range = Float32.(hcat(collect(0:.01:10)))
-plot!(test_range, predict(test_range), color="green")
+# scatter(accs[:, begin], accs[:, end], color="blue")
+test_range = Float32.(hcat(collect(minimum(accs[:, begin]):.01:maximum(accs[:, begin]))))
+# plot!(test_range, predict(test_range), color="green")
 
 # finds where logistic curve starts to peak based on threshold
 preds = predict(test_range)
-optimized_n = 0
+optimized_n_value = 0
 for (n, i) in enumerate(preds)
     if round(i; digits=2) >= round(maximum(preds); digits=1)
-        optimized_n = Int32(round(test_range[n]))
+        optimized_n_value = Int32(round(test_range[n]))
         break
     end
 end
 
 GREEN = "\033[1;32m"
 NC = "\033[0m"
-println("Optimized amount of augmentations: $(GREEN)$(optimized_n)$(NC)")
+println("Optimized amount of augmentations: $(GREEN)$(optimized_n_value)$(NC)")
