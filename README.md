@@ -192,7 +192,7 @@ python3 train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
 
 ```bash
 cd predictor
-bash ./optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10 -a 2 -b 11 -i 2
+bash ./optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocessor/vocab.csv -s 10 -a 2 -b 11 -i 2 -p false
 ```
 
 - `-x` : `.npy` file containing tokenized X features
@@ -203,6 +203,7 @@ bash ./optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocesso
 - `-a` : (Optional) positive integer greater than 0, minimum part of augmentation number range, defaults to 2
 - `-b` : (Optional) positive integer greater than 0, maximum part of augmentation number range, defaults to 11
 - `-i` : (Optional) positive integer greater than 0, increment of augmentation number range, defaults to 2
+- `-p` : (Optional) boolean specifying whether or not to load packages with --sysimage, defaults to false
 
 Generate chemicals:
 
@@ -298,6 +299,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 ## Todo
 
 - Convert atomic number in SMILES to element name
+- Add option to name `augmented_accs.csv` output from `optimize_n.jl`
 - Windows integration (replacing shell scripting with Python)
 - Change preprocessing step to append to `.npy` file as loop progresses
 - Debug information
