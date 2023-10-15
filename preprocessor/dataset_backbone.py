@@ -1,6 +1,5 @@
 from chembl_webresource_client.new_client import new_client
 from tqdm import tqdm
-import numpy as np
 import pandas as pd
 import sys
 import json
