@@ -67,6 +67,10 @@ def get_activities(target, activity_type, activity, name=None):
                     'standard_units' : 'nM',
                 })
 
+        if len(activity_set) == 0:
+            print(f'{RED}No bioactivities found{NC}')
+            sys.exit(1)
+
         if name:
             print(f'{GREEN}Finished getting bioactivity for {name}{NC}')
     else:
