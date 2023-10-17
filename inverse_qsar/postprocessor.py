@@ -13,6 +13,13 @@ import sys
 import os
 
 
+NC = '\033[0m'
+RED = '\033[0;31m'
+
+if len(sys.argv) < 3:
+    print(f'{RED}Requires files input argument and output directory argument...{NC}')
+    sys.exit(1)
+
 files = pd.read_csv(sys.argv[1]).iloc[:, 0]
 image_dir = sys.argv[2]
 
