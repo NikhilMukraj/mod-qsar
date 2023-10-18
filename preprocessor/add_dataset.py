@@ -7,7 +7,7 @@ import subprocess
 
 GREEN = '\033[1;32m'
 NC = '\033[0m'
-RED='\033[0;31m'
+RED = '\033[0;31m'
 
 parser = argparse.ArgumentParser(description='Add datasets to pre-existing vocab file using provided targets')
 parser.add_argument('args')

@@ -23,7 +23,7 @@ import importlib.util
 
 GREEN = '\033[1;32m'
 NC = '\033[0m'
-RED='\033[0;31m'
+RED = '\033[0;31m'
 
 if len(sys.argv) < 3:
     print(f"{RED}Too few args...{NC}")
