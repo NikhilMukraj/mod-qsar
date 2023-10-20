@@ -28,4 +28,5 @@ class RegressionModel(Model):
 
         value = np.clip(value, 0, 500)
         value = (value - 0) / (500 - 0)
+        
         return np.power(2, value) - 1
