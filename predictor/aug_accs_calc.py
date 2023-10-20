@@ -81,3 +81,4 @@ for index, num in enumerate(testing_range):
 
 pd.DataFrame({'n': [0] + list(accs.keys()), 
               'accuracy': [initial_acc] + list(accs.values())}).to_csv('augmented_accs.csv', index=False)
+              
