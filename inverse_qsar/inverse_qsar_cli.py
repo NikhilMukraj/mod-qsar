@@ -108,6 +108,7 @@ def remove_next_dups(lst):
             lst.pop(i+1)
         else:
             i += 1
+            
     return lst
 
 if len(dups := remove_next_dups(['.h5' in i for i in contents['scoring_function']])) > 2 \
