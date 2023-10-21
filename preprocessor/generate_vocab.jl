@@ -72,6 +72,7 @@ function push_numeric_activity!(activity_vector, smiles_vector, df_id, index)
     push!(activity_vector[df_id], [smiles_vector[df_id][:, end][index]])
 end
 
+# generates molecule activity mappings
 for df_num in tqdm(1:eachindex(smiles)[end])
     push_type! = let function_to_use
         if is_df_string(dfs[df_num]["ACTIVITY"])
@@ -138,8 +139,7 @@ function pad_features(input_strings, length_max)
     return features
 end
 
-# println(formatted_activity[5-3])
-
+# generates dataset as .jld file
 for i in 4:eachindex(ARGS)[end]
     padded_features = pad_features(strings[i-3], max_length)
     padded_features = reduce(hcat, padded_features)'

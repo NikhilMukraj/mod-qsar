@@ -46,6 +46,7 @@ def convert_atomic_number(string):
 
     return string
 
+# maps common element numbers to element names
 df['SMILES'] = df['SMILES'].apply(lambda x: x if not has_atomic_number(x) else convert_atomic_number(x))
 
 # check type, if numeric skip this and say youre skipping this
