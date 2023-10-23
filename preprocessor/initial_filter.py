@@ -29,6 +29,7 @@ def has_atomic_number(string):
 mapping = {
     '[#1]' : 'H',
     '[#3]' : 'Li',
+    '[#5]' : 'B',
     '[#6]' : 'C',
     '[#7]' : 'N',
     '[#8]' : 'O',
