@@ -180,7 +180,6 @@ def get_lipinski(molecule):
     return lipi   
 
 def get_custom_lipinski(molecule):
-    # generationThreshold = string_ga.current_generation['gen'] > contents['generations'] / 2
     weightThreshold = 200 >= Descriptors.ExactMolWt(molecule)
     saThreshold = string_ga.calculateScore(molecule) > 3
 
@@ -267,6 +266,7 @@ def get_function(file_path, function_name):
 def generate_function(func):
     return lambda x: float(func(x))
 
+# mapping for drug metrics
 drug_likeness_parser = {
     'lipinski': get_lipinski, 
     'custom_lipinski': get_custom_lipinski,
@@ -290,9 +290,9 @@ tokenizer = {i : n for n, i in enumerate(vocab)}
 def is_regression_model(string):
     return os.path.basename(string).startswith('regr')
 
+# loads models
 potential_models = [i for i in contents['scoring_function'] if '.h5' in i]
 if len(potential_models) > 0:
-    # models_array = [models.load_model(i) for i in potential_models]
     models_array = [ClassifierModel(i) if not is_regression_model('regr') else RegressionModel(i)
                     for i in potential_models]
     print('Compiling models...')
@@ -300,11 +300,9 @@ if len(potential_models) > 0:
     if contents['max_len']:
         max_len = contents['max_len']
     elif len(set([i.model.layers[0].output_shape[1] for i in models_array])) != 1:
-    # elif len(set([model.layers[0].output_shape[1] for model in models_array])) != 1:
         print(f'{RED}All models must have same input shape{NC}')
         sys.exit(1)
     else:
-        # max_len = models_array[0].layers[0].output_shape[1]
         max_len = models_array[0].model.layers[0].output_shape[1]
     seq_shape = np.array([max_len, np.max([i+1 for i in tokenizer.values()])+1], dtype=np.int32)
     model_pred = True
@@ -317,10 +315,7 @@ def ensemble_predict(tokens):
     full_seq = np.hstack([np.zeros(max_len-len(initial_seq)), initial_seq])
     full_seq = seqOneHot(np.array(full_seq, dtype=np.int32), seq_shape).reshape(1, *seq_shape)
     
-    # return np.hstack([i.predict(full_seq, verbose=0) for i in models_array])
     return np.hstack([i.predict(full_seq) for i in models_array])
-    # encapsulate regression models in class to use predict on it and automatically do
-    # clipping and normalization
 
 def augment_smiles(string, n):
     sme = SmilesEnumerator()
@@ -383,7 +378,6 @@ def model_scoring(string, scoring_args):
         return -1 * get_score(weight * np.hstack([pred, likeness_score]), np.array(target))
     else:
         augs = get_augs(string, num_of_augments)        
-        # pred = np.hstack([i.predict(augs, verbose=0) for i in models_array]).sum(axis=0) / len(augs)
         pred = np.hstack([i.predict(augs) for i in models_array]).sum(axis=0) / len(augs)
 
         if strict and strictWeightReq(molecule):
