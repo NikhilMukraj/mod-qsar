@@ -135,6 +135,7 @@ if not os.path.isfile(contents['vocab']):
 
 strict = contents['strict']
 
+# applies qed drug likeness 
 def get_qed(molecule):
     qed = 0
     
@@ -160,6 +161,7 @@ def get_qed(molecule):
         
     return qed
 
+# applies lipinski's rule of 5 drug likeness
 def get_lipinski(molecule):
     lipi = 0
 
@@ -179,6 +181,8 @@ def get_lipinski(molecule):
 
     return lipi   
 
+# applies lipisnki's rule of 5 with weight requirements and 
+# checks how synthesizable it is 
 def get_custom_lipinski(molecule):
     weightThreshold = 200 >= Descriptors.ExactMolWt(molecule)
     saThreshold = string_ga.calculateScore(molecule) > 3
@@ -188,6 +192,7 @@ def get_custom_lipinski(molecule):
     else: 
         return get_lipinski(molecule)
 
+# applies ghose drug likeness filter
 def get_ghose(molecule):
     ghose = 0
 
@@ -207,6 +212,7 @@ def get_ghose(molecule):
 
     return ghose
 
+# removes larger rings
 def limit_rings(molecule):
     ring_lens = [len(ring) for ring in molecule.GetRingInfo().AtomRings() 
                 if molecule.GetAtomWithIdx(ring[0]).GetSymbol() == 'C']
@@ -220,6 +226,7 @@ params = FilterCatalogParams()
 params.AddCatalog(FilterCatalogParams.FilterCatalogs.PAINS)
 catalog = FilterCatalog(params)
 
+# helps with sensitivity
 def get_pains(molecule):
     isPAINS = catalog.GetFirstMatch(molecule)
     return int(isPAINS is None)
@@ -232,6 +239,7 @@ bbb = pd.DataFrame(bbb_coords, columns=['tpsa', 'wlogp'])
 gia_ellipse = Polygon(gia_coords)
 bbb_ellipse = Polygon(bbb_coords)
 
+# tests if passes blood brain barrier 
 def bbb_permeable(molecule):
     tpsa = Descriptors.TPSA(molecule, includeSandP=True)
     wlogp = Descriptors.MolLogP(molecule)
@@ -241,6 +249,7 @@ def bbb_permeable(molecule):
     else:
         return 0
 
+# tests how well intestinal tract absorbs it
 def gastro_absorption(molecule):
     tpsa = Descriptors.TPSA(molecule, includeSandP=True)
     wlogp = Descriptors.MolLogP(molecule)
