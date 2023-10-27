@@ -21,8 +21,10 @@ for i in 1:100
     Flux.train!(loss, ps, data, opt)
 end
 
-# scatter(accs[:, begin], accs[:, end], color="blue")
 test_range = Float32.(hcat(collect(minimum(accs[:, begin]):.01:maximum(accs[:, begin]))))
+
+# plots logistic curve for visual analysis
+# scatter(accs[:, begin], accs[:, end], color="blue")
 # plot!(test_range, predict(test_range), color="green")
 
 # finds where logistic curve starts to peak based on threshold

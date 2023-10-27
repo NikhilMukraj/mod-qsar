@@ -117,12 +117,9 @@ for section in 1:eachindex(activity)[end]
     push!(formatted_activity, reduce(hcat, activity[section])')
 end
 
-# for section in 1:eachindex(strings)[end]
-#     @assert length(strings[section]) == size(formatted_activity[section])[begin]
-# end
-
 max_length = maximum(reduce(vcat, [length.(strings[section]) for section in 1:eachindex(strings)[end]]))
 
+# if length is less than maximum, pads input with zeros
 function pad_features(input_strings, length_max)
     features = []
     for i in input_strings
