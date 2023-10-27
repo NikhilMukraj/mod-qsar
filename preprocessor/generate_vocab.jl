@@ -3,6 +3,7 @@ using JLD
 using ProgressBars
 include("df_parser.jl")
 
+
 py"""
 from smiles_tools import return_tokens
 from smiles_tools import SmilesEnumerator
