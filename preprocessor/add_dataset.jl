@@ -77,6 +77,7 @@ vocab = df_parser.dfToStringMatrix(df_parser.getdf(vocab_path))
 
 tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
 reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
+# convert_back(x) = join([i in keys(reverse_tokenizer) ? reverse_tokenizer[i] : "" for i in x])
 
 function push_boolean_activity!(activity_vector, smiles_vector, df_id, index)
     push!(activity_vector[df_id], smiles_vector[df_id][:, end][index] == "Active" ? [1, 0] : [0, 1])
@@ -113,14 +114,11 @@ end
 
 activity = reduce(hcat, activity)'
 
-# @assert length(strings) == size(activity)[begin]
-
-# convert_back(x) = join([i in keys(reverse_tokenizer) ? reverse_tokenizer[i] : "" for i in x])
-
 if typeof(max_length) == Bool
     max_length = maximum(length.(strings))
 end
 
+# if length does match pad with zeros until length matches
 function pad_features(input_strings, length_max)
     features = []
     for i in input_strings
