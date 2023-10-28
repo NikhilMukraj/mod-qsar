@@ -47,18 +47,13 @@ println("Generating augmentations...")
 
 smiles = let temp_df
     temp_df = df_parser.dfToStringMatrix(df)
-    # for i in tqdm(1:length(temp_df[:, begin]))
-    #     for augmented in augment_smiles(temp_df[:, begin][i], n)
-    #         temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
-    #     end
-    # end
 
     if is_df_string(temp_df["ACTIVITY"])
-        for augmented in augment_smiles(temp_df[:, begin][i], n)
+        for augmented in tqdm(augment_smiles(temp_df[:, begin][i], n))
             temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
         end
     elseif is_df_numeric(temp_df["ACTIVITY"])
-        for augmented in augment_smiles(temp_df[:, begin][i], n)
+        for augmented in tqdm(augment_smiles(temp_df[:, begin][i], n))
             temp_df = vcat(temp_df, Any[augmented temp_df[:, end][i]])
         end
     else
