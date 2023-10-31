@@ -42,6 +42,7 @@ mapping = {
     '[#20]' : 'Ca',
     '[#35]' : 'Br',
     '[#53]' : 'I',
+    '[#83]' : 'Bi',
 }
 
 def convert_atomic_number(string):
