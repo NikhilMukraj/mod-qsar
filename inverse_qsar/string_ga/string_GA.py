@@ -94,10 +94,6 @@ def sanitize(population, scores, population_size, prune_population):
 
     return new_population, new_scores
 
-
-current_generation = {'gen': 0}
-
-
 def GA(args):
     population_size, file_name, scoring_function, generations, mating_pool_size, mutation_rate, \
     scoring_args, max_score, prune_population, seed, threads = args
@@ -117,7 +113,6 @@ def GA(args):
     score_history = []
 
     for generation in tqdm(range(generations)):
-        current_generation['gen'] += 1
         mating_pool = make_mating_pool(population, fitness, mating_pool_size)
         new_population = reproduce(mating_pool, population_size, mutation_rate)
 
