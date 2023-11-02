@@ -298,9 +298,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
-- Convert atomic number in SMILES to element name
 - Add option to name `augmented_accs.csv` output from `optimize_n.jl`
-- Windows integration (replacing shell scripting with Python)
 - Change preprocessing step to append to `.npy` file as loop progresses
 - Debug information
 - Add hyperparameter optimization
