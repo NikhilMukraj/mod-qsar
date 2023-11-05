@@ -299,7 +299,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 ## Todo
 
 - Add option to name `augmented_accs.csv` output from `optimize_n.jl`
-- Change preprocessing step to append to `.npy` file as loop progresses
+- Add option for preprocessing step to append to `.npy` file as loop progresses for memory sake
 - Debug information
 - Add hyperparameter optimization
 - Add Flux model integration
