@@ -340,7 +340,7 @@ def get_augs(string, n):
 
     full_seqs = []
     for tokens in tokens_array:
-        if any([i not in vocab for i in tokens]):
+        if any([i not in vocab for i in tokens]) or len(tokens) > max_len:
             continue
         
         initial_seq = np.array([tokenizer[n]+1 for n in tokens])
