@@ -11,7 +11,7 @@ do
         -y : .npy file containing labels
         -m : .h5 keras model
         -v : optional, vocabulary file, assumes ../preprocessor/vocab.csv if not provided
-        -f : optional, out file name, defaults to augmented_accs.csv
+        -f : optional, out filename, defaults to augmented_accs.csv
         -s : optional, 1 in -s to sample from -x and -y, must be greater than 0
         -a : optional, integer minimum for range greater than 0, defaults to 2
         -b : optional, integer maximum for range greater than -a, defaults to 11
