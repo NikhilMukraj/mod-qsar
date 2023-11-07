@@ -20,8 +20,8 @@ if len(sys.argv) < 3:
     print(f'{RED}Requires files input argument and output directory argument...{NC}')
     sys.exit(1)
 
-files = pd.read_csv(sys.argv[1]).iloc[:, 0]
-image_dir = sys.argv[2]
+image_dir = sys.argv[1]
+files = pd.read_csv(sys.argv[2]).iloc[:, 0]
 
 def mol_to_img(string, name):
     mol = Chem.MolFromSmiles(string)
