@@ -2,7 +2,7 @@ using Flux
 include("../preprocessor/df_parser.jl")
 
 
-accs = df_parser.dfToMatrix(df_parser.getdf("./augmented_accs.csv"))
+accs = df_parser.dfToMatrix(df_parser.getdf(ARGS[begin]))
 
 # sets up logistic model
 a, b, c, d = rand(1), rand(1), rand(1), rand(1)

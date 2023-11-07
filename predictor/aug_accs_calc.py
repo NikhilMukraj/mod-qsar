@@ -80,5 +80,5 @@ for index, num in enumerate(testing_range):
     accs[num] = sum([np.argmax(i[0]) == np.argmax(i[1]) for i in zip(aug_preds, Y)]) / len(Y)
 
 pd.DataFrame({'n': [0] + list(accs.keys()), 
-              'accuracy': [initial_acc] + list(accs.values())}).to_csv('augmented_accs.csv', index=False)
+              'accuracy': [initial_acc] + list(accs.values())}).to_csv(sys.argv[9], index=False)
               

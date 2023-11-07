@@ -11,6 +11,7 @@ do
         -y : .npy file containing labels
         -m : .h5 keras model
         -v : optional, vocabulary file, assumes ../preprocessor/vocab.csv if not provided
+        -f : optional, out file name, defaults to augmented_accs.csv
         -s : optional, 1 in -s to sample from -x and -y, must be greater than 0
         -a : optional, integer minimum for range greater than 0, defaults to 2
         -b : optional, integer maximum for range greater than -a, defaults to 11
@@ -21,7 +22,7 @@ do
     fi
 done
 
-while getopts x:y:m:v:s:a:b:i flag
+while getopts x:y:m:v:f:s:a:b:i flag
 do
     case "${flag}" in
         x) x=${OPTARG};;
@@ -29,6 +30,7 @@ do
         m) model=${OPTARG};;
         s) sample=${OPTARG};;
         v) vocab=${OPTARG};;
+        f) filename=${OPTARG};;
         a) minimum=${OPTARG};;
         b) maximum=${OPTARG};;
         i) step=${OPTARG};;
@@ -129,6 +131,11 @@ then
     exit 1
 fi
 
+if [[ -z $filename ]]
+then
+    filename="augmented_accs.csv"
+fi
+
 convert_to_bool() {
     result=$1
     if [[ -z $1 || $1 == "f" || $1 == "false" ]]
@@ -152,11 +159,11 @@ then
     julia -e 'using PackageCompiler; create_sysimage([:Flux], sysimage_path="pkgs.so")' || exit 1
 fi
 
-python3 aug_accs_calc.py "$model" "$x" "$y" $sample "$vocab" $minimum $maximum $step || exit 1
+python3 aug_accs_calc.py "$model" "$x" "$y" $sample "$vocab" $minimum $maximum $step $filename || exit 1
 printf "${GREEN}Finished calculating accuracy${NC}\n"
 if [[ $sysimage == "True" ]]
 then
-    julia --sysimage pkgs.so optimize_n.jl || exit 1
+    julia --sysimage pkgs.so optimize_n.jl $filename || exit 1
 else
-    julia optimize_n.jl || exit 1
+    julia optimize_n.jl $filename || exit 1
 fi
