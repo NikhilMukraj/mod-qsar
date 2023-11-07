@@ -199,6 +199,7 @@ bash ./optimize_n.sh -x testX.npy -y testY.npy -m rnn_model.h5 -v ../preprocesso
 - `-y` : `.npy` file containing labels
 - `-m` : Path of model to optimize
 - `-v` : (Optional) filename of vocabulary to use (defaults to `../preprocessor/vocab.csv`)
+- `-f` : (Optional) filename of outfile (defaults to `augmented_accs.csv`)
 - `-s` : (Optional) positive integer greater than 0, program will sample 1 in `-s` entries in `-x` and `-y` to evaluate
 - `-a` : (Optional) positive integer greater than 0, minimum part of augmentation number range, defaults to 2
 - `-b` : (Optional) positive integer greater than 0, maximum part of augmentation number range, defaults to 11
@@ -298,7 +299,6 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
-- Add option to name `augmented_accs.csv` output from `optimize_n.jl`
 - Add option for preprocessing step to append to `.npy` file as loop progresses for memory sake
 - Debug information
 - Add hyperparameter optimization
