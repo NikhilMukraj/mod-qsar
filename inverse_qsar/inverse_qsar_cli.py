@@ -307,7 +307,8 @@ def is_regression_model(string):
 # loads models
 potential_models = [i for i in contents['scoring_function'] if '.h5' in i]
 if len(potential_models) > 0:
-    models_array = [ClassifierModel(i) if not is_regression_model('regr') else RegressionModel(i)
+    models_array = [ClassifierModel(i) if not is_regression_model('regr') 
+                    else RegressionModel(i) # Regression(i, maximum_value=regression_max, minimum_value=regression_min)
                     for i in potential_models]
     print('Compiling models...')
     [model.compile() for model in models_array]
