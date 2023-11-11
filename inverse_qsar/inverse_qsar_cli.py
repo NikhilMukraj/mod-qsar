@@ -135,6 +135,11 @@ if not os.path.isfile(contents['vocab']):
 
 strict = contents['strict']
 
+# if 'regression_max' not in contents:
+#     regression_max = 500
+# if 'regression_min' not in contents:
+#     regression_min = 0
+
 # applies qed drug likeness 
 def get_qed(molecule):
     qed = 0
