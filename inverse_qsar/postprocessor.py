@@ -49,9 +49,8 @@ def get_name(name):
         return None
 
 if len(sys.argv) > 3:
-    print('Getting compounds...')
+    print('Cross checking to find compounds in existing databases...')
     with ThreadPoolExecutor(max_workers=20) as executor:
-        # compounds = [(get_name(i), i) for i in tqdm(sanitized)]
         compounds = executor.map(lambda i: (get_name(i), i), sanitized)
 
     compounds = [i[0][0].iupac_name for i in compounds if i[0] and i[0][0].iupac_name]
@@ -62,4 +61,4 @@ if len(sys.argv) > 3:
                             columns=['names', 'strings'])
         compounds_df.to_csv(sys.argv[3])
     else:
-        print('No compounds found')
+        print(f'{RED}No compounds matches found{NC}')
