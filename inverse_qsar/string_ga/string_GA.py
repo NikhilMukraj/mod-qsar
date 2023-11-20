@@ -103,11 +103,9 @@ def GA(args):
         random.seed(seed)
 
     population = make_initial_population(population_size, file_name)
-    # print(population)
     scores = sc.calculate_scores(population, scoring_function, scoring_args)
-    # population, scores = sanitize(population, scores, population_size, False)
     high_scores = []
-    # high_scores.append((scores[0],population[0]))
+
     fitness = calculate_normalized_fitness(scores)
 
     score_history = []
