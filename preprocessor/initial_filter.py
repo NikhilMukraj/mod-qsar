@@ -6,7 +6,6 @@ import numpy as np
 import re
 import os
 import sys
-# from SmilesPE.pretokenizer import atomwise_tokenizer
 
 
 NC = '\033[0m'
