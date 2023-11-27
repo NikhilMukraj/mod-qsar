@@ -1,8 +1,6 @@
 from rdkit import Chem
 from rdkit.Chem import Draw
 from string_ga import calculateScore
-from IPython.display import SVG
-import pubchempy
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
