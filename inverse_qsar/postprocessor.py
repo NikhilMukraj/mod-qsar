@@ -11,6 +11,7 @@ import sys
 import os
 
 
+GREEN = '\033[1;32m'
 NC = '\033[0m'
 RED = '\033[0;31m'
 
@@ -39,6 +40,8 @@ sanitized = [Chem.MolToSmiles(Chem.MolFromSmiles(i, sanitize=True)) for i in df[
 print('Writing images...')
 for n, i in tqdm(enumerate(df['string'])):
     mol_to_img(Chem.MolToSmiles(Chem.MolFromSmiles(i, sanitize=True)), n)
+
+print(f'{GREEN}Finished writing images{NC}')
 
 def get_name(name):
     try:
