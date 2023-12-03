@@ -27,7 +27,8 @@ test_range = Float32.(hcat(collect(minimum(accs[:, begin]):.01:maximum(accs[:, b
 # scatter(accs[:, begin], accs[:, end], color="blue")
 # plot!(test_range, predict(test_range), color="green")
 
-# finds where logistic curve starts to peak based on threshold
+# finds where logistic curve starts to peak based on threshold (rounded maximum predicted value)
+# (could be edited to take the floor)
 preds = predict(test_range)
 optimized_n_value = 0
 for (n, i) in enumerate(preds)
