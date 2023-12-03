@@ -299,6 +299,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
+- Test using floor operation instead of rounding in optimize n pipeline
 - Add option for preprocessing step to append to `.npy` file as loop progresses for memory sake
 - Debug information
 - Add hyperparameter optimization
