@@ -62,7 +62,7 @@ df['SMILES'] = df['SMILES'].apply(lambda x: x if not has_atomic_number(x) else c
 
 # check type, if numeric skip this and say youre skipping this
 # if string proceed as normal
-# if neither specify that this is an unknown datatype that cannot be used
+# if neither return unknown data type error
 
 if is_string_dtype(df['ACTIVITY']):
     df = df.loc[df['ACTIVITY'] != 'Inconclusive', :]
