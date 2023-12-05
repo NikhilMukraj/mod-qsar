@@ -20,7 +20,9 @@ X = np.load(sys.argv[2])
 Y = np.load(sys.argv[3])
 
 if sys.argv[4].isdigit():
-    indicies = random.sample(range(Y.shape[0]), len(Y) // int(sys.argv[4]))
+    sampling_amount = len(Y) // int(sys.argv[4])
+    print(f'Sampling {sampling_amount}...')
+    indicies = random.sample(range(Y.shape[0]), sampling_amount)
 
     X = np.array([X[i] for i in indicies])
     Y = np.array([Y[i] for i in indicies])
