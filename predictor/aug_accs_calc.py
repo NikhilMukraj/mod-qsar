@@ -56,7 +56,7 @@ def get_augs(string, n):
         
     return np.array(full_seqs)
 
-print("Calculating accuracies...")
+print('Calculating accuracies...')
 preds = model.predict(X)
 initial_acc = accuracy_score([np.argmax(i) for i in Y], [np.argmax(i) for i in preds])
 
