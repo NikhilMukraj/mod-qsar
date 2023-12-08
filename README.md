@@ -4,7 +4,7 @@ A modular inverse QSAR pipeline
 
 ## Overview
 
-Built and tested on WSL using Ubuntu 22.04.1 LTS, has been tested for Ubuntu without WSL and works there as well.
+Built and tested on WSL using Ubuntu 22.04.1 LTS, tested and works for Ubuntu without WSL.
 Built using [SmilesEnumerator](https://github.com/EBjerrum/SMILES-enumeration), [StringGA](https://github.com/jensengroup/String-GA), Python (3.10.6) and Julia (1.8.1).
 The pipeline works by first taking in a series of `.csv` files that contain a SMILES string associated with a biotarget binding outcome that can either be manually inputted or pulled from the [ChEMBL](https://www.ebi.ac.uk/chembl/) or [BindingDB](https://www.bindingdb.org/rwd/bind/index.jsp).
 The pipeline then filters that dataset such that an equal amount of active and inactive compounds are found within the dataset.
