@@ -33,6 +33,7 @@ Note, vocabulary file (examples use `vocab.csv`) must be a `.csv` file in the fo
 |--------|
 | C      |
 | F      |
+| Cl     |
 | -      |
 | 3      |
 | ...    |
