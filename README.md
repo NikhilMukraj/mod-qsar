@@ -46,7 +46,7 @@ bash ./preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v 
 ```
 
 - `-f` : Bioassay `.csv` file, multiple can be specified
-- `-t` : String specifying a tag to add to the preprocessed dataset
+- `-t` : String specifying a tag to add to the preprocessed dataset, prefixes each file generated with the tag
 - `-n` : Positive integer representing amount of augmentations to add
 - `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
 - `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
@@ -76,7 +76,7 @@ bash ./add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv 
 ```
 
 - `-f` : Bioassay `.csv` file, multiple can be specified, use the `.csv` shown above
-- `-t` : String specifying a tag to add to the preprocessed dataset, amount of `-t` and `-f` arguments must be the same
+- `-t` : String specifying a tag to add to the preprocessed dataset, amount of `-t` and `-f` arguments must be the same, prefixes each file generated with the tag
 - `-n` : Positive integer representing amount of augmentations to add
 - `-m` : Maximum length of tokens, any samples found that are longer are removed from the dataset
 - `-o` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
@@ -102,7 +102,7 @@ First `.json` file arguments:
 - Filename
   - `id` : Valid target ID (either input a valid ChEMBL target to pull from the ChEMBL database or a valid UniProt target to pull from BindingDB)
   - `activity_type` : Valid type of binding activity from ChEMBL or BindingDB, (`IC50` or `EC50` for example)
-  - `tag` : String representing tag to use in `preprocessor.sh` script
+  - `tag` : String representing tag to use in `preprocessor.sh` script, prefixes each file generated with the tag
   - `min` : Float minimum threshold for being considered active (in nM)
   - `max` : Float maximum threshold for being considered active (in nM)
     - `min` and `max` arguments only necessary for classification, for a regression dataset omit these arguments
@@ -184,7 +184,7 @@ python3 train_keras_rnn.py X.npy Y.npy 100 name testX.npy testY.npy
 
 - First argument : A `.npy` file containing the tokenized X features
 - Second argument : Must be labels in a `.npy` file
-- Third argument : Amount of epochs to train for (positive integer), final argument specifies tag to name the model and training history
+- Third argument : Amount of epochs to train for (positive integer), final argument specifies tag to name the model and training history, prefixes each file generated with the tag
 - Fourth argument : Name to add to model and model history outfiles
 - Fifth argument : (Optional) name of file to dump features given dataset into for `optimize_n.sh`
 - Sixth argument : (Optional) name of file to dump labels given dataset into for `optimize_n.sh`
