@@ -17,7 +17,7 @@ After the augmentation hyperparameter is optimized, a genetic algorithm is used 
 
 ## How To
 
-(This project is recommended to run within a virtual environment)
+(It is recommended to run within a virtual environment)
 
 Download dependencies using:
 
