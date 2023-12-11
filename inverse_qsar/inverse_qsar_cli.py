@@ -277,6 +277,7 @@ def get_function(file_path, function_name):
 
     return getattr(module, function_name)
 
+# gets function from other file to use
 def generate_function(func):
     return lambda x: float(func(x))
 
