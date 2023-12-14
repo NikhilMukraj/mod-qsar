@@ -281,7 +281,7 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 | chemicals_2.csv |
 | ...             |
 
-## Scoring Functions
+### Inverse QSAR Scoring Functions
 
 - `model` : Uses the QSAR model as a scoring function
   - To use a regression model, prefix the model filenname with `regr`, the output will be scaled between 0 and 500 nM, the output should be 0 if the input was 0 nM and 1 if the input was 500 nM or more
@@ -294,7 +294,7 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 - `bbb_permeable` : Checks if molecule is blood brain barrier permeable using the [BOILED-egg method](https://github.com/bfmilne/pyBOILEDegg/tree/main), (1 if true 0 otherwise)
 - `gastro_absorption` : Checks if molecule is has high gastrointestinal absorption using the [BOILED-egg method](https://github.com/bfmilne/pyBOILEDegg/tree/main), (1 if true 0 otherwise)
 
-## Custom Scoring Functions
+### Custom Inverse QSAR Scoring Functions
 
 Use the format `"./filepath/to/python_file.py:function_name"` as an element in a list passed in the `scoring_function` argument where a `:` deliminates what is the filepath and what is the function name. The custom function must return a float. Custom functions must be specified last.
 
