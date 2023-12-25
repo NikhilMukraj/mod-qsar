@@ -2,6 +2,7 @@
 !*/
 !*.*
 /unused
+/.vscode
 /.ipynb_checkpoints
 /gathering data
 /preprocessor/*.csv
