@@ -87,7 +87,6 @@ for df_num in tqdm(1:eachindex(smiles)[end])
     for i in 1:eachindex(smiles[df_num][:, begin])[end]
         tokens = [j for j in atomwise_tokenizer(smiles[df_num][:, begin][i])]
         push!(strings[df_num], tokens)
-        # push!(activity[df_num], smiles[df_num][:, end][i] == "Active" ? [1, 0] : [0, 1])
         push_type!(activity, smiles, df_num, i)
     end
 
