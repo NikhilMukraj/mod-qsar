@@ -99,7 +99,7 @@ end
 for i in tqdm(1:eachindex(smiles[:, begin])[end])
     returned_tokens, validToken = return_tokens(smiles[:, begin][i], tokenizer)
     if validToken && override
-        # println("$i | Overriding token")
+        # if debug, println("$i | Overriding token")
         continue
     elseif validToken && !override
         throw("Not a valid token")
