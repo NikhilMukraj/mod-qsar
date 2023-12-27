@@ -23,6 +23,7 @@ Y = np.load(sys.argv[2])
 trainX, testX, trainY, testY = train_test_split(X, Y, test_size=.1)
 print(trainX.shape, testX.shape, trainY.shape, testY.shape)
 
+# maybe input with sys.argv
 trainX[trainX > 500] = 500
 testX[testX > 500] = 500
 
