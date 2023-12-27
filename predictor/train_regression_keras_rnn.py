@@ -23,6 +23,9 @@ Y = np.load(sys.argv[2])
 trainX, testX, trainY, testY = train_test_split(X, Y, test_size=.1)
 print(trainX.shape, testX.shape, trainY.shape, testY.shape)
 
+trainX[trainX > 500] = 500
+testX[testX > 500] = 500
+
 opt = Adam(.0001)
 input_shape = trainX[0].shape
 
