@@ -24,8 +24,8 @@ trainX, testX, trainY, testY = train_test_split(X, Y, test_size=.1)
 print(trainX.shape, testX.shape, trainY.shape, testY.shape)
 
 # maybe input with sys.argv
-trainX[trainX > 500] = 500
-testX[testX > 500] = 500
+trainY[trainY > 500] = 500
+testY[testY > 500] = 500
 
 opt = Adam(.0001)
 input_shape = trainX[0].shape
