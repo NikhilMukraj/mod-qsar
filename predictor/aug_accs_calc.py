@@ -64,7 +64,7 @@ testing_range = range(int(sys.argv[6]), int(sys.argv[7]), int(sys.argv[8]))
 accs = {i : 0 for i in testing_range}
 for index, num in enumerate(testing_range):
     aug_preds = []
-    print(f"iteration: {num}")
+    print(f'iteration: {num}')
     for i in tqdm(range(len(X))):
         strings = [convert_back(X[i])] + augment_smiles(convert_back(X[i]), num) 
         tokens_array = [return_tokens(string, vocab)[0] for string in strings]
