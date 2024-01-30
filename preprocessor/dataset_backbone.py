@@ -56,16 +56,20 @@ def get_activities(target, activity_type, activity, name=None):
         response_dict = xmltodict.parse(response.text)
 
         activity_set = []
-
-        for i in tqdm(response_dict['bdb:getLigandsByUniprotResponse']['bdb:affinities']):
-            if i['bdb:affinity_type'] in activity_type \
-                and '<' not in i['bdb:affinity'] \
-                and '>' not in i['bdb:affinity']:
-                activity_set.append({
-                    'canonical_smiles' : i['bdb:smiles'].split()[0],
-                    'value' : float(i['bdb:affinity']),
-                    'standard_units' : 'nM',
-                })
+        response_dict_to_parse = response_dict['bdb:getLigandsByUniprotResponse']['bdb:affinities']
+        try:
+            for i in tqdm(response_dict_to_parse):
+                if i['bdb:affinity_type'] in activity_type \
+                    and '<' not in i['bdb:affinity'] \
+                    and '>' not in i['bdb:affinity']:
+                    activity_set.append({
+                        'canonical_smiles' : i['bdb:smiles'].split()[0],
+                        'value' : float(i['bdb:affinity']),
+                        'standard_units' : 'nM',
+                    })
+        except TypeError:
+            print(f'{RED}Errored on the following input{NC}: {response_dict_to_parse}')
+            sys.exit(1)
 
         if len(activity_set) == 0:
             print(f'{RED}No bioactivities found{NC}')
@@ -74,11 +78,10 @@ def get_activities(target, activity_type, activity, name=None):
         if name:
             print(f'{GREEN}Finished getting bioactivity for {name}{NC}')
     else:
-        print(f'{RED}Database "{db}" is unknown{NC}')
+        print(f'{RED}Database for "{target}" is unknown{NC}')
         sys.exit(1)
 
     return activity_set
-
 
 def convert_to_nm(arr):
     unit = arr[2]
