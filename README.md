@@ -51,12 +51,20 @@ bash ./preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v 
 - `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
 - `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
-To use a dataset, use a `.csv` file in the following format:
+To use a dataset with boolean classification, use a `.csv` file in the following format:
 
 | SMILES                           | ACTIVITY                 |
 |----------------------------------|--------------------------|
 | CC1=NN(C2=NC(=O)N(C(=O)C2=N1)C)C | Active                   |
 | CC1=C2C(=NN1)C(=S)NC(=O)N2       | Inactive                 |
+| ...                              | ...                      |
+
+To use a dataset with regression values, use a `.csv` file in the following format:
+
+| SMILES                           | ACTIVITY                 |
+|----------------------------------|--------------------------|
+| CC1=NN(C2=NC(=O)N(C(=O)C2=N1)C)C | 10.1                     |
+| CC1=C2C(=NN1)C(=S)NC(=O)N2       | 231.3                    |
 | ...                              | ...                      |
 
 Generate a default vocab file with default symbols:
