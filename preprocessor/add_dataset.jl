@@ -7,6 +7,7 @@ py"""
 from smiles_tools import return_tokens
 from smiles_tools import SmilesEnumerator
 from SmilesPE.pretokenizer import atomwise_tokenizer
+import pandas as pd
 """
 
 py"""
@@ -47,14 +48,23 @@ println("Generating augmentations...")
 
 smiles = let temp_df
     temp_df = df_parser.dfToStringMatrix(df)
+    # for i in tqdm(1:length(temp_df[:, begin]))
+    #     # for augmented in augment_smiles(temp_df[:, begin][i], n)
+    #     #     temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
+    #     # end
+    # end
 
-    if is_df_string(temp_df["ACTIVITY"])
-        for augmented in tqdm(augment_smiles(temp_df[:, begin][i], n))
-            temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
+    if is_df_string(df["ACTIVITY"])
+        for i in tqdm(1:length(temp_df[:, begin]))
+            for augmented in augment_smiles(temp_df[:, begin][i], n)
+                temp_df = vcat(temp_df, String[augmented temp_df[:, end][i]])
+            end
         end
-    elseif is_df_numeric(temp_df["ACTIVITY"])
-        for augmented in tqdm(augment_smiles(temp_df[:, begin][i], n))
-            temp_df = vcat(temp_df, Any[augmented temp_df[:, end][i]])
+    elseif is_df_numeric(df["ACTIVITY"])
+        for i in tqdm(1:length(temp_df[:, begin]))
+            for augmented in augment_smiles(temp_df[:, begin][i], n)
+                temp_df = vcat(temp_df, Any[augmented temp_df[:, end][i]])
+            end
         end
     else
         error("$(RED)Dataset of unknown type found, must either be all strings of \"Active\" or \"Inactive\" or all numeric values$(NC)")
@@ -65,7 +75,7 @@ end
 
 println("Generated augmented dataframe, now processing tokens...")
 
-activity = reduce(hcat, [i == "Active" ? [1, 0] : [0, 1] for i in smiles[:, end]])'
+# activity = reduce(hcat, [i == "Active" ? [1, 0] : [0, 1] for i in smiles[:, end]])'
 
 strings = []
 activity = []
@@ -77,20 +87,19 @@ vocab = df_parser.dfToStringMatrix(df_parser.getdf(vocab_path))
 
 tokenizer = Dict(j => i for (i, j) in enumerate(vocab))
 reverse_tokenizer = Dict(value => key for (key, value) in tokenizer)
-# convert_back(x) = join([i in keys(reverse_tokenizer) ? reverse_tokenizer[i] : "" for i in x])
 
-function push_boolean_activity!(activity_vector, smiles_vector, df_id, index)
-    push!(activity_vector[df_id], smiles_vector[df_id][:, end][index] == "Active" ? [1, 0] : [0, 1])
+function push_boolean_activity!(activity_vector, smiles_vector, index)
+    push!(activity_vector, smiles_vector[:, end][index] == "Active" ? [1, 0] : [0, 1])
 end
 
-function push_numeric_activity!(activity_vector, smiles_vector, df_id, index)
-    push!(activity_vector[df_id], [smiles_vector[df_id][:, end][index]])
+function push_numeric_activity!(activity_vector, smiles_vector, index)
+    push!(activity_vector, [convert(Float64, smiles_vector[:, end][index])])
 end
 
 push_type! = let function_to_use
-    if is_df_string(temp_df["ACTIVITY"])
+    if is_df_string(df["ACTIVITY"])
         function_to_use = push_boolean_activity!
-    elseif is_df_numeric(temp_df["ACTIVITY"])
+    elseif is_df_numeric(df["ACTIVITY"])
         function_to_use = push_numeric_activity!
     end
     function_to_use
@@ -99,7 +108,7 @@ end
 for i in tqdm(1:eachindex(smiles[:, begin])[end])
     returned_tokens, validToken = return_tokens(smiles[:, begin][i], tokenizer)
     if validToken && override
-        # if debug, println("$i | Overriding token")
+        # println("$i | Overriding token")
         continue
     elseif validToken && !override
         throw("Not a valid token")
@@ -108,17 +117,20 @@ for i in tqdm(1:eachindex(smiles[:, begin])[end])
     processed_tokens = [tokenizer[j] for j in returned_tokens]
     if typeof(max_length) != Bool && length(processed_tokens) <= max_length
         push!(strings, processed_tokens)
-        push_type!(activity, smiles, df_num, i)
+        push_type!(activity, smiles, i)
     end
 end
 
 activity = reduce(hcat, activity)'
 
+# @assert length(strings) == size(activity)[begin]
+
+# convert_back(x) = join([i in keys(reverse_tokenizer) ? reverse_tokenizer[i] : "" for i in x])
+
 if typeof(max_length) == Bool
     max_length = maximum(length.(strings))
 end
 
-# if length does match pad with zeros until length matches
 function pad_features(input_strings, length_max)
     features = []
     for i in input_strings
