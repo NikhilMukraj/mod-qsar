@@ -82,6 +82,7 @@ if [[ -z $vocab ]]
 then
     vocab="vocab.csv"
 elif [[ ! -z $vocab && ! -f $vocab ]]
+then
     printf "${RED}$vocab not found${NC}"
     exit 1
 fi
