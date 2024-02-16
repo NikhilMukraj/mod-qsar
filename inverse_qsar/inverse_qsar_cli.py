@@ -2,7 +2,7 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import Lipinski
 from rdkit.Chem.FilterCatalog import FilterCatalog, FilterCatalogParams
-from shapely.geometry import Polygon
+from shapely.geometry import Point, Polygon
 import numpy as np
 import pandas as pd
 import json
@@ -249,6 +249,8 @@ def bbb_permeable(molecule):
     tpsa = Descriptors.TPSA(molecule, includeSandP=True)
     wlogp = Descriptors.MolLogP(molecule)
 
+    mol_coords = Point(tpsa, wlogp)
+
     if mol_coords.within(bbb_ellipse):
         return 1
     else:
@@ -258,6 +260,8 @@ def bbb_permeable(molecule):
 def gastro_absorption(molecule):
     tpsa = Descriptors.TPSA(molecule, includeSandP=True)
     wlogp = Descriptors.MolLogP(molecule)
+
+    mol_coords = Point(tpsa, wlogp)
 
     if mol_coords.within(gia_ellipse):
         return 1
