@@ -304,7 +304,7 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 
 ### Custom Inverse QSAR Scoring Functions
 
-Use the format `"./filepath/to/python_file.py:function_name"` as an element in a list passed in the `scoring_function` argument where a `:` deliminates what is the filepath and what is the function name. The custom function must return a float. Custom functions must be specified last.
+Use the format `"./filepath/to/python_file.py:function_name"` as an element in a list passed in the `scoring_function` argument where a `:` deliminates what is the filepath and what is the function name. The custom function must take a single argument of type `rdkit.Chem.rdchem.Mol` and return a `float`. Custom functions must be specified last.
 
 ## Todo
 
