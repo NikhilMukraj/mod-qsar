@@ -1,7 +1,6 @@
 from rdkit import Chem
 from rdkit.Chem import Draw
 from string_ga import calculateScore
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
