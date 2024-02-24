@@ -32,7 +32,7 @@ test_range = Float32.(hcat(collect(minimum(accs[:, begin]):.01:maximum(accs[:, b
 preds = predict(test_range)
 optimized_n_value = let optimized = 0
         for (n, i) in enumerate(preds)
-            if round(i; digits=2) >= round(maximum(preds); digits=1)
+            if round(i; digits=2) >= round(maximum(preds); digits=2)
                 optimized = Int32(round(test_range[n]))
                 break
             end
