@@ -30,13 +30,15 @@ test_range = Float32.(hcat(collect(minimum(accs[:, begin]):.01:maximum(accs[:, b
 # finds where logistic curve starts to peak based on threshold (rounded maximum predicted value)
 # (could be edited to take the floor)
 preds = predict(test_range)
-optimized_n_value = 0
-for (n, i) in enumerate(preds)
-    if round(i; digits=2) >= round(maximum(preds); digits=1)
-        optimized_n_value = Int32(round(test_range[n]))
-        break
+optimized_n_value = let optimized = 0
+        for (n, i) in enumerate(preds)
+            if round(i; digits=2) >= round(maximum(preds); digits=1)
+                optimized = Int32(round(test_range[n]))
+                break
+            end
+        end
+        optimized
     end
-end
 
 GREEN = "\033[1;32m"
 NC = "\033[0m"
