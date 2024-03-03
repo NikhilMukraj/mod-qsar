@@ -46,7 +46,7 @@ bash ./preprocessor.sh -f dataset1.csv -f dataset2.csv -t tag1 -t tag2 -n 10 -v 
 ```
 
 - `-f` : Bioassay `.csv` file, multiple can be specified
-- `-t` : String specifying a tag to add to the preprocessed dataset, prefixes each file generated with the tag
+- `-t` : String specifying a tag to add to the preprocessed dataset, prefixes each file generated with the tag, final file outputs will be titled `<tag>_encoded_seqs.npy` and `<tag>_activity.npy`
 - `-n` : Positive integer representing amount of augmentations to add
 - `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
 - `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
@@ -84,7 +84,7 @@ bash ./add_dataset.sh -f dataset1.csv -t tag1 -n 10 -m 196 -o true -v vocab.csv 
 ```
 
 - `-f` : Bioassay `.csv` file, multiple can be specified, use the `.csv` shown above
-- `-t` : String specifying a tag to add to the preprocessed dataset, amount of `-t` and `-f` arguments must be the same, prefixes each file generated with the tag
+- `-t` : String specifying a tag to add to the preprocessed dataset, amount of `-t` and `-f` arguments must be the same, prefixes each file generated with the tag, final file outputs will be titled `<tag>_encoded_seqs.npy` and `<tag>_activity.npy`
 - `-n` : Positive integer representing amount of augmentations to add
 - `-m` : Maximum length of tokens, any samples found that are longer are removed from the dataset
 - `-o` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
@@ -110,7 +110,7 @@ First `.json` file arguments:
 - Filename
   - `id` : Valid target ID (either input a valid ChEMBL target to pull from the ChEMBL database or a valid UniProt target to pull from BindingDB)
   - `activity_type` : Valid type of binding activity from ChEMBL or BindingDB, (`IC50` or `EC50` for example)
-  - `tag` : String representing tag to use in `preprocessor.sh` script, prefixes each file generated with the tag
+  - `tag` : String representing tag to use in `preprocessor.sh` script, prefixes each file generated with the tag, final file outputs will be titled `<tag>_encoded_seqs.npy` and `<tag>_activity.npy`
   - `min` : Float minimum threshold for being considered active (in nM)
   - `max` : Float maximum threshold for being considered active (in nM)
     - `min` and `max` arguments only necessary for classification, for a regression dataset omit these arguments
