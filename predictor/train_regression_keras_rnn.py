@@ -13,32 +13,24 @@ print(config.list_physical_devices('GPU'))
 
 # sudo cp /usr/lib/python3/dist-packages/tensorflow/libcudnn* /usr/lib/x86_64-linux-gnu/
 
-if len(sys.argv) < 5:
-    print('Too few args...')
-    sys.exit(1)
-
 X = np.load(sys.argv[1])
 Y = np.load(sys.argv[2])
 
 trainX, testX, trainY, testY = train_test_split(X, Y, test_size=.1)
 print(trainX.shape, testX.shape, trainY.shape, testY.shape)
 
-# maybe input with sys.argv
-trainY[trainY > 500] = 500
-testY[testY > 500] = 500
-
-opt = Adam(.0001)
+opt = Adam(.0001, clipvalue=0.5)
 input_shape = trainX[0].shape
 
 model = Sequential()
 model.add(LSTM(514, input_shape=input_shape, activation="swish", return_sequences=True, dropout=0.2)) 
 model.add(LSTM(256, activation="swish", return_sequences=True, dropout=0.2))
 model.add(LSTM(128, activation="swish", dropout=0.2))
-model.add(Dense(64, activation="relu"))
+model.add(Dense(64, activation="elu"))
 model.add(Dropout(0.2))
-model.add(Dense(32, activation="relu"))
+model.add(Dense(32, activation="elu"))
 model.add(Dropout(0.2))
-model.add(Dense(16, activation="relu"))
+model.add(Dense(16, activation="elu"))
 model.add(Dropout(0.2))
 model.add(Dense(1))
 
