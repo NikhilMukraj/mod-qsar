@@ -54,8 +54,13 @@ necessary_args = {
     'vocab': [str],
 }
 
+optional_args = {
+    "regression_min",
+    "regression_max",
+}
+
 for i in contents.keys():
-    if i not in necessary_args:
+    if i not in necessary_args and i not in optional_args:
         print(f'{RED}Unknown argument: {i}{NC}')
         sys.exit(1)
 
@@ -65,7 +70,7 @@ for i in necessary_args.keys():
         sys.exit(1)
 
 for key, value in contents.items():
-    if type(value) not in necessary_args[key]:
+    if key not in optional_args and type(value) not in necessary_args[key]:
         print(f'{RED}Type mismatch in argument, expected type in {necessary_args[key]} at "{key}" argument but got {type(value)}{NC}')
         sys.exit(1)
 
@@ -108,7 +113,6 @@ def remove_next_dups(lst):
             lst.pop(i+1)
         else:
             i += 1
-            
     return lst
 
 if len(dups := remove_next_dups(['.h5' in i for i in contents['scoring_function']])) > 2 \
@@ -135,12 +139,7 @@ if not os.path.isfile(contents['vocab']):
 
 strict = contents['strict']
 
-# if 'regression_max' not in contents:
-#     regression_max = 500
-# if 'regression_min' not in contents:
-#     regression_min = 0
-
-# applies qed drug likeness 
+# applies qed drug likeness
 def get_qed(molecule):
     qed = 0
     
@@ -197,7 +196,7 @@ def get_custom_lipinski(molecule):
     else: 
         return get_lipinski(molecule)
 
-# applies ghose drug likeness filter
+# removes larger rings
 def get_ghose(molecule):
     ghose = 0
 
@@ -281,7 +280,6 @@ def get_function(file_path, function_name):
 
     return getattr(module, function_name)
 
-# gets function from other file to use
 def generate_function(func):
     return lambda x: float(func(x))
 
@@ -309,11 +307,28 @@ tokenizer = {i : n for n, i in enumerate(vocab)}
 def is_regression_model(string):
     return os.path.basename(string).startswith('regr')
 
-# loads models
 potential_models = [i for i in contents['scoring_function'] if '.h5' in i]
+
+if any(is_regression_model(i) for i in potential_models):
+    regr_min_used = 'regression_min' in contents
+    regr_max_used = 'regression_max' in contents
+    if regr_max_used + regr_min_used < 2:
+        print(f'{RED}"regression_min" and "regression_max" arguments must be used if using a regression model{NC}')
+        sys.exit(1)
+
+    if type(contents['regression_max']) not in [float, int] or type(contents['regression_min']) not in [float, int]:
+        print(f'{RED}"regression_min" and "regression_max" arguments must be numeric{NC}')
+        sys.exit(1)
+
+    if contents['regression_min'] >= contents['regression_max']:
+        print(f'{RED}"regression_min" must be lower than "regression_max"{NC}')
+        sys.exit(1)
+
+    regression_min = contents['regression_min']
+    regression_max = contents['regression_max']
+
 if len(potential_models) > 0:
-    models_array = [ClassifierModel(i) if not is_regression_model('regr') 
-                    else RegressionModel(i) # Regression(i, maximum_value=regression_max, minimum_value=regression_min)
+    models_array = [ClassifierModel(i) if not is_regression_model(i) else RegressionModel(i, regression_min, regression_max)
                     for i in potential_models]
     print('Compiling models...')
     [model.compile() for model in models_array]
@@ -335,7 +350,10 @@ def ensemble_predict(tokens):
     full_seq = np.hstack([np.zeros(max_len-len(initial_seq)), initial_seq])
     full_seq = seqOneHot(np.array(full_seq, dtype=np.int32), seq_shape).reshape(1, *seq_shape)
     
+    # return np.hstack([i.predict(full_seq, verbose=0) for i in models_array])
     return np.hstack([i.predict(full_seq) for i in models_array])
+    # encapsulate regression models in class to use predict on it and automatically do
+    # clipping and normalization
 
 def augment_smiles(string, n):
     sme = SmilesEnumerator()
@@ -365,11 +383,11 @@ def get_augs(string, n):
 
     return np.array(full_seqs)
 
-def strict_weight_red(molecule):
+def strict_weight_req(molecule):
     return not (200 <= Descriptors.ExactMolWt(molecule) <= 500)
 
-def strict_pred_red(pred, target, length):
-    return [round(i) for i in pred[:length * 2]] == target[:length * 2]
+# def strict_pred_req(pred, target, length):
+#     return [round(i) for i in pred[:length * 2]] == target[:length * 2]
 
 @lru_cache(maxsize=256)
 def no_model_scoring(string, target):
@@ -397,10 +415,10 @@ def model_scoring(string, scoring_args):
         pred = ensemble_predict(tokens)[0]
         return -1 * get_score(weight * np.hstack([pred, likeness_score]), np.array(target))
     else:
-        augs = get_augs(string, num_of_augments)        
+        augs = get_augs(string, num_of_augments)
         pred = np.hstack([i.predict(augs) for i in models_array]).sum(axis=0) / len(augs)
 
-        if strict and strict_weight_red(molecule):
+        if strict and strict_weight_req(molecule):
             return -20  
         else:
             return -1 * get_score(weight * np.hstack([pred, likeness_score]), np.array(target)) 
