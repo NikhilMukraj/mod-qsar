@@ -241,6 +241,8 @@ python3 inverse_qsar_cli.py args.json chemicals_file.csv fitness_scores.csv
   - `weight`: Weight to apply to each output of scoring function (list of floats)
   - `file_name` : Pre-existing file of molecules to draw initial population from (filepath)
   - `vocab` : Pre-existing file containing the vocabulary mapping (filepath)
+  - `regression_min` : Minimum value cutoff and scaling for regression model (integer or float)
+  - `regression_max` : Maximum value cutoff and scaling for regression model (integer or float)
 - Second argument : A `.csv` to dump the molecules into  
 - Third argument : (Optional) `.csv` file to dump fitness scores after training
 
