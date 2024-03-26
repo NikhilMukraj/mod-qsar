@@ -20,15 +20,17 @@ class ClassifierModel(Model):
         return self.model.predict(sequence, verbose=0)
 
 class RegressionModel(Model):
-    def __init__(self, model=None, maximum_value=500, minimum_value=0):
+    def __init__(self, model=None, minimum=0, maximum=500):
         super().__init__(model)
-        self.maximum_value = maximum_value
-        self.minimum_value = minimum_value
+        self.minimum = minimum
+        self.maximum = maximum
+        self.max_scaled = 1
+        self.min_scaled = 0
+        self.scale_factor = (self.max_scaled - self.min_scaled) / (self.maximum - self.minimum)
 
     def predict(self, sequence):
         value = self.model.predict(sequence, verbose=0)
-
-        value = np.clip(value, self.minimum_value, self.maximum_value)
-        value = (value - self.minimum_value) / (self.maximum_value - self.minimum_value)
         
-        return np.power(2, value) - 1
+        value = np.clip(value, self.minimum, self.maximum)
+
+        return ((value - self.minimum) * self.scale_factor) + self.min_scaled
