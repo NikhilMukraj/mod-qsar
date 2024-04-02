@@ -377,10 +377,6 @@ def get_augs(string, n):
         full_seq = seqOneHot(np.array(full_seq, dtype=np.int32), seq_shape).reshape(1, *seq_shape)
         full_seqs.append(full_seq[0])
 
-        ####################################################################################
-        # may want to reformat to while loop to see if we can still reach n many compounds #
-        ####################################################################################
-
     return np.array(full_seqs)
 
 def strict_weight_req(molecule):
