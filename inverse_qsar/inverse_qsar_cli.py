@@ -221,7 +221,7 @@ def limit_rings(molecule):
     ring_lens = [len(ring) for ring in molecule.GetRingInfo().AtomRings() 
                 if molecule.GetAtomWithIdx(ring[0]).GetSymbol() == 'C']
     for i in ring_lens:
-        if i > 6:
+        if i > 6 or i in [3, 4]:
             return 0
     
     return 1
