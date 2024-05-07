@@ -139,7 +139,8 @@ if not os.path.isfile(contents['vocab']):
 
 strict = contents['strict']
 
-np.random.seed(seed)
+if type(contents['seed']) == int:
+    np.random.seed(int(contents['seed']))
 
 # applies qed drug likeness
 def get_qed(molecule):
