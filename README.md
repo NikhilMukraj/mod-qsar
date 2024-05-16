@@ -310,6 +310,10 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
+- Share ASCII color constants throughout project
+- Rebalancing regression data script
+- Redoing augmentation parameter
+- Refactoring thread calculations
 - Check if inverse QSAR output files can be written before execution of genetic algorithm
 - Check for boolean versus numeric data in aggregate pipeline before pulling data
 - Test using floor operation instead of rounding in optimize n pipeline
