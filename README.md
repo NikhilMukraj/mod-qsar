@@ -183,6 +183,18 @@ python3 ./add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -
 
 (See above examples for `dataset_args.json` and `aggregate_args.json`)
 
+Rebalance an existing regression dataset (with columns `SMILES` and `ACTIVITY`) such that the new dataset will have a more even spread of values to improve accuracy of regression models and reduce the effect of outliars on accuracy
+
+```bash
+cd preprocessor
+python3 ./rebalancing.py --input input_data.csv --output output_data.csv --num_bins 20 --standardize false
+```
+
+- `--input` : Input `.csv` file
+- `--output` : Name of output data
+- `--num_bins` : Positive integer greater than or equal to 2 representing number of bins to use when determining the spread of the data, more bins will mean more and smaller buckets will be used to rebalance the data, defaults to 20
+- `--standardize` : Boolean representing whether to scale dataset on a range from 0 to 1
+
 Train QSAR model:
 
 ```bash
@@ -310,8 +322,9 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
+- Rebalancing regression data script, including choosing the output scaling range
+- Rewriting docs with full argument names (`--argument`)
 - Share ASCII color constants throughout project
-- Rebalancing regression data script
 - Redoing augmentation parameter
 - Refactoring thread calculations
 - Check if inverse QSAR output files can be written before execution of genetic algorithm
