@@ -38,7 +38,12 @@ RED='\033[0;31m'
 GREEN='\033[1;32m'
 NC='\033[0m'
 
-if [[ ! -f "vocab.csv" ]]
+if [[ -z $vocab ]]
+then
+    vocab="vocab.csv"
+fi
+
+if [[ ! -f $vocab ]]
 then
     printf "${RED}No existing vocab file${NC}\n"
     exit 1
