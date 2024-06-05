@@ -99,11 +99,11 @@ python3 dataset_generator.py dataset_args.json -a aggregate_args.json -f true -n
 ```
 
 - First argument : `.json` file that specifies the target and threshold for activity
-- `-a` : Aggregate datasets into singular files
-- `-f` : Boolean that states whether to generate `.npy` files in same manner as `preprocessor.sh` script
-- `-n` : Integer amount greater than or equal to 0 representing amount of augmentations to include in `preprocessor.sh` script
-- `-v` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
-- `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
+- `--aggregate` : Aggregate datasets into singular files
+- `--full-preprocessing` : Boolean that states whether to generate `.npy` files in same manner as `preprocessor.sh` script
+- `--number-of-augmentations` : Integer amount greater than or equal to 0 representing amount of augmentations to include in `preprocessor.sh` script
+- `--vocab` : (Optional) filename of vocabulary file, defaults to `vocab.csv`
+- `--sysimage` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
 First `.json` file arguments:
 
@@ -174,12 +174,12 @@ python3 ./add_dataset.py dataset_args.json -a aggregate_args.json -n 10 -m 196 -
 ```
 
 - First argument: `.json` file that specifies the target and threshold for activity
-- `-a` : Aggregate datasets into singular files
-- `-n` : Positive integer representing amount of augmentations to add
-- `-m` : Maximum length of tokens, any samples found that are longer are removed from the dataset
-- `-o` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
-- `-v` : (Optional) filename of vocabulary to use (defaults to `vocab.csv`)
-- `-s` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
+- `--aggregate` : Aggregate datasets into singular files
+- `--number-of-augmentations` : Positive integer representing amount of augmentations to add
+- `--max-length` : Maximum length of tokens, any samples found that are longer are removed from the dataset
+- `--override` : Boolean representing whether to ignore or override tokens not found in initial vocabulary
+- `--vocab` : (Optional) filename of vocabulary to use (defaults to `vocab.csv`)
+- `--sysimage` : (Optional) boolean as to whether or not to use a sysimage when running Julia component
 
 (See above examples for `dataset_args.json` and `aggregate_args.json`)
 
@@ -323,9 +323,11 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 ## Todo
 
 - Rebalancing regression data script, including choosing the output scaling range
+- Potentially rewriting the shell scripts in Python
 - Rewriting docs with full argument names (`--argument`)
 - Share ASCII color constants throughout project
 - Redoing augmentation parameter
+- Using SMILES transform from enumerator package instead of manual one hot encoding
 - Refactoring thread calculations
 - Check if inverse QSAR output files can be written before execution of genetic algorithm
 - Check for boolean versus numeric data in aggregate pipeline before pulling data
