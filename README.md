@@ -323,7 +323,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 ## Todo
 
 - Rebalancing regression data script, including choosing the output scaling range
-- Potentially rewriting the shell scripts in Python
+- Rewriting the shell scripts in Python
 - Share ASCII color constants throughout project
 - Redoing augmentation parameter
 - Using SMILES transform from enumerator package instead of manual one hot encoding
