@@ -323,7 +323,7 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 ## Todo
 
 - Adding method to combine results of classifier
-- Potentially rewriting `inverse_qsar_cli.py` as a package
+- Potentially adding another version of `inverse_qsar_cli.py` that is a package, both could be used for convenience
 - Rewriting the shell scripts in Python
 - Share ASCII color constants throughout project
 - Redoing augmentation parameter
