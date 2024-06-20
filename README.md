@@ -322,7 +322,8 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
-- Rebalancing regression data script, including choosing the output scaling range
+- Adding method to combine results of classifier
+- Potentially rewriting `inverse_qsar_cli.py` as a package
 - Rewriting the shell scripts in Python
 - Share ASCII color constants throughout project
 - Redoing augmentation parameter
