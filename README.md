@@ -306,7 +306,8 @@ python3 postprocessor.py ./generated_drugs/images files.csv names.csv
 ### Inverse QSAR Scoring Functions
 
 - `model` : Uses the QSAR model as a scoring function
-  - To use a regression model, prefix the model filenname with `regr`, the output will be scaled between 0 and 500 nM, the output should be 0 if the input was 0 nM and 1 if the input was 500 nM or more
+  - To use a regression model, prefix the model filename with `regr`, the output will be scaled between 0 and 500 nM, the output should be 0 if the input was 0 nM and 1 if the input was 500 nM or more
+  - To combine models into a single output, enter a file that has a function that combines the models' outputs, the name of the function within the file, the expected output shape, and the models to use by entering each argument as a string delimitated by `'+'` characters, to combine regression models, prefix the regression models with `regr`
 - `lipinski` : Uses Lipinski's Rule of Five, (1 if true 0 otherwise)
 - `qed` : Uses QED drug-likeness measure, (1 if true 0 otherwise)
 - `ghose` : Uses Ghose drug-likeness measure, (1 if true 0 otherwise)
