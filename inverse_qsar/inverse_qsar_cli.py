@@ -13,7 +13,7 @@ from tensorflow.keras import models
 from smiles_tools import return_tokens
 from smiles_tools import SmilesEnumerator
 from bbb_gia import bbb_coords, gia_coords
-from model_class import ClassifierModel, RegressionModel
+from model_class import ClassifierModel, RegressionModel, MultipleClassifierModels
 from c_wrapper import seqOneHot
 from ml_scorer import get_score
 import string_ga
@@ -25,8 +25,10 @@ GREEN = '\033[1;32m'
 NC = '\033[0m'
 RED = '\033[0;31m'
 
+# should make strict parameters customizable
+
 if len(sys.argv) < 3:
-    print(f"{RED}Too few args...{NC}")
+    print(f"{RED}Too few args... (requires argument file and output file){NC}")
     sys.exit()
 
 with open(sys.argv[1], 'r') as f:
@@ -106,14 +108,15 @@ if any(type(i) != str for i in contents['scoring_function']):
     print(f'{RED}Type mistmatch in argument, expected type {str} in "scoring_function"{NC}')
     sys.exit(1)
 
-def remove_next_dups(lst):
+def remove_next_dups(array):
     i = 0
-    while i < len(lst) - 1:
-        if lst[i] == lst[i+1]:
-            lst.pop(i+1)
+    while i < len(array) - 1:
+        if array[i] == array[i+1]:
+            array.pop(i+1)
         else:
             i += 1
-    return lst
+
+    return array
 
 if len(dups := remove_next_dups(['.h5' in i for i in contents['scoring_function']])) > 2 \
     or (len(dups) <= 2 and dups[0] == 0 and dups[-1] == 1):
@@ -236,6 +239,7 @@ catalog = FilterCatalog(params)
 # helps with sensitivity
 def get_pains(molecule):
     isPAINS = catalog.GetFirstMatch(molecule)
+
     return int(isPAINS is None)
 
 # https://github.com/bfmilne/pyBOILEDegg/tree/main
@@ -283,7 +287,7 @@ def get_function(file_path, function_name):
 
     return getattr(module, function_name)
 
-def generate_function(func):
+def wrap_function(func):
     return lambda x: float(func(x))
 
 # mapping for drug metrics
@@ -300,15 +304,47 @@ drug_likeness_parser = {
 
 drug_likeness_metric = [drug_likeness_parser[i] for i in contents['scoring_function'] 
                         if '.h5' not in i and ':' not in i]
-custom_funcs = [generate_function(get_function(*i.split(':'))) 
+custom_funcs = [wrap_function(get_function(*i.split(':'))) 
                 for i in contents['scoring_function'] if ':' in i]
 drug_likeness_metric.extend(custom_funcs)
 
 vocab = pd.read_csv(contents['vocab'])['tokens'].to_list()
 tokenizer = {i : n for n, i in enumerate(vocab)}
 
+get_active_component = lambda preds: [np.array(i) for i in zip(preds[0, :, 0], preds[1, :, 1])]
+
 def is_regression_model(string):
     return os.path.basename(string).startswith('regr')
+
+def is_combined_classifier(string):
+    split = string.split('+')
+    return len(split) > 1 and all(not os.path.basename(i).startswith('regr') for i in split[3:])
+
+def is_combined_regr(string):
+    split = string.split('+')
+    return len(split) > 1 and all(os.path.basename(i).startswith('regr') for i in split[3:])
+
+def parse_multiple_models(string):
+    current_model_args = string.split('+')
+    combination_function = get_function(current_model_args[0], current_model_args[1])
+    output_num = int(current_model_args[2])
+    models = current_model_args[3:]
+
+    return (models, combination_function, output_num)
+
+def filename_to_model(string):
+    if is_regression_model(string):
+        return RegressionModel(string, regression_min, regression_max)
+    elif is_combined_classifier(string):
+        model_strings, combination_function, output_num = parse_multiple_models(string)
+
+        return MultipleClassifierModels(model_strings, combination_function, output_num)
+    elif is_combined_regr(string): 
+        model_names, combination_function, output_num = parse_multiple_models(string)
+
+        return MultipleRegressionModels(model_names, combination_function, output_num)
+    else:
+        return ClassifierModel(string)
 
 potential_models = [i for i in contents['scoring_function'] if '.h5' in i]
 
@@ -331,17 +367,16 @@ if any(is_regression_model(i) for i in potential_models):
     regression_max = contents['regression_max']
 
 if len(potential_models) > 0:
-    models_array = [ClassifierModel(i) if not is_regression_model(i) else RegressionModel(i, regression_min, regression_max)
-                    for i in potential_models]
+    models_array = [filename_to_model(i) for i in potential_models]
     print('Compiling models...')
     [model.compile() for model in models_array]
     if contents['max_len']:
         max_len = contents['max_len']
-    elif len(set([i.model.layers[0].output_shape[1] for i in models_array])) != 1:
+    elif len(set([i.get_input_shape() for i in models_array])) != 1:
         print(f'{RED}All models must have same input shape{NC}')
         sys.exit(1)
     else:
-        max_len = models_array[0].model.layers[0].output_shape[1]
+        max_len = models_array[0].get_input_shape()
     seq_shape = np.array([max_len, np.max([i+1 for i in tokenizer.values()])+1], dtype=np.int32)
     model_pred = True
 else:
@@ -363,7 +398,7 @@ def augment_smiles(string, n):
     output = []
     for i in range(n):
         output.append(sme.randomize_smiles(string))
-    
+        
     return output
 
 def get_augs(string, n):
@@ -384,9 +419,6 @@ def get_augs(string, n):
 
 def strict_weight_req(molecule):
     return not (200 <= Descriptors.ExactMolWt(molecule) <= 500)
-
-# def strict_pred_req(pred, target, length):
-#     return [round(i) for i in pred[:length * 2]] == target[:length * 2]
 
 @lru_cache(maxsize=256)
 def no_model_scoring(string, target):
@@ -424,7 +456,7 @@ def model_scoring(string, scoring_args):
 
 scoring_args = contents['target']
 
-if len(scoring_args) != sum(i.model.layers[-1].output_shape[1] for i in models_array) + len(drug_likeness_metric):
+if len(scoring_args) != sum(i.get_output_shape() for i in models_array) + len(drug_likeness_metric):
     print(f'{RED}Target arugment does not match scoring functions{NC}')
     sys.exit(1)
 if [i for i in scoring_args if not 0 <= i <= 1]:
@@ -462,11 +494,15 @@ string_ga.co.string_type = contents['string_type']
 
 print('Starting GA...')
 
-(scores, population, high_scores, score_hist) = string_ga.GA([contents['population_size'], contents['file_name'], 
-                                       scoring_function, contents['generations'],
-                                       contents['mating_pool_size'], contents['mutation_rate'], 
-                                       scoring_args, contents['max_score'],
-                                       contents['prune_population'], contents['seed'], contents['threads']])
+(scores, population, high_scores, score_hist) = string_ga.GA(
+    [
+        contents['population_size'], contents['file_name'], 
+        scoring_function, contents['generations'],
+        contents['mating_pool_size'], contents['mutation_rate'], 
+        scoring_args, contents['max_score'],
+        contents['prune_population'], contents['seed'], contents['threads']
+    ]
+)
 
 def sanitize_string(string):
     return Chem.MolToSmiles(Chem.MolFromSmiles(string, sanitize=True))
