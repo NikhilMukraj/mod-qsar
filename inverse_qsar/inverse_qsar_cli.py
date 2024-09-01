@@ -25,8 +25,6 @@ GREEN = '\033[1;32m'
 NC = '\033[0m'
 RED = '\033[0;31m'
 
-# should make strict parameters customizable
-
 if len(sys.argv) < 3:
     print(f"{RED}Too few args... (requires argument file and output file){NC}")
     sys.exit()
@@ -44,7 +42,8 @@ necessary_args = {
     'size_stdev': [int, float], 
     'string_type': [str], 
     'scoring_function': [list], 
-    'strict': [bool],
+    # 'strict': [bool],
+    'strict_functions': [list],
     'threads': [int],
     'augment': [list], 
     'max_len': [int, type(None)], 
@@ -140,7 +139,8 @@ if not os.path.isfile(contents['vocab']):
     print(f'{RED}\"{contents["vocab"]}\" in "vocab" argument is not a valid file{NC}')
     sys.exit(1)
 
-strict = contents['strict']
+# strict = contents['strict']
+strict = len(contents['strict_functions']) != 0
 
 if type(contents['seed']) == int:
     np.random.seed(int(contents['seed']))
@@ -308,6 +308,9 @@ custom_funcs = [wrap_function(get_function(*i.split(':')))
                 for i in contents['scoring_function'] if ':' in i]
 drug_likeness_metric.extend(custom_funcs)
 
+strict_funcs = [wrap_function(get_function(*i.split(':'))) 
+                for i in contents['strict_functions'] if ':' in i]
+
 vocab = pd.read_csv(contents['vocab'])['tokens'].to_list()
 tokenizer = {i : n for n, i in enumerate(vocab)}
 
@@ -417,9 +420,6 @@ def get_augs(string, n):
 
     return np.array(full_seqs)
 
-def strict_weight_req(molecule):
-    return not (200 <= Descriptors.ExactMolWt(molecule) <= 500)
-
 @lru_cache(maxsize=256)
 def no_model_scoring(string, target):
     _, isNotValidToken = return_tokens(string, vocab)
@@ -449,7 +449,7 @@ def model_scoring(string, scoring_args):
         augs = get_augs(string, num_of_augments)
         pred = np.hstack([i.predict(augs) for i in models_array]).sum(axis=0) / len(augs)
 
-        if strict and strict_weight_req(molecule):
+        if strict and any([i(molecule) for i in strict_funcs]):
             return -20  
         else:
             return -1 * get_score(weight * np.hstack([pred, likeness_score]), np.array(target)) 
