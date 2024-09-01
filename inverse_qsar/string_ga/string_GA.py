@@ -29,22 +29,29 @@ def read_file(file_name):
 
     return smiles_list
 
-
 def make_initial_population(population_size, file_name):
     smiles_list = read_file(file_name)
     population = []
-    for _ in range(population_size):
-        smiles = random.choice(smiles_list)
-        mol = Chem.MolFromSmiles(smiles)
-        Chem.Kekulize(mol, clearAromaticFlags=True)
-        smiles = Chem.MolToSmiles(mol, isomericSmiles=False)
-        string = co.smiles2string(smiles)
-        # print(smiles)
-        if string:
-            population.append(string)
+    if len(smiles_list) != population_size:
+        for _ in range(population_size):
+            smiles = random.choice(smiles_list)
+            mol = Chem.MolFromSmiles(smiles)
+            Chem.Kekulize(mol, clearAromaticFlags=True)
+            smiles = Chem.MolToSmiles(mol, isomericSmiles=False)
+            string = co.smiles2string(smiles)
+            # print(smiles)
+            if string:
+                population.append(string)
+    else:
+        for i in smiles_list:
+            mol = Chem.MolFromSmiles(i)
+            Chem.Kekulize(mol, clearAromaticFlags=True)
+            smiles = Chem.MolToSmiles(mol, isomericSmiles=False)
+            string = co.smiles2string(smiles)
+            if string:
+                population.append(string)
 
     return population
-
 
 def calculate_normalized_fitness(scores):
     sum_scores = sum(scores)
@@ -52,14 +59,12 @@ def calculate_normalized_fitness(scores):
 
     return normalized_fitness
 
-
 def make_mating_pool(population, fitness, mating_pool_size):
     mating_pool = []
     for i in range(mating_pool_size):
         mating_pool.append(np.random.choice(population, p=fitness))
 
     return mating_pool
-
 
 def reproduce(mating_pool, population_size, mutation_rate):
     new_population = []
@@ -74,7 +79,6 @@ def reproduce(mating_pool, population_size, mutation_rate):
                 new_population.append(mutated_child)
 
     return new_population
-
 
 def sanitize(population, scores, population_size, prune_population):
     if prune_population:
@@ -105,7 +109,6 @@ def GA(args):
     population = make_initial_population(population_size, file_name)
     scores = sc.calculate_scores(population, scoring_function, scoring_args)
     high_scores = []
-
     fitness = calculate_normalized_fitness(scores)
 
     score_history = []
@@ -132,7 +135,6 @@ def GA(args):
             break
 
     return (scores, population, high_scores, score_history)
-
 
 if __name__ == "__main__":
     Celecoxib = 'O=S(=O)(c3ccc(n1nc(cc1c2ccc(cc2)C)C(F)(F)F)cc3)N'
