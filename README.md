@@ -244,7 +244,7 @@ python3 inverse_qsar_cli.py args.json chemicals_file.csv fitness_scores.csv
   - `size_stdev` : Average standard deviation of chemical (positive integer or float)
   - `string_type` : Type of string formatting (recommended to use `SMILES` as input or specify a filepath to a file in the same format as `vocab.csv`)
   - `scoring_function` : Type of scoring function to use
-  - `strict` : Whether to completely eliminate molecules based on a weight threshold (boolean)
+  - `struct_functions` : Type of scoring function to use, if function returns `True`, then a score of `-20` is automatically returned
   - `augment` : List containing boolean whether to augment data for model scoring function and integer how many times to augment (positive integer)
   - `max_len` : Maximum token length of molecules (positive integer or automatically grab `max_len` by providing `null` as an argument)
   - `max_score` : Score to stop at (float)
@@ -271,7 +271,7 @@ Example `args.json`:
     "size_stdev" : 100.0,
     "string_type" : "SMILES",
     "scoring_function" : ["dopa_rnn_model.h5", "sero_rnn_model.h5", "custom_lipinski", "pains", "limit_rings"],
-    "strict": true,
+    "strict_functions": [],
     "threads": 2,
     "augment": [true, 5],
     "max_len": 196,
@@ -323,6 +323,8 @@ Use the format `"./filepath/to/python_file.py:function_name"` as an element in a
 
 ## Todo
 
+- Make strict functions an optional argument with a default
+- Add custom scoring output for strict
 - Adding method to combine results of classifier
 - Potentially adding another version of `inverse_qsar_cli.py` that is a package, both could be used for convenience
 - Rewriting the shell scripts in Python
